@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -37,6 +39,12 @@ public class Profile {
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
     private Set<Comment> comments = new HashSet<>();
+
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
+    private Set<ChatParticipant> participatedChats = new HashSet<>();
+
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
+    private List<Message> messages = new ArrayList<>();
 
     @Setter(AccessLevel.NONE)
     @Column(name = "created_at", nullable = false)
