@@ -1,8 +1,10 @@
 package com.gamerum.backend.external.persistence.entity;
 
+import com.gamerum.backend.security.user.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
+import javax.management.relation.Role;
 import java.time.LocalDateTime;
 
 @Data
@@ -20,10 +22,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
     private boolean isActive;
+
+    @Column(nullable = false)
+    private UserRole role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
     private Profile profile;
@@ -40,5 +51,6 @@ public class User {
 
     public User() {
         this.registeredAt = LocalDateTime.now();
+        role = UserRole.ROLE_USER;
     }
 }
