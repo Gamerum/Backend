@@ -7,13 +7,12 @@ import com.gamerum.backend.domain.dto.auth.response.RegisterResponseDTO;
 import com.gamerum.backend.external.persistence.entity.Profile;
 import com.gamerum.backend.external.persistence.entity.User;
 import com.gamerum.backend.external.persistence.repository.UserRepository;
-import com.gamerum.backend.security.jwt.JwtUtils;
+import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.usecase.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JwtUtils jwtUtils;
+    private JwtUtil jwtUtil;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -55,21 +54,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDTO login(LoginRequestDTO request) {
-
-        Authentication authentication = authenticationManager.authenticate(
+        Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
                 )
         );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
+        String token = jwtUtil.generateToken(auth);
         return LoginResponseDTO.builder()
                 .success(true)
                 .message("Logged in successfully.")
-                .token(jwt)
+                .token(token)
                 .tokenType("Bearer")
                 .build();
     }
