@@ -11,7 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Community",
+@Table(name = "Communities",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "title")
         }

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "CommunityMember",
+@Table(name = "CommunityMembers",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "title")
         }
