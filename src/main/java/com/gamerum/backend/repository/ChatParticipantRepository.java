@@ -8,6 +8,4 @@ import java.util.Optional;
 
 @Repository
 public interface ChatParticipantRepository extends CrudRepository<ChatParticipant, Long> {
-    Optional<ChatParticipant> findByProfileId(Long profileID);
-    Optional<ChatParticipant> findByChatId(Long chatID);
 }
