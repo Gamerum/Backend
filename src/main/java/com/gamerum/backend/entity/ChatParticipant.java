@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "ChatParticipant")
+@Table(name = "ChatParticipants")
 public class ChatParticipant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

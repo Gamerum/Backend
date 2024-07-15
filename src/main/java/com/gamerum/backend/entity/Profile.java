@@ -13,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Profile",
+@Table(name = "Profiles",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "displayName"),
                 @UniqueConstraint(columnNames = "user")

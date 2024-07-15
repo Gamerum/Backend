@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "DeletedUser")
+@Table(name = "DeletedUsers")
 public class DeletedUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
