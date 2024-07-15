@@ -55,8 +55,10 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/public/**").permitAll()
-                                .anyRequest().authenticated()
+                    auth
+                            .requestMatchers("/api/public/**").permitAll()
+                            .requestMatchers("/api/user/**").hasRole("USER")
+                            .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
