@@ -1,7 +1,7 @@
 package com.gamerum.backend.security.user;
 
 
-import com.gamerum.backend.repository.UserRepository;
+import com.gamerum.backend.external.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
