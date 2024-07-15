@@ -7,9 +7,13 @@ import com.gamerum.backend.domain.dto.auth.response.RegisterResponseDTO;
 import com.gamerum.backend.external.persistence.entity.Profile;
 import com.gamerum.backend.external.persistence.entity.User;
 import com.gamerum.backend.external.persistence.repository.UserRepository;
+import com.gamerum.backend.security.jwt.JwtUtils;
 import com.gamerum.backend.usecase.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,22 +27,24 @@ public class AuthServiceImpl implements AuthService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private JwtUtils jwtUtils;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     public RegisterResponseDTO register(RegisterRequestDTO request) {
 
-        Profile profile = Profile.builder()
-                .nickname(request.getNickname())
-                .build();
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        User user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .profile(profile)
-                .build();
+        Profile profile = new Profile();
+        profile.setNickname(request.getNickname());
+        profile.setUser(user);
 
+        user.setProfile(profile);
         userRepository.save(user);
 
         return RegisterResponseDTO.builder()
@@ -50,10 +56,21 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponseDTO login(LoginRequestDTO request) {
 
-        /*
-        * It will be implemented when security system added because authentication will be done with it.
-        */
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()
+                )
+        );
 
-        return null;
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        return LoginResponseDTO.builder()
+                .success(true)
+                .message("Logged in successfully.")
+                .token(jwt)
+                .tokenType("Bearer")
+                .build();
     }
 }
