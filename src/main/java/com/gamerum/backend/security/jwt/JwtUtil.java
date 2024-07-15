@@ -1,7 +1,6 @@
 package com.gamerum.backend.security.jwt;
 
 import com.gamerum.backend.security.user.UserDetailsImpl;
-import com.gamerum.backend.security.user.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -9,12 +8,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -43,8 +40,7 @@ public class JwtUtil {
         return getClaimFromToken(token, claims -> claims.get("username", String.class));
     }
 
-    public List<GrantedAuthority> getGrantedAuthorities(String token)
-    {
+    public List<GrantedAuthority> getGrantedAuthorities(String token) {
         List<String> authorityStrings = getClaimFromToken(token, claims -> claims.get("authorities", List.class));
         if (authorityStrings == null) return Collections.emptyList();
         return authorityStrings.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
@@ -68,7 +64,6 @@ public class JwtUtil {
                 .getBody();
     }
 
-    // Check if the token has expired
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
@@ -80,7 +75,9 @@ public class JwtUtil {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", userDetails.getUsername());
-        claims.put("authorities", userDetails.getAuthorities());
+        claims.put("authorities", userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
         return generateToken(claims, userDetails.getId().toString());
     }
 
@@ -98,13 +95,11 @@ public class JwtUtil {
                 .compact();
     }
 
-    // Validate token
     public Boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key()).build().parse(token);
-            return isTokenExpired(token);
-        }
-        catch (JwtException e) {
+            return !isTokenExpired(token); // Return false if expired
+        } catch (JwtException e) {
             LoggerFactory.getLogger(JwtUtil.class).error("JWT token error: {}", e.getMessage());
             return false;
         }
