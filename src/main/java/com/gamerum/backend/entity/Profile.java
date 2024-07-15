@@ -24,7 +24,7 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String displayName;
+    private String nickname;
     private boolean isActive;
 
     @OneToOne(fetch = FetchType.LAZY)

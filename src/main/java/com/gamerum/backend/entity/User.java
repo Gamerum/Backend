@@ -25,7 +25,7 @@ public class User {
     private String password;
     private boolean isActive;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
     private Profile profile;
 
     @Setter(AccessLevel.NONE)
