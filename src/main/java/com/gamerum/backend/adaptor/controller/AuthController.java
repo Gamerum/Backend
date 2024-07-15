@@ -8,6 +8,7 @@ import com.gamerum.backend.usecase.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,8 +28,14 @@ public class AuthController {
     }
 
     @GetMapping("/api/public/test")
-    public ResponseEntity<String> test()
+    public ResponseEntity<String> freeAccessTest()
     {
         return new ResponseEntity<>("Test", HttpStatus.OK);
+    }
+
+    @GetMapping("/api/user/test")
+    public ResponseEntity<String> userAccessTest()
+    {
+        return new ResponseEntity<>("User can access.", HttpStatus.OK);
     }
 }
