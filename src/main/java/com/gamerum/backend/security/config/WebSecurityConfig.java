@@ -1,7 +1,7 @@
 package com.gamerum.backend.security.config;
 
 import com.gamerum.backend.security.jwt.AuthEntryPointJwt;
-import com.gamerum.backend.security.jwt.AuthTokenFilter;
+import com.gamerum.backend.security.jwt.TokenFilter;
 import com.gamerum.backend.security.user.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +28,7 @@ public class WebSecurityConfig {
     private AuthEntryPointJwt unauthorizedHandler;
 
     @Autowired
-    public AuthTokenFilter authTokenFilter;
+    public TokenFilter tokenFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -59,7 +59,7 @@ public class WebSecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
