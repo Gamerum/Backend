@@ -4,17 +4,19 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "CommunityMember",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "title")
-        }
-)
+@Table(name = "CommunityMember")
 public class CommunityMember {
+
+    public enum CommunityMemberRole {
+        OWNER,
+        MOD,
+        USER
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,11 +29,10 @@ public class CommunityMember {
     @JoinColumn(name = "community_id", nullable = false)
     private Community community;
 
-    @Column(name = "is_mod")
-    private boolean isMod;
 
-    @Column(name = "is_owner")
-    private boolean isOwner;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private CommunityMemberRole role;
 
     @Setter(AccessLevel.NONE)
     @Column(name = "joined_at", nullable = false)
