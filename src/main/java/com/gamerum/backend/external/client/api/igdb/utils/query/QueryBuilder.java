@@ -1,4 +1,4 @@
-package com.gamerum.backend.external.client.api.igdb.utils;
+package com.gamerum.backend.external.client.api.igdb.utils.query;
 
 public class QueryBuilder {
     private String search = "";
