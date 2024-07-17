@@ -1,30 +1,28 @@
 package com.gamerum.backend.external.client.api.igdb;
 
-import com.gamerum.backend.external.client.api.igdb.utils.Endpoint;
-import com.gamerum.backend.external.client.api.token.TokenHandler;
+import com.gamerum.backend.external.client.api.igdb.utils.endpoint.Endpoint;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Component
 public class IGDBApi {
-    private final TokenHandler tokenHandler;
+    private final String baseUrl = "https://api.igdb.com/v4/";
 
     @Value("${api.twitch.client_id}")
     private String clientId;
 
-    @Value("${api.igdb.base_url}")
-    private String baseUrl;
+    @Autowired
+    private IGDBTokenHandler tokenHandler;
 
-    public IGDBApi() {
-        tokenHandler = new IGDBTokenHandler();
-    }
-
-    protected byte[] protoRequest(Endpoint endpoint, String query) throws UnirestException, IOException {
+    public byte[] protoRequest(Endpoint endpoint, String query) throws UnirestException, IOException {
         String requestUrl = baseUrl + endpoint.toString() + ".pb";
 
         HttpResponse<InputStream> response = Unirest.post(requestUrl)

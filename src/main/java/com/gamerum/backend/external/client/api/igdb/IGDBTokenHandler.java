@@ -6,16 +6,14 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
+@Component
 public class IGDBTokenHandler extends TokenHandler {
-    @Value("${api.twitch.token_request_url}")
-    private String requestUrl;
+    private final String requestUrl = "https://id.twitch.tv/oauth2/token";
+
     @Value("${api.twitch.client_id}")
     private String clientId;
     @Value("${api.twitch.client_secret}")
@@ -25,7 +23,7 @@ public class IGDBTokenHandler extends TokenHandler {
 
 
     @Override
-    protected Token getNewTokenAsync() throws URISyntaxException, IOException, InterruptedException, UnirestException {
+    protected Token getNewToken() throws UnirestException {
         HttpResponse<JsonNode> response = fetchNewTokenFromAPI();
         if(response.getStatus() == HttpStatus.OK.value()){
             JsonNode responseBody = response.getBody();
@@ -38,17 +36,16 @@ public class IGDBTokenHandler extends TokenHandler {
     }
 
     @Override
-    protected HttpResponse<JsonNode> fetchNewTokenFromAPI() throws URISyntaxException, IOException, InterruptedException, UnirestException {
-        String requestBody = "param1=value1&param2=value2&param3=value3";
-        HttpResponse<JsonNode> response = Unirest.post(requestUrl)
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .header("client_id", clientId)
-                .header("client_secret", clientSecret)
-                .header("grant_type", grantType)
-                .body(requestBody)
+    protected HttpResponse<JsonNode> fetchNewTokenFromAPI() throws UnirestException {
+        String url = requestUrl +
+                "?client_id=" + clientId +
+                "&client_secret=" + clientSecret +
+                "&grant_type=" + grantType;
+
+        HttpResponse<JsonNode> response = Unirest.post(url)
                 .asJson();
 
-        return null;
+        return response;
     }
 
     @Override
