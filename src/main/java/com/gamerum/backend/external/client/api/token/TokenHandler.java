@@ -10,8 +10,6 @@ import lombok.SneakyThrows;
 import java.time.temporal.ChronoUnit;
 
 import java.time.Instant;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public abstract class TokenHandler {
     private Token token;
