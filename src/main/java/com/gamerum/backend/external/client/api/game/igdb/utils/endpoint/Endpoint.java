@@ -1,4 +1,4 @@
-package com.gamerum.backend.external.client.api.igdb.utils.endpoint;
+package com.gamerum.backend.external.client.api.game.igdb.utils.endpoint;
 
 public enum Endpoint {
     AGE_RATINGS, AGE_RATING_CONTENT_DESCRIPTIONS, ALTERNATIVE_NAMES, ARTWORKS, CHARACTERS, CHARACTER_MUG_SHOTS,
