@@ -65,10 +65,13 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<String> search(String name, Integer limit, Integer offset) throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
         String query = QueryBuilder.builder()
-                .fields("id, name, parent_game")
+                .fields("id, name, parent_game, alternative_names.name")
                 .limit(limit)
                 .offset(offset)
-                .where("name ~ \"" + name + "\"* & parent_game = null & version_parent = null" )
+                .where("name ~ \"" + name + "\"* | " +
+                        "alternative_names.name ~ \""  + name + "\"* & " +
+                        "parent_game = null & " +
+                        "version_parent = null;" )
                 .sort("name", Sort.ASC)
                 .build();
 
