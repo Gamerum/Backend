@@ -1,7 +1,10 @@
 package com.gamerum.backend.external.client.api.game;
 
-import java.util.concurrent.ExecutionException;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
 
 public interface GameDbApi {
-    byte[] makeProtoRequest(String endpoint, String query) throws ExecutionException, InterruptedException;
+    HttpResponse<JsonNode> makeJsonRequest(String endpoint, String query) throws UnirestException;
 }
