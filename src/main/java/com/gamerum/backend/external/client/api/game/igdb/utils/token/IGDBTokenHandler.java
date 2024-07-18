@@ -2,6 +2,7 @@ package com.gamerum.backend.external.client.api.game.igdb.utils.token;
 
 import com.gamerum.backend.external.client.api.token.Token;
 import com.gamerum.backend.external.client.api.token.TokenHandler;
+import com.gamerum.backend.usecase.exception.request.TwitchRequestException;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -23,7 +24,7 @@ public class IGDBTokenHandler extends TokenHandler {
 
 
     @Override
-    protected Token getNewToken() throws UnirestException {
+    protected Token getNewToken() throws UnirestException, TwitchRequestException {
         HttpResponse<JsonNode> response = fetchNewTokenFromAPI();
         if(response.getStatus() == HttpStatus.OK.value()){
             JsonNode responseBody = response.getBody();
@@ -32,7 +33,7 @@ public class IGDBTokenHandler extends TokenHandler {
             long tokenExpire = responseBody.getObject().getLong("expires_in");
             return new Token(tokenType, token, calculateExpirationTime(tokenExpire));
         }
-        throw new RuntimeException();
+        throw new TwitchRequestException(response.getStatus(), response.getBody().getObject().getString("message"));
     }
 
     @Override
@@ -41,11 +42,7 @@ public class IGDBTokenHandler extends TokenHandler {
                 "?client_id=" + clientId +
                 "&client_secret=" + clientSecret +
                 "&grant_type=" + grantType;
-
-        HttpResponse<JsonNode> response = Unirest.post(url)
-                .asJson();
-
-        return response;
+        return Unirest.post(url).asJson();
     }
 
     @Override
