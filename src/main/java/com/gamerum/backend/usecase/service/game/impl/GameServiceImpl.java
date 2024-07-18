@@ -43,7 +43,7 @@ public class GameServiceImpl implements GameService {
         if (response.getStatus() != 200) {
             throw new IGDBRequestException(
                     response.getStatus(),
-                    response.getBody().getObject().getString("message"));
+                    response.getBody().getArray().getJSONObject(0).getString("title"));
         }
 
         return response.getBody().toString();
