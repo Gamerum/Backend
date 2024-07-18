@@ -3,7 +3,6 @@ package com.gamerum.backend.usecase.service.game.impl;
 import com.gamerum.backend.external.client.api.game.GameDbApi;
 import com.gamerum.backend.external.client.api.game.igdb.utils.endpoint.Endpoint;
 import com.gamerum.backend.external.client.api.game.igdb.utils.query.QueryBuilder;
-import com.gamerum.backend.external.client.api.game.igdb.utils.query.Sort;
 import com.gamerum.backend.usecase.service.game.GameService;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import proto.PopularityPrimitiveResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -29,7 +29,7 @@ public class GameServiceImpl implements GameService {
         String popularityQuery = QueryBuilder
                 .builder()
                 .fields("game_id, value, popularity_type")
-                .sort("value", Sort.DESC)
+                .sort("value desc")
                 .limit(5)
                 .where("popularity_type = 1")
                 .build();
@@ -65,14 +65,14 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<String> search(String name, Integer limit, Integer offset) throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
         String query = QueryBuilder.builder()
-                .fields("id, name, parent_game, alternative_names.name")
+                .fields("id, name")
                 .limit(limit)
                 .offset(offset)
                 .where("name ~ \"" + name + "\"* | " +
-                        "alternative_names.name ~ \""  + name + "\"* & " +
+                        "alternative_names.name ~ \""  + name + "\" & " +
                         "parent_game = null & " +
                         "version_parent = null;" )
-                .sort("name", Sort.ASC)
+                .sort("name asc")
                 .build();
 
         byte[] gameResponse = api.makeProtoRequest(Endpoint.GAMES.toString(), query);
