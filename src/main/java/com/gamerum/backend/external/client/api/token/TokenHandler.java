@@ -1,5 +1,6 @@
 package com.gamerum.backend.external.client.api.token;
 
+import com.gamerum.backend.usecase.exception.request.TwitchRequestException;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -19,20 +20,11 @@ public abstract class TokenHandler {
 
     @SneakyThrows
     protected Token getToken() {
-        if (token == null || isTokenExpired()) {
-            CompletableFuture<Token> tokenFuture = CompletableFuture.supplyAsync(() -> {
-                try {
-                    return getNewToken();
-                } catch (UnirestException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            token = tokenFuture.get();
-        }
+        if (token == null || isTokenExpired()) token = getNewToken();
         return token;
     }
 
-    protected abstract Token getNewToken() throws UnirestException;
+    protected abstract Token getNewToken() throws UnirestException, TwitchRequestException;
 
     protected abstract HttpResponse<JsonNode> fetchNewTokenFromAPI() throws UnirestException;
 
