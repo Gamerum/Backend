@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Application properties
+src/main/resources/application.properties
+src/main/resources/keystore.p12
+
 ### STS ###
 .apt_generated
 .classpath
