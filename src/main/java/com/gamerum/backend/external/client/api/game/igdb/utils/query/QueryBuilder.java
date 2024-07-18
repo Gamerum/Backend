@@ -16,8 +16,8 @@ public class QueryBuilder {
         return new QueryBuilder();
     }
 
-    public QueryBuilder sort(String field, Sort order) {
-        this.sort = "s " + field + " " + order + ";";
+    public QueryBuilder sort(String sort) {
+        this.sort = "s " + sort + ";";
         return this;
     }
 
