@@ -1,6 +1,5 @@
 package com.gamerum.backend.usecase.exception.request;
 
-import org.springframework.http.HttpStatus;
 
 public class TwitchRequestException extends RequestException {
     public TwitchRequestException(int status, String message) {
