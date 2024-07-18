@@ -26,7 +26,7 @@ public class IGDBTokenHandler extends TokenHandler {
     @Override
     protected Token getNewToken() throws UnirestException, TwitchRequestException {
         HttpResponse<JsonNode> response = fetchNewTokenFromAPI();
-        if(response.getStatus() == HttpStatus.OK.value()){
+        if (response.getStatus() == HttpStatus.OK.value()) {
             JsonNode responseBody = response.getBody();
             String token = responseBody.getObject().getString("access_token");
             String tokenType = responseBody.getObject().getString("token_type");
@@ -46,7 +46,7 @@ public class IGDBTokenHandler extends TokenHandler {
     }
 
     @Override
-    public String getAuthorization(){
+    public String getAuthorization() {
         Token token = getToken();
         return token.getTokenType() + " " + token.getAccessToken();
     }
