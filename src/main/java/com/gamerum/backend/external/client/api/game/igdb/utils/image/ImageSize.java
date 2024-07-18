@@ -1,4 +1,4 @@
-package com.gamerum.backend.external.client.api.igdb.utils.image;
+package com.gamerum.backend.external.client.api.game.igdb.utils.image;
 
 public enum ImageSize {
     MICRO("t_micro"), // 35 x 35      Thumb, Center gravity

@@ -1,4 +1,4 @@
-package com.gamerum.backend.external.client.api.igdb;
+package com.gamerum.backend.external.client.api.game.igdb.utils.token;
 
 import com.gamerum.backend.external.client.api.token.Token;
 import com.gamerum.backend.external.client.api.token.TokenHandler;

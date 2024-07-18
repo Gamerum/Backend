@@ -1,6 +1,8 @@
-package com.gamerum.backend.external.client.api.igdb;
+package com.gamerum.backend.external.client.api.game.igdb;
 
-import com.gamerum.backend.external.client.api.igdb.utils.endpoint.Endpoint;
+import com.gamerum.backend.external.client.api.game.GameDbApi;
+import com.gamerum.backend.external.client.api.game.igdb.utils.endpoint.Endpoint;
+import com.gamerum.backend.external.client.api.game.igdb.utils.token.IGDBTokenHandler;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -11,9 +13,11 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Component
-public class IGDBApi {
+public class IGDBApi implements GameDbApi {
     private final String baseUrl = "https://api.igdb.com/v4/";
 
     @Value("${api.twitch.client_id}")
@@ -22,7 +26,18 @@ public class IGDBApi {
     @Autowired
     private IGDBTokenHandler tokenHandler;
 
-    public byte[] protoRequest(Endpoint endpoint, String query) throws UnirestException, IOException {
+    public byte[] makeProtoRequest(String endpoint, String query) throws ExecutionException, InterruptedException {
+        CompletableFuture<byte[]> future = CompletableFuture.supplyAsync(() -> {
+            try {
+                return protoRequest(endpoint, query);
+            } catch (UnirestException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return future.get();
+    }
+
+    private byte[] protoRequest(String endpoint, String query) throws UnirestException, IOException {
         String requestUrl = baseUrl + endpoint.toString() + ".pb";
 
         HttpResponse<InputStream> response = Unirest.post(requestUrl)

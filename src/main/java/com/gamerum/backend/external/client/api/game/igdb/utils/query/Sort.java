@@ -1,4 +1,4 @@
-package com.gamerum.backend.external.client.api.igdb.utils.query;
+package com.gamerum.backend.external.client.api.game.igdb.utils.query;
 
 public enum Sort {
     ASC,

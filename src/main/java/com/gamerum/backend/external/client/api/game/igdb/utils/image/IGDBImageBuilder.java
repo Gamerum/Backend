@@ -1,4 +1,4 @@
-package com.gamerum.backend.external.client.api.igdb.utils.image;
+package com.gamerum.backend.external.client.api.game.igdb.utils.image;
 
 public class IGDBImageBuilder {
     private final String imageUrl = "https://images.igdb.com/igdb/image/upload/";

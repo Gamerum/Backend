@@ -9,6 +9,8 @@ import lombok.SneakyThrows;
 import java.time.temporal.ChronoUnit;
 
 import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public abstract class TokenHandler {
     private Token token;
@@ -18,7 +20,14 @@ public abstract class TokenHandler {
     @SneakyThrows
     protected Token getToken() {
         if (token == null || isTokenExpired()) {
-            token = getNewToken();
+            CompletableFuture<Token> tokenFuture = CompletableFuture.supplyAsync(() -> {
+                try {
+                    return getNewToken();
+                } catch (UnirestException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            token = tokenFuture.get();
         }
         return token;
     }

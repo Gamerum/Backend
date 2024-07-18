@@ -1,7 +1,6 @@
-package com.gamerum.backend.external.client.api.igdb.utils.query;
+package com.gamerum.backend.external.client.api.game.igdb.utils.query;
 
 public class QueryBuilder {
-    private String search = "";
     private String fields = "";
     private String exclude = "";
     private String limit = "";
@@ -42,11 +41,6 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder search(String query) {
-        this.search = "search \"" + query + "\";";
-        return this;
-    }
-
     public QueryBuilder where(String where) {
         if (where.contains("where ") || where.contains("w ")) {
             this.where = where;
@@ -59,13 +53,13 @@ public class QueryBuilder {
 
     public String build() {
         StringBuilder queryBuilder = new StringBuilder();
-        if (!search.isBlank())  queryBuilder.append(search);
         if (!fields.isBlank())  queryBuilder.append(fields);
         if (!exclude.isBlank()) queryBuilder.append(exclude);
-        if (!limit.isBlank())   queryBuilder.append(limit);
-        if (!offset.isBlank())  queryBuilder.append(offset);
         if (!sort.isBlank())    queryBuilder.append(sort);
         if (!where.isBlank())   queryBuilder.append(where);
+        if (!limit.isBlank())   queryBuilder.append(limit);
+        if (!offset.isBlank())  queryBuilder.append(offset);
+
         return queryBuilder.toString();
     }
 }
