@@ -1,8 +1,8 @@
-package com.gamerum.backend.usecase.service.Impl;
+package com.gamerum.backend.usecase.service.message.impl;
 
 import com.gamerum.backend.external.persistence.entity.Message;
 import com.gamerum.backend.external.persistence.repository.MessageRepository;
-import com.gamerum.backend.usecase.service.MessageService;
+import com.gamerum.backend.usecase.service.message.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

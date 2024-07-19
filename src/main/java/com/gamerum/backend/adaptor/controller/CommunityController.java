@@ -2,8 +2,8 @@ package com.gamerum.backend.adaptor.controller;
 
 import com.gamerum.backend.external.persistence.entity.Community;
 import com.gamerum.backend.external.persistence.entity.CommunityMember;
-import com.gamerum.backend.usecase.service.CommunityMemberService;
-import com.gamerum.backend.usecase.service.CommunityService;
+import com.gamerum.backend.usecase.service.community.CommunityMemberService;
+import com.gamerum.backend.usecase.service.community.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,5 +100,10 @@ public class CommunityController {
     @GetMapping("/profiles/{profileId}/members")
     public ResponseEntity<List<CommunityMember>> getCommunityMembersByProfile(@PathVariable Long profileId) {
         return new ResponseEntity<>(communityMemberService.getCommunityMembersByProfile(profileId),HttpStatus.OK);
+    }
+
+    @GetMapping("/populars")
+    public ResponseEntity<List<Community>> getTop5PopularCommunities() {
+        return new ResponseEntity<>(communityService.getTop5PopularCommunities(), HttpStatus.OK);
     }
 }

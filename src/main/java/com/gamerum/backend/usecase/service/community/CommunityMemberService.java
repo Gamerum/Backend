@@ -1,4 +1,4 @@
-package com.gamerum.backend.usecase.service;
+package com.gamerum.backend.usecase.service.community;
 
 import com.gamerum.backend.external.persistence.entity.CommunityMember;
 

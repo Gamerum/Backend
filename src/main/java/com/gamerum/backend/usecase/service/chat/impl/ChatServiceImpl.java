@@ -1,8 +1,8 @@
-package com.gamerum.backend.usecase.service.Impl;
+package com.gamerum.backend.usecase.service.chat.impl;
 
 import com.gamerum.backend.external.persistence.entity.Chat;
 import com.gamerum.backend.external.persistence.repository.ChatRepository;
-import com.gamerum.backend.usecase.service.ChatService;
+import com.gamerum.backend.usecase.service.chat.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

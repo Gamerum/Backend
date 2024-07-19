@@ -1,8 +1,8 @@
-package com.gamerum.backend.usecase.service.Impl;
+package com.gamerum.backend.usecase.service.community.impl;
 
 import com.gamerum.backend.external.persistence.entity.CommunityMember;
 import com.gamerum.backend.external.persistence.repository.CommunityMemberRepository;
-import com.gamerum.backend.usecase.service.CommunityMemberService;
+import com.gamerum.backend.usecase.service.community.CommunityMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.gamerum.backend.usecase.service;
+package com.gamerum.backend.usecase.service.community;
 
 import com.gamerum.backend.external.persistence.entity.Community;
 
@@ -12,4 +12,5 @@ public interface CommunityService {
     void deleteCommunity(Long id);
     Community getCommunityByTitle(String communityName);
     String getCommunityTags(Long id);
+    List<Community> getTop5PopularCommunities();
 }
