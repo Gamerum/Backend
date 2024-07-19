@@ -17,8 +17,8 @@ public class GameController {
     private GameService gameService;
 
     @GetMapping("/api/public/game/top_five_popular_games")
-    public ResponseEntity<List<String>> getTopFivePopularGames() {
-        return new ResponseEntity<>(gameService.getTopFivePopularGames(), HttpStatus.OK);
+    public ResponseEntity<String> getTopFivePopularGames() throws UnirestException {
+        return new ResponseEntity<>(gameService.getTop5PopularGames(), HttpStatus.OK);
     }
 
     @GetMapping("/api/public/search/game")
