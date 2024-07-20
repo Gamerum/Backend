@@ -39,8 +39,7 @@ public class PostController {
     // Get a post by ID
     @GetMapping("/{id}")
     public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-        postService.getPostById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(postService.getPostById(id), HttpStatus.NO_CONTENT);
     }
 
     // Get all posts in a community by community ID
