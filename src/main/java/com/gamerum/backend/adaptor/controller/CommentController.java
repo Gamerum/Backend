@@ -1,7 +1,7 @@
 package com.gamerum.backend.adaptor.controller;
 
 import com.gamerum.backend.external.persistence.entity.Comment;
-import com.gamerum.backend.usecase.service.CommentService;
+import com.gamerum.backend.usecase.service.comment.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

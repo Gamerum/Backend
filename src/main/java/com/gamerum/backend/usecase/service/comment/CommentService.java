@@ -1,4 +1,4 @@
-package com.gamerum.backend.usecase.service;
+package com.gamerum.backend.usecase.service.comment;
 
 import com.gamerum.backend.external.persistence.entity.Comment;
 
