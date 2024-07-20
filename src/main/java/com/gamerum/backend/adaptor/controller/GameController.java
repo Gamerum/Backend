@@ -1,5 +1,6 @@
 package com.gamerum.backend.adaptor.controller;
 
+import com.gamerum.backend.usecase.exception.request.IGDBRequestException;
 import com.gamerum.backend.usecase.service.game.GameService;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class GameController {
     public ResponseEntity<String> searchGame(@RequestParam String name,
                                              @RequestParam Integer limit,
                                              @RequestParam Integer offset)
-            throws UnirestException {
+            throws UnirestException, IGDBRequestException {
         return new ResponseEntity<>(gameService.search(name, limit, offset), HttpStatus.OK);
     }
 }
