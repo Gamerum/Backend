@@ -9,20 +9,28 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-
-import java.util.List;
-
 @Service
+@CacheConfig(cacheNames = "${cache.config.data.game.cache_name}")
 public class GameServiceImpl implements GameService {
-
     @Autowired
     private GameDbApi api;
 
     @Override
-    public List<String> getTopFivePopularGames() {
-        return null;
+    @Cacheable(key = "'popularGames'", unless = "#result == null || #result.isBlank()")
+    public String getTop5PopularGames() throws UnirestException {
+        String query = QueryBuilder.builder()
+                .fields("id, name")
+                .limit(5)
+                .offset(0)
+                .sort("total_rating desc")
+                .build();
+
+        HttpResponse<JsonNode> response = api.makeJsonRequest(Endpoint.GAMES.toString(), query);
+        return response.getBody().toString();
     }
 
     @Override
