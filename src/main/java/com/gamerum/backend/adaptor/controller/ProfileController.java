@@ -1,7 +1,7 @@
 package com.gamerum.backend.adaptor.controller;
 
 import com.gamerum.backend.external.persistence.entity.Profile;
-import com.gamerum.backend.usecase.service.ProfileService;
+import com.gamerum.backend.usecase.service.profile.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

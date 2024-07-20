@@ -41,7 +41,7 @@ public class GameServiceImpl implements GameService {
                 .offset(offset)
                 .where("name ~ \"" + name + "\"* " +
                         "| alternative_names.name ~ \"" + name + "\" " +
-                        " parent_game = null " +
+                        "& parent_game = null " +
                         "& version_parent = null;")
                 .sort("name asc")
                 .build();
