@@ -1,8 +1,7 @@
-package com.gamerum.backend.external.persistence.repository;
+package com.gamerum.backend.external.persistence.relational.repository;
 
-import com.gamerum.backend.external.persistence.entity.Community;
+import com.gamerum.backend.external.persistence.relational.entity.Community;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

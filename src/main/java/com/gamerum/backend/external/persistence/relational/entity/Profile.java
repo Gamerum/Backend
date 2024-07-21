@@ -1,5 +1,6 @@
-package com.gamerum.backend.external.persistence.entity;
+package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.ProfileSyncListener;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ import java.util.Set;
                 @UniqueConstraint(columnNames = "user")
         }
 )
+@EntityListeners(ProfileSyncListener.class)
 public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

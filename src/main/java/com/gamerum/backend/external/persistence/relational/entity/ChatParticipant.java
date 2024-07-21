@@ -1,4 +1,4 @@
-package com.gamerum.backend.external.persistence.entity;
+package com.gamerum.backend.external.persistence.relational.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,30 +9,22 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "CommunityMembers")
-public class CommunityMember {
-    public enum CommunityMemberRole {
-        OWNER,
-        MOD,
-        USER
-    }
-
+@Table(name = "ChatParticipants")
+public class ChatParticipant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
     @ManyToOne
-    @JoinColumn(name = "community_id", nullable = false)
-    private Community community;
+    @JoinColumn(name = "chat_id", nullable = false)
+    private Chat chat;
 
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    private CommunityMemberRole role;
+    @Column(name = "is_admin")
+    private boolean isAdmin;
 
     @Setter(AccessLevel.NONE)
     @Column(name = "joined_at", nullable = false)
@@ -47,7 +39,7 @@ public class CommunityMember {
     @Column(name = "updated_by_profile_id")
     private Long updatedBy;
 
-    public CommunityMember() {
+    public ChatParticipant() {
         joinedAt = LocalDateTime.now();
     }
 }

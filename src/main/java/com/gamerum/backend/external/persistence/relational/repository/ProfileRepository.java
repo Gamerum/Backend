@@ -1,6 +1,6 @@
-package com.gamerum.backend.external.persistence.repository;
+package com.gamerum.backend.external.persistence.relational.repository;
 
-import com.gamerum.backend.external.persistence.entity.Profile;
+import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

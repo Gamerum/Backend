@@ -1,6 +1,6 @@
 package com.gamerum.backend.usecase.service.message;
 
-import com.gamerum.backend.external.persistence.entity.Message;
+import com.gamerum.backend.external.persistence.relational.entity.Message;
 
 import java.util.List;
 

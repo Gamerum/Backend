@@ -1,8 +1,8 @@
 package com.gamerum.backend.adaptor.controller;
 
-import com.gamerum.backend.external.persistence.entity.Chat;
-import com.gamerum.backend.external.persistence.entity.ChatParticipant;
-import com.gamerum.backend.external.persistence.entity.Message;
+import com.gamerum.backend.external.persistence.relational.entity.Chat;
+import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
+import com.gamerum.backend.external.persistence.relational.entity.Message;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import com.gamerum.backend.usecase.service.message.MessageService;

@@ -1,6 +1,6 @@
-package com.gamerum.backend.external.persistence.repository;
+package com.gamerum.backend.external.persistence.relational.repository;
 
-import com.gamerum.backend.external.persistence.entity.Chat;
+import com.gamerum.backend.external.persistence.relational.entity.Chat;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

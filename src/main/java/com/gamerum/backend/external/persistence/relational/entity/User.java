@@ -1,10 +1,9 @@
-package com.gamerum.backend.external.persistence.entity;
+package com.gamerum.backend.external.persistence.relational.entity;
 
 import com.gamerum.backend.security.user.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
-import javax.management.relation.Role;
 import java.time.LocalDateTime;
 
 @Data
