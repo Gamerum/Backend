@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-@Data
 @Document(indexName = "post")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDocument {

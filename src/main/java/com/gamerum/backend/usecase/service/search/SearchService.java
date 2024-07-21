@@ -1,12 +1,18 @@
 package com.gamerum.backend.usecase.service.search;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.usecase.exception.request.IGDBRequestException;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface SearchService {
-    String searchGame(String name, int page, int size) throws UnirestException, IGDBRequestException;
-    Page<CommunityDocument> searchCommunity(String gameId, int page, int size);
+    List<GameDocument> searchGameWithName(String searchTerm, int page, int size);
+    String searchGameWithGenres(String searchTerm, int page, int size) throws UnirestException, IGDBRequestException;
+    List<CommunityDocument> searchCommunity(String searchTerm, int page, int size);
+    List<ProfileDocument> searchProfile(String searchTerm, int page, int size);
+    List<PostDocument> searchPost(String searchTerm, int page, int size);
 }
