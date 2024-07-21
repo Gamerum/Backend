@@ -1,6 +1,6 @@
 package com.gamerum.backend.adaptor.controller;
 
-import com.gamerum.backend.external.persistence.entity.Post;
+import com.gamerum.backend.external.persistence.relational.entity.Post;
 import com.gamerum.backend.usecase.service.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

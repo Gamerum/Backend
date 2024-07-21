@@ -1,5 +1,6 @@
-package com.gamerum.backend.external.persistence.entity;
+package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.CommunitySyncListener;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +17,7 @@ import java.util.Set;
                 @UniqueConstraint(columnNames = "title")
         }
 )
+@EntityListeners(CommunitySyncListener.class)
 public class Community {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +31,7 @@ public class Community {
 
     private String tags;
     private long clickCount;
+    private long gameId;
 
     @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
     private Set<CommunityMember> members = new HashSet<>();

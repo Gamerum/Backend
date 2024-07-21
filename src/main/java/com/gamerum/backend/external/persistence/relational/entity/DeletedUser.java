@@ -1,4 +1,4 @@
-package com.gamerum.backend.external.persistence.entity;
+package com.gamerum.backend.external.persistence.relational.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.gamerum.backend.external.persistence.entity;
+package com.gamerum.backend.external.persistence.relational.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,30 +11,28 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Posts")
-public class Post {
+@Table(name = "Comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
-    private String tag;
-
     private String text;
 
     @ManyToOne
-    @JoinColumn(name = "community_id", nullable = false)
-    private Community community;
+    @JoinColumn(name = "respond_comment_id")
+    private Comment responseTo;
+
+    @OneToMany(mappedBy = "responseTo", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Comment> responses = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
     @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
-
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private Set<Comment> comments = new HashSet<>();
 
     @Setter(AccessLevel.NONE)
     @Column(name = "created_at", nullable = false)
@@ -46,7 +44,7 @@ public class Post {
     @Column(name = "updated_by_profile_id")
     private Long updatedBy;
 
-    public Post() {
+    public Comment() {
         createdAt = LocalDateTime.now();
     }
 }
