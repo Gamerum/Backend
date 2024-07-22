@@ -4,9 +4,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.Community
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
-import com.gamerum.backend.usecase.exception.request.IGDBRequestException;
 import com.gamerum.backend.usecase.service.search.SearchService;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +31,7 @@ public class SearchController {
     @GetMapping("/games_genre")
     public ResponseEntity<String> searchGamesWithGenre(@RequestParam String searchTerm,
                                                       @RequestParam int page,
-                                                      @RequestParam int size)
-            throws UnirestException, IGDBRequestException {
+                                                      @RequestParam int size) {
         return new ResponseEntity<>(searchService.searchGameWithGenres(searchTerm, page, size), HttpStatus.OK);
     }
 

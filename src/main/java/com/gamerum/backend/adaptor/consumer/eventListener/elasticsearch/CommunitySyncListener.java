@@ -6,15 +6,16 @@ import com.gamerum.backend.external.persistence.relational.entity.Community;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import jakarta.persistence.PostUpdate;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 
 @Component
-@AllArgsConstructor
 public class CommunitySyncListener {
     private final CommunityESRepository communityESRepository;
+
+    public CommunitySyncListener(CommunityESRepository communityESRepository) {
+        this.communityESRepository = communityESRepository;
+    }
 
     @PostPersist
     @PostUpdate

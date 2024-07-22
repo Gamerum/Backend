@@ -1,6 +1,6 @@
-package com.gamerum.backend.external.client.api.game.igdb.utils.query;
+package com.gamerum.backend.external.client.api.igdb.query;
 
-public class QueryBuilder {
+public class IGDBQueryBuilder {
     private String fields = "";
     private String exclude = "";
     private String limit = "";
@@ -9,39 +9,39 @@ public class QueryBuilder {
     private String where = "";
 
     // Private constructor to prevent instantiation outside of the builder
-    private QueryBuilder() {
+    private IGDBQueryBuilder() {
     }
 
-    public static QueryBuilder builder() {
-        return new QueryBuilder();
+    public static IGDBQueryBuilder builder() {
+        return new IGDBQueryBuilder();
     }
 
-    public QueryBuilder sort(String sort) {
+    public IGDBQueryBuilder sort(String sort) {
         this.sort = "s " + sort + ";";
         return this;
     }
 
-    public QueryBuilder fields(String fields) {
+    public IGDBQueryBuilder fields(String fields) {
         this.fields = "f " + fields + ";";
         return this;
     }
 
-    public QueryBuilder exclude(String fields) {
+    public IGDBQueryBuilder exclude(String fields) {
         this.exclude = "x " + fields + ";";
         return this;
     }
 
-    public QueryBuilder limit(int limit) {
+    public IGDBQueryBuilder limit(int limit) {
         this.limit = "l " + limit + ";";
         return this;
     }
 
-    public QueryBuilder offset(int offset) {
+    public IGDBQueryBuilder offset(int offset) {
         this.offset = "o " + offset + ";";
         return this;
     }
 
-    public QueryBuilder where(String where) {
+    public IGDBQueryBuilder where(String where) {
         if (where.contains("where ") || where.contains("w ")) {
             this.where = where;
         } else {
