@@ -1,6 +1,5 @@
 package com.gamerum.backend.usecase.service.search.impl;
 
-import com.gamerum.backend.external.client.api.game.GameDbApi;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
@@ -20,7 +19,6 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class SearchServiceImpl implements SearchService {
-    private final GameDbApi api;
     private final GameESRepository gameRepository;
     private final CommunityESRepository communityRepository;
     private final ProfileESRepository profileRepository;
