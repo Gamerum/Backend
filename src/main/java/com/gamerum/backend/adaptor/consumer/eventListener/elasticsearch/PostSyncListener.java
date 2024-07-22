@@ -6,13 +6,15 @@ import com.gamerum.backend.external.persistence.relational.entity.Post;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import jakarta.persistence.PostUpdate;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
 public class PostSyncListener {
     private final PostESRepository postESRepository;
+
+    public PostSyncListener(PostESRepository postESRepository) {
+        this.postESRepository = postESRepository;
+    }
 
     @PostPersist
     @PostUpdate
