@@ -1,6 +1,6 @@
 package com.gamerum.backend.usecase.service.post;
 
-import com.gamerum.backend.external.persistence.entity.Post;
+import com.gamerum.backend.external.persistence.relational.entity.Post;
 
 import java.util.List;
 

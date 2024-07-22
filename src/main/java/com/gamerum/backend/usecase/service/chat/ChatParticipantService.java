@@ -1,6 +1,6 @@
 package com.gamerum.backend.usecase.service.chat;
 
-import com.gamerum.backend.external.persistence.entity.ChatParticipant;
+import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
 
 import java.util.List;
 

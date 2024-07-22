@@ -1,7 +1,7 @@
 package com.gamerum.backend.usecase.service.chat.impl;
 
-import com.gamerum.backend.external.persistence.entity.Chat;
-import com.gamerum.backend.external.persistence.repository.ChatRepository;
+import com.gamerum.backend.external.persistence.relational.entity.Chat;
+import com.gamerum.backend.external.persistence.relational.repository.ChatRepository;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
