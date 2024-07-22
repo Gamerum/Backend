@@ -1,4 +1,4 @@
-package com.gamerum.backend.external.client.api.game.igdb.utils.image;
+package com.gamerum.backend.external.client.api.igdb.image;
 
 public enum ImageType {
     JPEG,

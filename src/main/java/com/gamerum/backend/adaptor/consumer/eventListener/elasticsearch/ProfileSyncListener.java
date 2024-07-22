@@ -5,13 +5,15 @@ import com.gamerum.backend.external.persistence.elasticsearch.repository.Profile
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostUpdate;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
 public class ProfileSyncListener {
     private final ProfileESRepository profileESRepository;
+
+    public ProfileSyncListener(ProfileESRepository profileESRepository) {
+        this.profileESRepository = profileESRepository;
+    }
 
     @PostPersist
     public void handleAfterSave(Profile profile) {
