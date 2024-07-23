@@ -1,9 +1,9 @@
 package com.gamerum.backend.usecase.service.auth.impl;
 
-import com.gamerum.backend.domain.dto.auth.request.LoginRequestDTO;
-import com.gamerum.backend.domain.dto.auth.response.LoginResponseDTO;
-import com.gamerum.backend.domain.dto.auth.request.RegisterRequestDTO;
-import com.gamerum.backend.domain.dto.auth.response.RegisterResponseDTO;
+import com.gamerum.backend.adaptor.dto.auth.request.LoginRequestDTO;
+import com.gamerum.backend.adaptor.dto.auth.response.LoginResponseDTO;
+import com.gamerum.backend.adaptor.dto.auth.request.RegisterRequestDTO;
+import com.gamerum.backend.adaptor.dto.auth.response.RegisterResponseDTO;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.entity.User;
 import com.gamerum.backend.external.persistence.relational.repository.UserRepository;
