@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
@@ -25,8 +26,8 @@ public class Chat {
     @OneToMany(mappedBy = "chat", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Message> messages = new ArrayList<>();
 
-    @Column(name = "created_by_profile_id", nullable = false)
-    private Long createdBy;
+    @Column(name = "creator_profile_id", nullable = false)
+    private Long creatorProfileId;
 
     @Setter(AccessLevel.NONE)
     @Column(name = "created_at", nullable = false)
@@ -38,7 +39,8 @@ public class Chat {
     @Column(name = "updated_by_profile_id")
     private Long updatedBy;
 
-    public Chat() {
+    public Chat(Long creatorProfileId) {
+        this.creatorProfileId = creatorProfileId;
         createdAt = LocalDateTime.now();
     }
 }
