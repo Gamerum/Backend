@@ -1,4 +1,4 @@
-package com.gamerum.backend.domain.dto.auth.response;
+package com.gamerum.backend.adaptor.dto.auth.response;
 
 import lombok.Builder;
 import lombok.Data;
