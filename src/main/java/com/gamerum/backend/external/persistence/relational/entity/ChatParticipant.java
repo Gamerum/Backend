@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
@@ -39,7 +40,10 @@ public class ChatParticipant {
     @Column(name = "updated_by_profile_id")
     private Long updatedBy;
 
-    public ChatParticipant() {
+    public ChatParticipant(Profile profile, Chat chat, boolean isAdmin) {
+        this.profile = profile;
+        this.chat = chat;
+        this.isAdmin = isAdmin;
         joinedAt = LocalDateTime.now();
     }
 }
