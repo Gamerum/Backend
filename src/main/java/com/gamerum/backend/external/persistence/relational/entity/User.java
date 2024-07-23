@@ -35,6 +35,7 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
+    @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
     private Profile profile;
 
