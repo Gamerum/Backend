@@ -40,7 +40,7 @@ public class ChatServiceImpl implements ChatService {
 
         Chat newChat = chatRepository.save(new Chat(creatorProfile.getId()));
         //Set Chat Admin
-        chatParticipantRepository.save(new ChatParticipant(creatorProfile,newChat,true));
+        chatParticipantRepository.save(new ChatParticipant(creatorProfile, newChat, true));
 
         //Set Chat Participants
         List<ChatParticipant> chatParticipants = chat.getProfileIds().stream()
@@ -50,7 +50,7 @@ public class ChatServiceImpl implements ChatService {
                 .toList();
 
         chatParticipantRepository.saveAll(chatParticipants);
-        return newChat;
+        return chatRepository.findById(newChat.getId()).get();
     }
 
     @Override
