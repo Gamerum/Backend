@@ -17,19 +17,20 @@ import java.util.Set;
 public interface ChatMapper {
     ChatMapper INSTANCE = Mappers.getMapper(ChatMapper.class);
 
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "chatParticipants", target = "chatParticipants")
     @Mapping(source = "messages", target = "messages")
     ChatGetDTO chatToChatGetDTO(Chat chat);
 
-    @Mapping(source = "profileId", target = "profileId")
-    @Mapping(source = "nickname", target = "nickname")
+    @Mapping(source = "profile.id", target = "profileId")
+    @Mapping(source = "profile.nickname", target = "nickname")
     @Mapping(source = "admin", target = "isAdmin")
     ChatParticipantGetDTO chatParticipantToChatParticipantGetDTO(ChatParticipant chatParticipant);
 
-    @Mapping(source = "sender.id", target = "senderId")
-    @Mapping(source = "sender.name", target = "senderName")
+    @Mapping(source = "profile.id", target = "senderId")
+    @Mapping(source = "profile.nickname", target = "senderName")
     @Mapping(source = "content", target = "message")
-    @Mapping(source = "sendDate", target = "sendDate")
+    @Mapping(source = "createdAt", target = "sendDate")
     @Mapping(source = "sent", target = "isSent")
     MessageGetDTO messageToMessageGetDTO(Message message);
 

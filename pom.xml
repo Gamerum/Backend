@@ -103,14 +103,21 @@
 
 		<!-- Mapper -->
 		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok-mapstruct-binding</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
-			<version>1.4.2.Final</version>
+			<version>1.5.5.Final</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
-			<version>1.4.2.Final</version>
+			<version>1.5.5.Final</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -143,12 +150,6 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 			<version>4.0.6</version>
-		</dependency>
-
-		<!-- Spring AOP -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 
 		<!-- Spring Test -->
