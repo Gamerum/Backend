@@ -22,21 +22,21 @@ public class CommentController {
 
     // Get a comment by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Comment> getComment(@PathVariable Long id) {
-        return new ResponseEntity<>(commentService.getComment(id), HttpStatus.CREATED);
+    public ResponseEntity<Comment> getComment(@PathVariable Long commentId) {
+        return new ResponseEntity<>(commentService.getComment(commentId), HttpStatus.CREATED);
     }
 
     // Update an existing comment
     @PutMapping("/{id}")
-    public ResponseEntity<Comment> updateComment(@PathVariable Long id, @RequestBody Comment comment) {
-        comment.setId(id);
+    public ResponseEntity<Comment> updateComment(@PathVariable Long commentId, @RequestBody Comment comment) {
+        comment.setId(commentId);
         return new ResponseEntity<>(commentService.updateComment(comment),HttpStatus.OK);
     }
 
     // Delete a comment by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
-        commentService.deleteComment(id);
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

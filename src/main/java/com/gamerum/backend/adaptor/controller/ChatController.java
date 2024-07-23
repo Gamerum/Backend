@@ -25,8 +25,8 @@ public class ChatController {
     private MessageService messageService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Chat> getChatById(@PathVariable Long id) {
-        return new ResponseEntity<>(chatService.getByChatId(id), HttpStatus.OK);
+    public ResponseEntity<Chat> getChatById(@PathVariable Long chatId) {
+        return new ResponseEntity<>(chatService.getByChatId(chatId), HttpStatus.OK);
     }
 
     @PostMapping
@@ -35,8 +35,8 @@ public class ChatController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteChat(@PathVariable Long id) {
-        chatService.deleteChat(id);
+    public ResponseEntity<Void> deleteChat(@PathVariable Long chatId) {
+        chatService.deleteChat(chatId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -51,14 +51,14 @@ public class ChatController {
     }
 
     @DeleteMapping("/participants/{id}")
-    public ResponseEntity<Void> deleteChatParticipant(@PathVariable Long id) {
-        chatParticipantService.deleteByIdChatParticipant(id);
+    public ResponseEntity<Void> deleteChatParticipant(@PathVariable Long chatParticipantId) {
+        chatParticipantService.deleteByIdChatParticipant(chatParticipantId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/participants/{id}")
-    public ResponseEntity<ChatParticipant> getChatParticipantById(@PathVariable Long id) {
-        return new ResponseEntity<>(chatParticipantService.getChatParticipantId(id), HttpStatus.OK);
+    public ResponseEntity<ChatParticipant> getChatParticipantById(@PathVariable Long chatParticipantId) {
+        return new ResponseEntity<>(chatParticipantService.getChatParticipantId(chatParticipantId), HttpStatus.OK);
     }
 
     @GetMapping("/participants")
@@ -72,13 +72,13 @@ public class ChatController {
     }
 
     @DeleteMapping("/messages/{id}")
-    public ResponseEntity<Void> deleteMessage(@PathVariable Long id) {
-        messageService.deleteByIdMessage(id);
+    public ResponseEntity<Void> deleteMessage(@PathVariable Long mesaageId) {
+        messageService.deleteByIdMessage(mesaageId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/messages/{id}")
-    public ResponseEntity<List<Message>> getAllMessages(@PathVariable Long id) {
-        return new ResponseEntity<>(messageService.getAllMessages(id),HttpStatus.OK);
+    public ResponseEntity<List<Message>> getAllMessages(@PathVariable Long chatId) {
+        return new ResponseEntity<>(messageService.getAllMessages(chatId),HttpStatus.OK);
     }
 }

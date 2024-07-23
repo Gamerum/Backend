@@ -27,13 +27,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePostById(Long id) {
-        postRepository.deleteById(id);
+    public void deletePostById(Long postId) {
+        postRepository.deleteById(postId);
     }
 
     @Override
-    public Post getPostById(Long id) {
-        Optional<Post> post = postRepository.findById(id);
+    public Post getPostById(Long postId) {
+        Optional<Post> post = postRepository.findById(postId);
         if (post.isEmpty()) {
             throw new RuntimeException();
         }
@@ -41,13 +41,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getAllCommunityPosts(Long id) {
-        return postRepository.findByCommunityId(id);
+    public List<Post> getAllCommunityPosts(Long communityId) {
+        return postRepository.findByCommunityId(communityId);
     }
 
     @Override
-    public List<Post> getAllProfilePosts(Long id) {
-        return postRepository.findByProfileId(id);
+    public List<Post> getAllProfilePosts(Long profileId) {
+        return postRepository.findByProfileId(profileId);
     }
 
     @Override

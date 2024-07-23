@@ -19,13 +19,13 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     @Override
-    public void deleteByIdChatParticipant(Long id) {
-        chatParticipantRepository.deleteById(id);
+    public void deleteByIdChatParticipant(Long chatParticipantId) {
+        chatParticipantRepository.deleteById(chatParticipantId);
     }
 
     @Override
-    public ChatParticipant getChatParticipantId(Long id) {
-        Optional<ChatParticipant> chatParticipant = chatParticipantRepository.findById(id);
+    public ChatParticipant getChatParticipantId(Long chatParticipantId) {
+        Optional<ChatParticipant> chatParticipant = chatParticipantRepository.findById(chatParticipantId);
         if(chatParticipant.isEmpty())
             throw new RuntimeException();
         return chatParticipant.get();

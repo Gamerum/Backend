@@ -16,8 +16,8 @@ public class ChatServiceImpl implements ChatService {
     private ChatRepository chatRepository;
 
     @Override
-    public Chat getByChatId(Long id) {
-        Optional<Chat> chat = chatRepository.findById(id);
+    public Chat getByChatId(Long chatId) {
+        Optional<Chat> chat = chatRepository.findById(chatId);
         if(chat.isEmpty())
             throw new RuntimeException();
         return chat.get();
@@ -29,8 +29,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void deleteChat(Long id) {
-       chatRepository.deleteById(id);
+    public void deleteChat(Long chatId) {
+       chatRepository.deleteById(chatId);
     }
 
     @Override

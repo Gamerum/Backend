@@ -24,22 +24,22 @@ public class PostController {
 
     // Update an existing post
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post post) {
-        post.setId(id);
+    public ResponseEntity<Post> updatePost(@PathVariable Long postId, @RequestBody Post post) {
+        post.setId(postId);
         return new ResponseEntity<>(postService.updatePost(post), HttpStatus.OK);
     }
 
     // Delete a post by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePostById(@PathVariable Long id) {
-        postService.deletePostById(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deletePostById(@PathVariable Long postId) {
+        postService.deletePostById(postId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // Get a post by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-        return new ResponseEntity<>(postService.getPostById(id), HttpStatus.NO_CONTENT);
+    public ResponseEntity<Post> getPostById(@PathVariable Long postId) {
+        return new ResponseEntity<>(postService.getPostById(postId), HttpStatus.NO_CONTENT);
     }
 
     // Get all posts in a community by community ID

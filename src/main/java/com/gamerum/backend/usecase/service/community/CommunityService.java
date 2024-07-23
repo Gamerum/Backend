@@ -5,12 +5,12 @@ import com.gamerum.backend.external.persistence.entity.Community;
 import java.util.List;
 
 public interface CommunityService {
-    Community  getCommunity(Long id);
+    Community  getCommunity(Long communityId);
     List<Community> getAllCommunities();
     Community createCommunity(Community community);
     Community updateCommunity(Community community);
-    void deleteCommunity(Long id);
+    void deleteCommunity(Long communityId);
     Community getCommunityByTitle(String communityName);
-    String getCommunityTags(Long id);
+    String getCommunityTags(Long communityId);
     List<Community> getTop5PopularCommunities();
 }

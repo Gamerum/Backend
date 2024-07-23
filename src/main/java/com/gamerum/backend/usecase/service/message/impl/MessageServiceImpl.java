@@ -18,12 +18,12 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteByIdMessage(Long id) {
-        messageRepository.deleteById(id);
+    public void deleteByIdMessage(Long messageId) {
+        messageRepository.deleteById(messageId);
     }
 
     @Override
-    public List<Message> getAllMessages(Long id) {
-        return messageRepository.findByChatId(id);
+    public List<Message> getAllMessages(Long chatId) {
+        return messageRepository.findByChatId(chatId);
     }
 }

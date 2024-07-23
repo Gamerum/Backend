@@ -20,8 +20,8 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
     }
 
     @Override
-    public CommunityMember getCommunityMember(Long id) {
-        Optional<CommunityMember> optional = communityMemberRepository.findById(id);
+    public CommunityMember getCommunityMember(Long communityMemberId) {
+        Optional<CommunityMember> optional = communityMemberRepository.findById(communityMemberId);
         if (optional.isEmpty()) {
             throw new RuntimeException();
         }
@@ -34,8 +34,8 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
     }
 
     @Override
-    public void deleteCommunityMember(Long id) {
-        communityMemberRepository.deleteById(id);
+    public void deleteCommunityMember(Long communityMemberId) {
+        communityMemberRepository.deleteById(communityMemberId);
     }
 
     @Override
