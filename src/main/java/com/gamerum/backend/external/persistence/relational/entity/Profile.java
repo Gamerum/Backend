@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "Profiles",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "displayName"),
-                @UniqueConstraint(columnNames = "user")
+                @UniqueConstraint(columnNames = "user_id")
         }
 )
 @EntityListeners(ProfileSyncListener.class)
@@ -29,6 +29,7 @@ public class Profile {
     private String nickname;
     private boolean isActive;
 
+    @EqualsAndHashCode.Exclude
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
