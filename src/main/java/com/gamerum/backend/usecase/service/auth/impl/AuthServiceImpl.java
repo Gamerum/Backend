@@ -1,9 +1,9 @@
 package com.gamerum.backend.usecase.service.auth.impl;
 
 import com.gamerum.backend.adaptor.dto.auth.request.LoginRequestDTO;
-import com.gamerum.backend.adaptor.dto.auth.response.LoginResponseDTO;
+import com.gamerum.backend.adaptor.dto.response.auth.LoginResponse;
 import com.gamerum.backend.adaptor.dto.auth.request.RegisterRequestDTO;
-import com.gamerum.backend.adaptor.dto.auth.response.RegisterResponseDTO;
+import com.gamerum.backend.adaptor.dto.response.auth.RegisterResponse;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.entity.User;
 import com.gamerum.backend.external.persistence.relational.repository.UserRepository;
@@ -32,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public RegisterResponseDTO register(RegisterRequestDTO request) {
+    public RegisterResponse register(RegisterRequestDTO request) {
 
         User user = new User();
         user.setUsername(request.getUsername());
@@ -46,14 +46,11 @@ public class AuthServiceImpl implements AuthService {
         user.setProfile(profile);
         userRepository.save(user);
 
-        return RegisterResponseDTO.builder()
-                .success(true)
-                .message("Registration successful!")
-                .build();
+        return new RegisterResponse(true, "Registration successful!");
     }
 
     @Override
-    public LoginResponseDTO login(LoginRequestDTO request) {
+    public LoginResponse login(LoginRequestDTO request) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
@@ -61,11 +58,6 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
         String token = jwtUtil.generateToken(auth);
-        return LoginResponseDTO.builder()
-                .success(true)
-                .message("Logged in successfully.")
-                .token(token)
-                .tokenType("Bearer")
-                .build();
+        return new LoginResponse(true,"Login successful","Bearer", token);
     }
 }
