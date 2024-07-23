@@ -5,6 +5,7 @@ import com.gamerum.backend.usecase.service.comment.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,18 +16,20 @@ public class CommentController {
     private CommentService commentService;
 
     // Create a new comment
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PostMapping
     public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
         return new ResponseEntity<>(commentService.createComment(comment), HttpStatus.CREATED);
     }
 
     // Get a comment by ID
-    @GetMapping("/{id}")
+    @GetMapping("/public/{id}")
     public ResponseEntity<Comment> getComment(@PathVariable Long commentId) {
         return new ResponseEntity<>(commentService.getComment(commentId), HttpStatus.CREATED);
     }
 
     // Update an existing comment
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PutMapping("/{id}")
     public ResponseEntity<Comment> updateComment(@PathVariable Long commentId, @RequestBody Comment comment) {
         comment.setId(commentId);
@@ -34,6 +37,7 @@ public class CommentController {
     }
 
     // Delete a comment by ID
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
