@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface CommunityMemberService {
     CommunityMember createCommunityMember(CommunityMember communityMember);
-    CommunityMember getCommunityMember(Long id);
+    CommunityMember getCommunityMember(Long communityMemberId);
     List<CommunityMember> getCommunityMembers();
-    void deleteCommunityMember(Long id);
+    void deleteCommunityMember(Long communityMemberId);
     List<CommunityMember> getCommunityMembersByCommunity(Long communityId);
     List<CommunityMember> getCommunityMembersByProfile(Long profileId);
 }

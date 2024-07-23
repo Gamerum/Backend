@@ -23,8 +23,8 @@ public class CommunityController {
 
     // Get a community by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Community> getCommunity(@PathVariable Long id) {
-        return new ResponseEntity<>(communityService.getCommunity(id), HttpStatus.OK) ;
+    public ResponseEntity<Community> getCommunity(@PathVariable Long communityId) {
+        return new ResponseEntity<>(communityService.getCommunity(communityId), HttpStatus.OK) ;
     }
 
     // Get all communities
@@ -41,15 +41,15 @@ public class CommunityController {
 
     // Update an existing community
     @PutMapping("/{id}")
-    public ResponseEntity<Community> updateCommunity(@PathVariable Long id, @RequestBody Community community) {
-        community.setId(id);
+    public ResponseEntity<Community> updateCommunity(@PathVariable Long communityId, @RequestBody Community community) {
+        community.setId(communityId);
         return new ResponseEntity<>(communityService.updateCommunity(community),HttpStatus.OK);
     }
 
     // Delete a community
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCommunity(@PathVariable Long id) {
-        communityService.deleteCommunity(id);
+    public ResponseEntity<Void> deleteCommunity(@PathVariable Long communityId) {
+        communityService.deleteCommunity(communityId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -61,8 +61,8 @@ public class CommunityController {
 
     // Get community tags by ID
     @GetMapping("/{id}/tags")
-    public ResponseEntity<String> getCommunityTags(@PathVariable Long id) {
-        return new ResponseEntity<>(communityService.getCommunityTags(id),HttpStatus.OK);
+    public ResponseEntity<String> getCommunityTags(@PathVariable Long communityId) {
+        return new ResponseEntity<>(communityService.getCommunityTags(communityId),HttpStatus.OK);
     }
 
     // Create a community member
@@ -73,8 +73,8 @@ public class CommunityController {
 
     // Get a community member by ID
     @GetMapping("/members/{id}")
-    public ResponseEntity<CommunityMember> getCommunityMember(@PathVariable Long id) {
-        return new ResponseEntity<>(communityMemberService.getCommunityMember(id),HttpStatus.OK);
+    public ResponseEntity<CommunityMember> getCommunityMember(@PathVariable Long communityMemberid) {
+        return new ResponseEntity<>(communityMemberService.getCommunityMember(communityMemberid),HttpStatus.OK);
     }
 
     // Get all community members
@@ -85,8 +85,8 @@ public class CommunityController {
 
     // Delete a community member
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<Void> deleteCommunityMember(@PathVariable Long id) {
-        communityMemberService.deleteCommunityMember(id);
+    public ResponseEntity<Void> deleteCommunityMember(@PathVariable Long communityMemberid) {
+        communityMemberService.deleteCommunityMember(communityMemberid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

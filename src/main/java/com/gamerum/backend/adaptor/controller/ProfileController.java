@@ -16,8 +16,8 @@ public class ProfileController {
 
     // Get a profile by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Profile> getProfileById(@PathVariable Long id) {
-       return new ResponseEntity<>(profileService.getProfileById(id), HttpStatus.OK);
+    public ResponseEntity<Profile> getProfileById(@PathVariable Long profileId) {
+       return new ResponseEntity<>(profileService.getProfileById(profileId), HttpStatus.OK);
     }
 
     // Create a new profile
@@ -28,15 +28,15 @@ public class ProfileController {
 
     // Update an existing profile
     @PutMapping("/{id}")
-    public ResponseEntity<Profile> updateProfile(@PathVariable Long id, @RequestBody Profile profile) {
-        profile.setId(id);
+    public ResponseEntity<Profile> updateProfile(@PathVariable Long profileId, @RequestBody Profile profile) {
+        profile.setId(profileId);
         return new ResponseEntity<>(profileService.updateProfile(profile), HttpStatus.OK);
     }
 
     // Delete a profile by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
-        profileService.deleteProfile(id);
+    public ResponseEntity<Void> deleteProfile(@PathVariable Long profileId) {
+        profileService.deleteProfile(profileId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

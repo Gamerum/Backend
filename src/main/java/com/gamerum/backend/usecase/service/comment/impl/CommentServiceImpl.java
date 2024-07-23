@@ -19,8 +19,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment getComment(Long id) {
-        Optional<Comment> comment = commentRepository.findById(id);
+    public Comment getComment(Long commentId) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
         if(comment.isEmpty())
             throw new RuntimeException();
         return comment.get();
@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long id) {
-        commentRepository.deleteById(id);
+    public void deleteComment(Long commentId) {
+        commentRepository.deleteById(commentId);
     }
 }
