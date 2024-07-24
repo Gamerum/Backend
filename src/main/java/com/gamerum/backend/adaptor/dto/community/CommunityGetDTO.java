@@ -1,7 +1,7 @@
 package com.gamerum.backend.adaptor.dto.community;
 
 import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberGetDTO;
-import com.gamerum.backend.adaptor.dto.community.post.PostGetDTO;
+import com.gamerum.backend.adaptor.dto.community.post.PostMetadataGetDTO;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,5 +17,5 @@ public class CommunityGetDTO {
     private GameDocument game;
     private String tags;
     private Set<CommunityMemberGetDTO> members;
-    private Set<PostGetDTO> popularPosts;
+    private Set<PostMetadataGetDTO> popularPosts;
 }
