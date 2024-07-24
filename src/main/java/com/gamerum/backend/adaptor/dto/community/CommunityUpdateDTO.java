@@ -11,5 +11,5 @@ public class CommunityUpdateDTO {
     private String description;
     private Long gameId;
     private String tags;
-    private Long updaterId;
+    private Long updaterProfileId;
 }
