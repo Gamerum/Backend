@@ -14,8 +14,8 @@ public class ProfileServiceImpl implements ProfileService {
     private ProfileRepository profileRepository;
 
     @Override
-    public Profile getProfileById(Long id) {
-        Optional<Profile> profile = profileRepository.findById(id);
+    public Profile getProfileById(Long profileId) {
+        Optional<Profile> profile = profileRepository.findById(profileId);
         if(profile.isEmpty())
             throw new RuntimeException();
         return profile.get();
