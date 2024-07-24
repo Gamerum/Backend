@@ -1,8 +1,12 @@
 package com.gamerum.backend.adaptor.controller;
 
-import com.gamerum.backend.external.persistence.entity.Chat;
-import com.gamerum.backend.external.persistence.entity.ChatParticipant;
-import com.gamerum.backend.external.persistence.entity.Message;
+import com.gamerum.backend.adaptor.dto.chat.ChatCreateDTO;
+import com.gamerum.backend.adaptor.dto.chat.ChatGetDTO;
+import com.gamerum.backend.adaptor.dto.response.ResponseData;
+import com.gamerum.backend.adaptor.mapper.ChatMapper;
+import com.gamerum.backend.external.persistence.relational.entity.Chat;
+import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
+import com.gamerum.backend.external.persistence.relational.entity.Message;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import com.gamerum.backend.usecase.service.message.MessageService;
@@ -33,8 +37,12 @@ public class ChatController {
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<Chat> createChat(@RequestBody Chat chat) {
-        return new ResponseEntity<>(chatService.createChat(chat), HttpStatus.CREATED);
+    public ResponseEntity<ResponseData<ChatGetDTO>> createChat(@RequestBody ChatCreateDTO chatCreateDTO) {
+        Chat newChat = chatService.createChat(chatCreateDTO);
+        return new ResponseEntity<>(new ResponseData<>(true,
+                "Chat created!",
+                ChatMapper.INSTANCE.chatToChatGetDTO(newChat)),
+                HttpStatus.CREATED);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})

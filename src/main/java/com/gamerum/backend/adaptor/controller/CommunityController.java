@@ -1,7 +1,7 @@
 package com.gamerum.backend.adaptor.controller;
 
-import com.gamerum.backend.external.persistence.entity.Community;
-import com.gamerum.backend.external.persistence.entity.CommunityMember;
+import com.gamerum.backend.external.persistence.relational.entity.Community;
+import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import com.gamerum.backend.usecase.service.community.CommunityMemberService;
 import com.gamerum.backend.usecase.service.community.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;

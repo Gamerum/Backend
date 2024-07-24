@@ -1,7 +1,7 @@
 package com.gamerum.backend.usecase.service.profile.impl;
 
-import com.gamerum.backend.external.persistence.entity.Profile;
-import com.gamerum.backend.external.persistence.repository.ProfileRepository;
+import com.gamerum.backend.external.persistence.relational.entity.Profile;
+import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
