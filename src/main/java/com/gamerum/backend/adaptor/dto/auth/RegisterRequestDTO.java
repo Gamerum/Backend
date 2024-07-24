@@ -1,8 +1,10 @@
-package com.gamerum.backend.adaptor.dto.auth.request;
+package com.gamerum.backend.adaptor.dto.auth;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
+@Getter
+@AllArgsConstructor
 public class RegisterRequestDTO {
     private String username;
     private String nickname;
