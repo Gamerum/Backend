@@ -31,8 +31,8 @@ public class CommunityServiceImpl implements CommunityService {
     private CacheUtils cacheUtils;
 
     @Override
-    public Community getCommunity(Long id) {
-        Optional<Community> community = communityRepository.findById(id);
+    public Community getCommunity(Long communityId) {
+        Optional<Community> community = communityRepository.findById(communityId);
         if(community.isEmpty())
             throw new RuntimeException();
         return community.get();
@@ -57,13 +57,13 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public void deleteCommunity(Long id) {
+    public void deleteCommunity(Long communityId) {
         cacheUtils.invalidateCacheListIfConditionMet(cacheName, popularCommunitiesCacheKey,
                 Community.class, cachedCommunities ->
-                        cachedCommunities.stream().anyMatch(community -> Objects.equals(community.getId(), id))
+                        cachedCommunities.stream().anyMatch(community -> Objects.equals(community.getId(), communityId))
         );
 
-        communityRepository.deleteById(id);
+        communityRepository.deleteById(communityId);
     }
 
     @Override
@@ -72,8 +72,8 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public String getCommunityTags(Long id) {
-        Optional<String> optionalTags = communityRepository.findById(id).get().getTags().describeConstable();
+    public String getCommunityTags(Long communityId) {
+        Optional<String> optionalTags = communityRepository.findById(communityId).get().getTags().describeConstable();
         if(optionalTags.isEmpty())
             throw new RuntimeException();
         return optionalTags.get();
