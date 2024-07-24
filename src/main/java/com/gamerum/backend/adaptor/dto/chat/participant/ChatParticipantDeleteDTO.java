@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ChatParticipantDeleteDTO {
-    private Long chatId;
-    private Long participantProfileId;
+    private Long id;
     private Long deleterProfileId;
 }
