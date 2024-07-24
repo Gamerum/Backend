@@ -3,7 +3,7 @@ package com.gamerum.backend.adaptor.controller;
 import com.gamerum.backend.adaptor.dto.chat.ChatCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.ChatGetDTO;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
-import com.gamerum.backend.adaptor.mapper.ChatMapper;
+import com.gamerum.backend.adaptor.mapper.chat.ChatMapper;
 import com.gamerum.backend.external.persistence.relational.entity.Chat;
 import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
 import com.gamerum.backend.external.persistence.relational.entity.Message;
