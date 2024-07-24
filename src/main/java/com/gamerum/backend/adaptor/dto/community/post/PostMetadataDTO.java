@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class PostMetadataGetDTO {
+public class PostMetadataDTO {
     private Long id;
     private String title;
     private String tag;
