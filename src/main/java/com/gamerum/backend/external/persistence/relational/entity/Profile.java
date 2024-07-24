@@ -38,7 +38,7 @@ public class Profile {
     private Set<CommunityMember> joinedCommunities = new HashSet<>();
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private Set<CommunityMember> posts = new HashSet<>();
+    private Set<Post> posts = new HashSet<>();
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
     private Set<Comment> comments = new HashSet<>();

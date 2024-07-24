@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Set;
+
 @Mapper(uses = {CommunityMemberMapper.class, PostMapper.class})
 public interface CommunityMapper {
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
@@ -15,4 +17,6 @@ public interface CommunityMapper {
     CommunityGetDTO communityToCommunityGetDTO(Community community);
 
     CommunityMetadataDTO communityToCommunityMetadataDTO(Community community);
+
+    Set<CommunityMetadataDTO> communitiesToCommunityMetadataDTOs(Set<Community> communities);
 }
