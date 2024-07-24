@@ -3,14 +3,10 @@ package com.gamerum.backend.adaptor.dto.chat.message;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @AllArgsConstructor
-public class MessageGetDTO {
+public class MessageCreateDTO {
     private Long senderProfileId;
-    private String senderName;
+    private Long chatId;
     private String text;
-    private LocalDateTime sendDate;
-    private boolean isSent;
 }

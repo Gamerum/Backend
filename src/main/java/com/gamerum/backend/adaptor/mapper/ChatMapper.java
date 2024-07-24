@@ -27,9 +27,9 @@ public interface ChatMapper {
     @Mapping(source = "admin", target = "isAdmin")
     ChatParticipantGetDTO chatParticipantToChatParticipantGetDTO(ChatParticipant chatParticipant);
 
-    @Mapping(source = "profile.id", target = "senderId")
+    @Mapping(source = "profile.id", target = "senderProfileId")
     @Mapping(source = "profile.nickname", target = "senderName")
-    @Mapping(source = "text", target = "message")
+    @Mapping(source = "text", target = "text")
     @Mapping(source = "createdAt", target = "sendDate")
     @Mapping(source = "sent", target = "isSent")
     MessageGetDTO messageToMessageGetDTO(Message message);
