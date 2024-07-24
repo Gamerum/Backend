@@ -43,7 +43,7 @@ public class ChatServiceImpl implements ChatService {
         chatParticipantRepository.save(new ChatParticipant(creatorProfile, newChat, true));
 
         //Set Chat Participants
-        List<ChatParticipant> chatParticipants = chat.getProfileIds().stream()
+        List<ChatParticipant> chatParticipants = chat.getParticipantProfileIds().stream()
                 .map(id -> profileRepository.findById(id))
                 .filter(Optional::isPresent)
                 .map(profile -> new ChatParticipant(profile.get(),newChat,false))
