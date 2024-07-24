@@ -1,7 +1,6 @@
 package com.gamerum.backend.usecase.exception;
 
-import com.gamerum.backend.usecase.exception.request.RequestException;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import com.gamerum.backend.adaptor.dto.response.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,33 +16,6 @@ import java.net.UnknownHostException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
-
-    @ExceptionHandler(UnirestException.class)
-    public ResponseEntity<ErrorResponse> handleUnirestException(UnirestException ex) {
-        if (ex.getCause() instanceof SocketTimeoutException)
-            return handleSocketTimeoutException(ex);
-
-        if (ex.getCause() instanceof UnknownHostException)
-            return handleUnknownHostException(ex);
-
-        if (ex.getCause() instanceof SSLException)
-            return handleSSLException(ex);
-
-        if (ex.getCause() instanceof IOException)
-            return handleIOException(ex);
-
-        return handleException(ex);
-    }
-
-    @ExceptionHandler(RequestException.class)
-    public ResponseEntity<ErrorResponse> handleRequestException(RequestException ex) {
-        logger.error("\n\nRequestException - StatusCode: {}: {}", ex.getStatus(), ex.getMessage(), ex);
-        return new ResponseEntity<>(
-                new ErrorResponse("Request exception occurred.", ex.getMessage()),
-                HttpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
 
     @ExceptionHandler(SocketTimeoutException.class)
     public ResponseEntity<ErrorResponse> handleSocketTimeoutException(Exception ex) {

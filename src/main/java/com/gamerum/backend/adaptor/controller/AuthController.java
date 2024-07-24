@@ -1,9 +1,9 @@
 package com.gamerum.backend.adaptor.controller;
 
-import com.gamerum.backend.domain.dto.auth.request.LoginRequestDTO;
-import com.gamerum.backend.domain.dto.auth.request.RegisterRequestDTO;
-import com.gamerum.backend.domain.dto.auth.response.LoginResponseDTO;
-import com.gamerum.backend.domain.dto.auth.response.RegisterResponseDTO;
+import com.gamerum.backend.adaptor.dto.auth.LoginRequestDTO;
+import com.gamerum.backend.adaptor.dto.auth.RegisterRequestDTO;
+import com.gamerum.backend.adaptor.dto.response.auth.LoginResponse;
+import com.gamerum.backend.adaptor.dto.response.auth.RegisterResponse;
 import com.gamerum.backend.usecase.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,24 +17,12 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/api/public/auth/register")
-    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO request) {
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequestDTO request) {
         return new ResponseEntity<>(authService.register(request), HttpStatus.CREATED);
     }
 
     @PostMapping("/api/public/auth/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequestDTO request) {
         return new ResponseEntity<>(authService.login(request), HttpStatus.OK);
-    }
-
-    @GetMapping("/api/public/test")
-    public ResponseEntity<String> freeAccessTest()
-    {
-        return new ResponseEntity<>("Test", HttpStatus.OK);
-    }
-
-    @GetMapping("/api/user/test")
-    public ResponseEntity<String> userAccessTest()
-    {
-        return new ResponseEntity<>("User can access.", HttpStatus.OK);
     }
 }

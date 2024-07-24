@@ -1,6 +1,6 @@
 package com.gamerum.backend.usecase.service.community;
 
-import com.gamerum.backend.external.persistence.entity.Community;
+import com.gamerum.backend.external.persistence.relational.entity.Community;
 
 import java.util.List;
 

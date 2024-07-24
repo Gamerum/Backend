@@ -1,6 +1,6 @@
 package com.gamerum.backend.usecase.service.profile;
 
-import com.gamerum.backend.external.persistence.entity.Profile;
+import com.gamerum.backend.external.persistence.relational.entity.Profile;
 
 public interface ProfileService {
     Profile getProfileById(Long profileId);
