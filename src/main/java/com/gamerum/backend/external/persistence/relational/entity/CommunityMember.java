@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "CommunityMembers")
 public class CommunityMember {
-    public enum CommunityMemberRole {
+    public enum Role {
         OWNER,
         MOD,
         USER
@@ -32,7 +32,7 @@ public class CommunityMember {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private CommunityMemberRole role;
+    private Role role;
 
     @Setter(AccessLevel.NONE)
     @Column(name = "joined_at", nullable = false)

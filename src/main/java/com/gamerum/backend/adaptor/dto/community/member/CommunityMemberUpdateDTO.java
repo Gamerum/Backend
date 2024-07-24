@@ -6,8 +6,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CommunityMemberGetDTO {
+public class CommunityMemberUpdateDTO {
     private Long id;
-    private String nickname;
     private CommunityMember.Role role;
+    private Long updaterId;
 }
