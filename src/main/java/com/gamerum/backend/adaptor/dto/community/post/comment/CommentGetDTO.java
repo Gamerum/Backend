@@ -11,7 +11,7 @@ import java.util.Set;
 public class CommentGetDTO {
     private Long id;
     private String text;
-    private Long responsedCommentId;
+    private Long respondCommentId;
     private Set<CommentGetDTO> responses;
     private Long writerId;
     private String writerNickname;
