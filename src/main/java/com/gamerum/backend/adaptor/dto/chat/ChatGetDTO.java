@@ -13,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ChatGetDTO {
     private Long id;
-    private List<ChatParticipantGetDTO> chatParticipants;
+    private List<ChatParticipantGetDTO> participants;
     private List<MessageGetDTO> messages;
 }
