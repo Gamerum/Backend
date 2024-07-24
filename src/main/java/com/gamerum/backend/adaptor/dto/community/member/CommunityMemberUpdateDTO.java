@@ -9,5 +9,5 @@ import lombok.Getter;
 public class CommunityMemberUpdateDTO {
     private Long id;
     private CommunityMember.Role role;
-    private Long updaterId;
+    private Long updaterProfileId;
 }

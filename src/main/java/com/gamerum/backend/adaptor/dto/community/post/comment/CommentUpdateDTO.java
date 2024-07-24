@@ -1,14 +1,12 @@
-package com.gamerum.backend.adaptor.dto.community.post;
+package com.gamerum.backend.adaptor.dto.community.post.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PostUpdateDTO {
+public class CommentUpdateDTO {
     private Long id;
-    private String title;
-    private String tag;
     private String text;
     private Long updaterProfileId;
 }
