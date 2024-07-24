@@ -17,6 +17,8 @@ public class Message {
 
     private String text;
 
+    private boolean isSent;
+
     @ManyToOne
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;
