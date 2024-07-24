@@ -18,7 +18,7 @@ public interface ChatMapper {
     ChatMapper INSTANCE = Mappers.getMapper(ChatMapper.class);
 
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "chatParticipants", target = "chatParticipants")
+    @Mapping(source = "participants", target = "participants")
     @Mapping(source = "messages", target = "messages")
     ChatGetDTO chatToChatGetDTO(Chat chat);
 
@@ -29,7 +29,7 @@ public interface ChatMapper {
 
     @Mapping(source = "profile.id", target = "senderId")
     @Mapping(source = "profile.nickname", target = "senderName")
-    @Mapping(source = "content", target = "message")
+    @Mapping(source = "text", target = "message")
     @Mapping(source = "createdAt", target = "sendDate")
     @Mapping(source = "sent", target = "isSent")
     MessageGetDTO messageToMessageGetDTO(Message message);

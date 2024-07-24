@@ -21,7 +21,7 @@ public class Chat {
     private Long id;
 
     @OneToMany(mappedBy = "chat", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<ChatParticipant> chatParticipants = new HashSet<>();
+    private Set<ChatParticipant> participants = new HashSet<>();
 
     @OneToMany(mappedBy = "chat", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Message> messages = new ArrayList<>();
