@@ -65,7 +65,8 @@ public class IGDBSynchronizer {
                 query);
 
         if(games.isEmpty()) return;
-        gameRepository.saveAll(games);
+        GameDocument game = games.get(0);
+        gameRepository.save(game);
 
         saveLastSyncDate();
     }
