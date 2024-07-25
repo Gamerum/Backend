@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/search")
 @AllArgsConstructor
@@ -22,6 +24,15 @@ public class SearchController {
                 true,
                 "Games received",
                 searchService.searchGame(filter)),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/games")
+    public ResponseEntity<ResponseData<Iterable<GameDocument>>> getAllGames() {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "All games listed.",
+                searchService.getAllGames()),
                 HttpStatus.OK);
     }
 //

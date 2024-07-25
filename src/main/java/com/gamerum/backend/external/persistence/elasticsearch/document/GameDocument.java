@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 public class GameDocument {
-    public enum Genres {
+    public enum Genre {
         POINT_AND_CLICK("Point & Click",2),
         FIGHTING("Fighting",4),
         SHOOTER("Shooter",5),
@@ -44,7 +44,7 @@ public class GameDocument {
         private final String defaultName;
         private final long value;
 
-        Genres(String defaultName, long value) {
+        Genre(String defaultName, long value) {
             this.defaultName = defaultName;
             this.value = value;
         }
@@ -54,8 +54,8 @@ public class GameDocument {
             return defaultName;
         }
 
-        public static Genres getByValue(long value) {
-            for (Genres genre : Genres.values()) {
+        public static Genre getByValue(long value) {
+            for (Genre genre : Genre.values()) {
                 if (genre.value == value) {
                     return genre;
                 }
@@ -68,22 +68,21 @@ public class GameDocument {
     private String id;
     private String name;
     @Field(type = FieldType.Nested, includeInParent = true)
-    private List<String> genres;
+    private List<Integer> genreIds;
 
     // Factory method for JSON deserialization
     @JsonCreator
     public static GameDocument fromJson(@JsonProperty("id") String id,
                                         @JsonProperty("name") String name,
-                                        @JsonProperty("genres") List<Genre> genres) {
-        List<String> genreNames = genres == null ? null : genres.stream()
-                .map(Genre::getName)
+                                        @JsonProperty("genres") List<GenreEntity> genreEntities) {
+        List<Integer> genreIds = genreEntities == null ? null : genreEntities.stream()
+                .map(GenreEntity::getId)
                 .collect(Collectors.toList());
-        return new GameDocument(id, name, genreNames);
+        return new GameDocument(id, name, genreIds);
     }
 
     @Data
-    public static class Genre {
-        private long id;
-        private String name;
+    public static class GenreEntity {
+        private int id;
     }
 }

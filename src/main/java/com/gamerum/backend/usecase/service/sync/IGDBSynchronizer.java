@@ -54,6 +54,7 @@ public class IGDBSynchronizer {
         if (token.isExpired())
             token = twitchClient.getToken(clientId, clientSecret, grantType);
 
+        gameRepository.deleteAll();
         String date = getLastSyncDate();
         int page = 0;
 
@@ -65,10 +66,9 @@ public class IGDBSynchronizer {
                 query);
 
         if(games.isEmpty()) return;
-        GameDocument game = games.get(0);
-        gameRepository.save(game);
+        gameRepository.saveAll(games);
 
-        saveLastSyncDate();
+        //saveLastSyncDate();
     }
 
     private String getLastSyncDate() {

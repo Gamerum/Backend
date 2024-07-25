@@ -13,7 +13,7 @@ import java.util.List;
 @FeignClient(name = "igdbClient", url = "https://api.igdb.com/v4")
 public interface IGDBClient {
     @RequestMapping(method = RequestMethod.POST, value = "/games")
-    LinkedList<GameDocument> getGames(
+    List<GameDocument> getGames(
             @RequestHeader("Client-ID") String clientId,
             @RequestHeader("Authorization") String authorization,
             @RequestHeader("x-user-agent") String agent,
