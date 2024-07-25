@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper
@@ -17,5 +18,5 @@ public interface CommentMapper {
     @Mapping(source = "profile.nickname", target = "writerNickname")
     CommentGetDTO commentToCommentGetDTO(Comment comment);
 
-    Set<CommentGetDTO> commentsToCommentGetDTOs(Set<Comment> comments);
+    List<CommentGetDTO> commentsToCommentGetDTOs(List<Comment> comments);
 }

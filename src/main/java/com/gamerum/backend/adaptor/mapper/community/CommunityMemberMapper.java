@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper
@@ -15,5 +16,5 @@ public interface CommunityMemberMapper {
     @Mapping(source = "profile.nickname", target = "nickname")
     CommunityMemberGetDTO communityMemberToCommunityMemberGetDTO(CommunityMember communityMember);
 
-    Set<CommunityMemberGetDTO> communityMembersToCommunityMemberGetDTOs(Set<CommunityMember> communityMembers);
+    List<CommunityMemberGetDTO> communityMembersToCommunityMemberGetDTOs(List<CommunityMember> communityMembers);
 }
