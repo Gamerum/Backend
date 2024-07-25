@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -12,7 +13,7 @@ public class CommentGetDTO {
     private Long id;
     private String text;
     private Long respondCommentId;
-    private Set<CommentGetDTO> responses;
+    private List<CommentGetDTO> responses;
     private Long writerId;
     private String writerNickname;
     private LocalDateTime createdAt;

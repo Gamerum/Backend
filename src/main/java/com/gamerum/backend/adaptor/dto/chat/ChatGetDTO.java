@@ -12,6 +12,6 @@ import java.util.Set;
 @AllArgsConstructor
 public class ChatGetDTO {
     private Long id;
-    private Set<ChatParticipantGetDTO> participants;
+    private List<ChatParticipantGetDTO> participants;
     private List<MessageGetDTO> messages;
 }

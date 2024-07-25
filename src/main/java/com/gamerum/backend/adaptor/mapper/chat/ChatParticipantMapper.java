@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import java.util.Set;
+import java.util.List;
 
 @Mapper
 public interface ChatParticipantMapper {
@@ -15,5 +15,5 @@ public interface ChatParticipantMapper {
     @Mapping(source = "profile.nickname", target = "nickname")
     ChatParticipantGetDTO chatParticipantToChatParticipantGetDTO(ChatParticipant chatParticipant);
 
-    Set<ChatParticipantGetDTO> chatParticipantsToChatParticipantGetDTOs(Set<ChatParticipant> chatParticipants);
+    List<ChatParticipantGetDTO> chatParticipantsToChatParticipantGetDTOs(List<ChatParticipant> chatParticipants);
 }
