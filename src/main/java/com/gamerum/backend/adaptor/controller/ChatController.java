@@ -30,7 +30,7 @@ public class ChatController {
     private MessageService messageService;
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @GetMapping("/{id}")
+    @GetMapping("/{chatId}")
     public ResponseEntity<Chat> getChatById(@PathVariable Long chatId) {
         return new ResponseEntity<>(chatService.getByChatId(chatId), HttpStatus.OK);
     }

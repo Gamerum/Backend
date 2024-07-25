@@ -26,7 +26,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Chat getByChatId(Long chatId) {
-        Optional<Chat> chat = chatRepository.findById(chatId);
+        Optional<Chat> chat = chatRepository.findByIdWithParticipants(chatId);
         if(chat.isEmpty())
             throw new RuntimeException();
         return chat.get();
@@ -43,14 +43,16 @@ public class ChatServiceImpl implements ChatService {
         chatParticipantRepository.save(new ChatParticipant(creatorProfile, newChat, true));
 
         //Set Chat Participants
-        List<ChatParticipant> chatParticipants = chat.getParticipantProfileIds().stream()
-                .map(id -> profileRepository.findById(id))
-                .filter(Optional::isPresent)
-                .map(profile -> new ChatParticipant(profile.get(),newChat,false))
-                .toList();
+        if (chat.getParticipantProfileIds() != null) {
+            List<ChatParticipant> chatParticipants = chat.getParticipantProfileIds().stream()
+                    .map(id -> profileRepository.findById(id))
+                    .filter(Optional::isPresent)
+                    .map(profile -> new ChatParticipant(profile.get(),newChat,false))
+                    .toList();
+            chatParticipantRepository.saveAll(chatParticipants);
+        }
 
-        chatParticipantRepository.saveAll(chatParticipants);
-        return chatRepository.findById(newChat.getId()).get();
+        return chatRepository.findByIdWithParticipants(newChat.getId()).get();
     }
 
     @Override

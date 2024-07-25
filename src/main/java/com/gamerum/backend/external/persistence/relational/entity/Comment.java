@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -24,7 +24,7 @@ public class Comment {
     private Comment responseTo;
 
     @OneToMany(mappedBy = "responseTo", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<Comment> responses = new HashSet<>();
+    private List<Comment> responses = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
