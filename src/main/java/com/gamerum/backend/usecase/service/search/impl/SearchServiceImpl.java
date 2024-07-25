@@ -18,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class SearchServiceImpl implements SearchService {
@@ -31,6 +33,11 @@ public class SearchServiceImpl implements SearchService {
     public Page<GameDocument> searchGame(GameSearchFilter filter) {
         Pageable pageable = PageRequest.of(filter.getPage(), filter.getSize());
         return gameRepository.findByNicknameFuzzy(filter.getKeyword(), filter.getGenres(), pageable);
+    }
+
+    @Override
+    public Iterable<GameDocument> getAllGames() {
+        return gameRepository.findAll();
     }
 
 //    @Override

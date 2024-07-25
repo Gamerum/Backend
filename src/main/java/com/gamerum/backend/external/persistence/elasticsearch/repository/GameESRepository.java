@@ -31,5 +31,5 @@ public interface GameESRepository extends ElasticsearchRepository<GameDocument, 
           }
         }
         """)
-    Page<GameDocument> findByNicknameFuzzy(String keyword, List<GameDocument.Genres> genre, Pageable pageable);
+    Page<GameDocument> findByNicknameFuzzy(String keyword, List<GameDocument.Genre> genre, Pageable pageable);
 }
