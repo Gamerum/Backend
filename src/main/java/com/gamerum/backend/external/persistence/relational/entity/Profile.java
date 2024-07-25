@@ -6,9 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -35,16 +33,16 @@ public class Profile {
     private User user;
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private Set<CommunityMember> joinedCommunities = new HashSet<>();
+    private List<CommunityMember> joinedCommunities = new ArrayList<>();
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private Set<Post> posts = new HashSet<>();
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private Set<Comment> comments = new HashSet<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private Set<ChatParticipant> participatedChats = new HashSet<>();
+    private List<ChatParticipant> participatedChats = new ArrayList<>();
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
     private List<Message> messages = new ArrayList<>();

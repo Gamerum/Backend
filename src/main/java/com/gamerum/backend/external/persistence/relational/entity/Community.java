@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -34,10 +34,10 @@ public class Community {
     private long gameId;
 
     @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
-    private Set<CommunityMember> members = new HashSet<>();
+    private List<CommunityMember> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
-    private Set<Post> posts = new HashSet<>();
+    private List<Post> posts = new ArrayList<>();
 
     @Setter(AccessLevel.NONE)
     @Column(name = "created_at", nullable = false)

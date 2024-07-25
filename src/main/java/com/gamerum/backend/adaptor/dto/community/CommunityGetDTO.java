@@ -6,7 +6,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocum
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -16,6 +16,6 @@ public class CommunityGetDTO {
     private String description;
     private GameDocument game;
     private String tags;
-    private Set<CommunityMemberGetDTO> members;
-    private Set<PostMetadataDTO> popularPosts;
+    private List<CommunityMemberGetDTO> members;
+    private List<PostMetadataDTO> popularPosts;
 }
