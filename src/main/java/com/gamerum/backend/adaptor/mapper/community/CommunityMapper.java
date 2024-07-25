@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper(uses = {CommunityMemberMapper.class, PostMapper.class})
@@ -18,5 +19,5 @@ public interface CommunityMapper {
 
     CommunityMetadataDTO communityToCommunityMetadataDTO(Community community);
 
-    Set<CommunityMetadataDTO> communitiesToCommunityMetadataDTOs(Set<Community> communities);
+    List<CommunityMetadataDTO> communitiesToCommunityMetadataDTOs(List<Community> communities);
 }

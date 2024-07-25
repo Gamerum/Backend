@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper(uses = CommentMapper.class)
@@ -23,5 +24,5 @@ public interface PostMapper {
     @Mapping(source = "profile.nickname", target = "writerNickname")
     PostMetadataDTO postToPostMetadataDTO(Post post);
 
-    Set<PostMetadataDTO> postsToPostMetadataDTOs(Set<Post> posts);
+    List<PostMetadataDTO> postsToPostMetadataDTOs(List<Post> posts);
 }
