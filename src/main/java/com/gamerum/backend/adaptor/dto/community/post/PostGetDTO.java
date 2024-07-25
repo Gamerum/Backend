@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -20,5 +21,5 @@ public class PostGetDTO {
     private LocalDateTime updatedAt;
     private Long communityId;
     private String communityName;
-    private Set<CommentGetDTO> comments;
+    private List<CommentGetDTO> comments;
 }

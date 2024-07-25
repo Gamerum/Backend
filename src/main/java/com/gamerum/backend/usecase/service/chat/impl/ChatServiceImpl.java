@@ -39,8 +39,10 @@ public class ChatServiceImpl implements ChatService {
         Profile creatorProfile = creator.get();
 
         Chat newChat = chatRepository.save(new Chat(creatorProfile.getId()));
+
         //Set Chat Admin
-        chatParticipantRepository.save(new ChatParticipant(creatorProfile, newChat, true));
+        ChatParticipant admin = chatParticipantRepository.save(new ChatParticipant(creatorProfile, newChat, true));
+        newChat.getParticipants().add(admin);
 
         //Set Chat Participants
         if (chat.getParticipantProfileIds() != null) {
@@ -49,10 +51,11 @@ public class ChatServiceImpl implements ChatService {
                     .filter(Optional::isPresent)
                     .map(profile -> new ChatParticipant(profile.get(),newChat,false))
                     .toList();
-            chatParticipantRepository.saveAll(chatParticipants);
+            List<ChatParticipant> participants = (List<ChatParticipant>) chatParticipantRepository.saveAll(chatParticipants);
+            newChat.getParticipants().addAll(participants);
         }
 
-        return chatRepository.findByIdWithParticipants(newChat.getId()).get();
+        return newChat;
     }
 
     @Override

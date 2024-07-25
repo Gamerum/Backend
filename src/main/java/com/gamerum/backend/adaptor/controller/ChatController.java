@@ -31,17 +31,20 @@ public class ChatController {
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/{chatId}")
-    public ResponseEntity<Chat> getChatById(@PathVariable Long chatId) {
-        return new ResponseEntity<>(chatService.getByChatId(chatId), HttpStatus.OK);
+    public ResponseEntity<ResponseData<ChatGetDTO>> getChatById(@PathVariable Long chatId) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Chat Received",
+                ChatMapper.INSTANCE.chatToChatGetDTO(chatService.getByChatId(chatId))),
+                HttpStatus.OK);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PostMapping
     public ResponseEntity<ResponseData<ChatGetDTO>> createChat(@RequestBody ChatCreateDTO chatCreateDTO) {
-        Chat newChat = chatService.createChat(chatCreateDTO);
         return new ResponseEntity<>(new ResponseData<>(true,
                 "Chat created!",
-                ChatMapper.INSTANCE.chatToChatGetDTO(newChat)),
+                ChatMapper.INSTANCE.chatToChatGetDTO(chatService.createChat(chatCreateDTO))),
                 HttpStatus.CREATED);
     }
 
