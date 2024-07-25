@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @FeignClient(name = "igdbClient", url = "https://api.igdb.com/v4")
 public interface IGDBClient {
     @RequestMapping(method = RequestMethod.POST, value = "/games")
-    List<GameDocument> getGames(
+    LinkedList<GameDocument> getGames(
             @RequestHeader("Client-ID") String clientId,
             @RequestHeader("Authorization") String authorization,
             @RequestHeader("x-user-agent") String agent,

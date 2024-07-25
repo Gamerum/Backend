@@ -10,5 +10,6 @@ public class CommunityMetadataDTO {
     private Long id;
     private String title;
     private String description;
+    private int memberCount;
     private GameDocument game;
 }
