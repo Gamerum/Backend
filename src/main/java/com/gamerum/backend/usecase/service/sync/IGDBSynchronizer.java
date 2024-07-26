@@ -9,18 +9,14 @@ import com.gamerum.backend.external.client.api.igdb.IGDBClient;
 import com.gamerum.backend.external.client.api.igdb.query.IGDBDefaultQueries;
 import com.gamerum.backend.external.client.api.Token;
 import com.gamerum.backend.external.client.api.twitch.TwitchClient;
-import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
-import com.gamerum.backend.external.persistence.elasticsearch.repository.GameESRepository;
+import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.file.FileRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.file.NoSuchFileException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +25,7 @@ public class IGDBSynchronizer {
     private final IGDBClient igdbClient;
     private final TwitchClient twitchClient;
     private final FileRepository fileRepository;
-    private final ElasticsearchClient elasticsearchClient;
+    private final ElasticsearchRepository elasticsearchRepository;
 
     private final String logFilePath = "sync_games_log.txt";
 
@@ -45,11 +41,11 @@ public class IGDBSynchronizer {
     private String grantType;
 
 
-    public IGDBSynchronizer(IGDBClient igdbClient, TwitchClient twitchClient, FileRepository fileRepository, ElasticsearchClient elasticsearchClient) {
+    public IGDBSynchronizer(IGDBClient igdbClient, TwitchClient twitchClient, FileRepository fileRepository, ElasticsearchRepository elasticsearchRepository) {
         this.igdbClient = igdbClient;
         this.twitchClient = twitchClient;
         this.fileRepository = fileRepository;
-        this.elasticsearchClient = elasticsearchClient;
+        this.elasticsearchRepository = elasticsearchRepository;
     }
 
     @PostConstruct
@@ -61,7 +57,7 @@ public class IGDBSynchronizer {
         if (token.isExpired())
             token = twitchClient.getToken(clientId, clientSecret, grantType);
 
-        deleteAllGames();
+        elasticsearchRepository.deleteIndex("game");
 
         String date = getLastSyncDate();
         int page = 0;
@@ -74,7 +70,7 @@ public class IGDBSynchronizer {
                 query);
 
         if (games.isEmpty()) return;
-        saveGames(games);
+        elasticsearchRepository.saveAll(games);
 
         //saveLastSyncDate();
     }
@@ -90,41 +86,5 @@ public class IGDBSynchronizer {
     private void saveLastSyncDate() throws IOException {
         long currentTimestamp = System.currentTimeMillis() / 1000;
         fileRepository.writeFileToExternalDirectory(logFilePath, String.valueOf(currentTimestamp));
-    }
-
-    private void saveGames(List<GameDocument> games) throws IOException {
-        List<BulkOperation> operations = games.stream()
-                .map(gameDocument -> BulkOperation.of(b -> b
-                        .index(i -> i
-                                .index("game")
-                                .id(gameDocument.getId())
-                                .document(gameDocument)
-                        )
-                ))
-                .collect(Collectors.toList());
-
-        BulkRequest bulkRequest = BulkRequest.of(b -> b
-                .operations(operations)
-        );
-
-        elasticsearchClient.bulk(bulkRequest);
-    }
-
-    private void deleteAllGames() throws IOException {
-        // Create a query to match all documents
-        Query query = QueryBuilders.matchAll().build()._toQuery();
-
-        // Create a DeleteByQueryRequest with the query
-        DeleteByQueryRequest deleteByQueryRequest = DeleteByQueryRequest.of(d -> d
-                .index("game") // Specify the index name
-                .query(query)     // Use match_all query to delete all documents
-        );
-
-        // Execute the delete by query request
-        DeleteByQueryResponse deleteByQueryResponse = elasticsearchClient.deleteByQuery(deleteByQueryRequest);
-
-        // Check the response
-        System.out.println("Deleted documents count: " + deleteByQueryResponse.deleted());
-
     }
 }
