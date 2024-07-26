@@ -37,7 +37,13 @@ public class SearchServiceImpl implements SearchService {
                     .value(filter.getKeyword() + "*")
                     .build()._toQuery();
 
-            boolQueryBuilder.must(wildcardQuery);
+            Query termsQuery = QueryBuilders.wildcard()
+                    .field("alternativeNames")
+                    .value(filter.getKeyword() + "*")
+                    .build()._toQuery();
+
+            boolQueryBuilder.should(wildcardQuery);
+            boolQueryBuilder.should(termsQuery);
         }
 
         if (filter.getGenreIds() != null && !filter.getGenreIds().isEmpty()) {

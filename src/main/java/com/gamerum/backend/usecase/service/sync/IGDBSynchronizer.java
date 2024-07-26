@@ -72,7 +72,7 @@ public class IGDBSynchronizer {
         if (games.isEmpty()) return;
         elasticsearchRepository.saveAll(games);
 
-        saveLastSyncDate();
+        //saveLastSyncDate();
     }
 
     private String getLastSyncDate() {
