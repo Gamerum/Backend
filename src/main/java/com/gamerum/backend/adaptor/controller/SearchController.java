@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,8 +19,8 @@ import java.util.List;
 public class SearchController {
     private final SearchService searchService;
 
-    @PostMapping("/games_name")
-    public ResponseEntity<ResponseData<Page<GameDocument>>> searchGamesWithName(@RequestBody GameSearchFilter filter) {
+    @PostMapping("/games")
+    public ResponseEntity<ResponseData<List<GameDocument>>> searchGamesWithName(@RequestBody GameSearchFilter filter) throws IOException {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Games received",
@@ -27,6 +28,7 @@ public class SearchController {
                 HttpStatus.OK);
     }
 
+    //Delete
     @GetMapping("/games")
     public ResponseEntity<ResponseData<Iterable<GameDocument>>> getAllGames() {
         return new ResponseEntity<>(new ResponseData<>(

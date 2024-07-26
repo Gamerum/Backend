@@ -145,6 +145,12 @@
 			<artifactId>spring-data-elasticsearch</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>co.elastic.clients</groupId>
+			<artifactId>elasticsearch-java</artifactId>
+			<version>8.14.3</version>
+		</dependency>
+
 		<!-- Spring Feign -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

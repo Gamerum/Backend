@@ -10,26 +10,37 @@ import java.util.List;
 
 public interface GameESRepository extends ElasticsearchRepository<GameDocument, String> {
     @Query("""
-        {
-          "bool": {
-            "must": [
-              {
-                "fuzzy": {
-                  "name": {
-                    "value": "?0"  // This will be replaced by the first method parameter
+            {
+              "query": {
+                "bool": {
+                  "must": [
+                    {
+                      "fuzzy": {
+                        "name": {
+                          "value": "?0",
+                          "fuzziness": "AUTO",
+                          "prefix_length": 2
+                        }
+                      }
+                    }
+                  ],
+                  "filter": [
+                    {
+                      "terms": {
+                        "genreIds": ?1
+                      }
+                    }
+                  ]
+                }
+              },
+              "sort": [
+                {
+                  "_score": {
+                    "order": "desc"
                   }
                 }
-              }
-            ],
-            "filter": [
-              {
-                "term": {
-                  "genre": "?1"  // This will be replaced by the second method parameter
-                }
-              }
-            ]
-          }
-        }
-        """)
-    Page<GameDocument> findByNicknameFuzzy(String keyword, List<GameDocument.Genre> genre, Pageable pageable);
+              ]
+            }
+            """)
+    Page<GameDocument> searchByNameAndGenres(String name, List<Integer> genreIds, Pageable pageable);
 }
