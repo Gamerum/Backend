@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "Communities",
         uniqueConstraints = {
@@ -31,7 +30,8 @@ public class Community {
 
     private String tags;
     private long clickCount;
-    private long gameId;
+    @Column(nullable = false)
+    private String gameId;
 
     @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
     private List<CommunityMember> members = new ArrayList<>();

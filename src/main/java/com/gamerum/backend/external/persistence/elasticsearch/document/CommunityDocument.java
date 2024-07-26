@@ -25,7 +25,7 @@ public class CommunityDocument extends DocumentBase {
         id = community.getId().toString();
         title = community.getTitle();
         description = community.getDescription();
-        gameId = String.valueOf(community.getGameId());
+        gameId = community.getGameId();
     }
 
     @Override
