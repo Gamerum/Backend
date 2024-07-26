@@ -4,15 +4,17 @@ import com.gamerum.backend.external.persistence.relational.entity.Community;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Document(indexName = "community")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommunityDocument {
+public class CommunityDocument extends DocumentBase {
     @Id
     private String id;
     private String title;
@@ -24,5 +26,10 @@ public class CommunityDocument {
         title = community.getTitle();
         description = community.getDescription();
         gameId = String.valueOf(community.getGameId());
+    }
+
+    @Override
+    public String getIndex() {
+        return "community";
     }
 }
