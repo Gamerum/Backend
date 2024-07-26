@@ -11,6 +11,7 @@ import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
 import com.gamerum.backend.adaptor.dto.search.SearchFilter;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.usecase.service.search.SearchService;
 import lombok.AllArgsConstructor;
@@ -136,9 +137,33 @@ public class SearchServiceImpl implements SearchService {
                 .toList();
     }
 
-//    @Override
-//    public Page<PostDocument> searchPost(SearchFilter filter) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        return postRepository.findByTitleOrTextContaining(searchTerm, pageable);
-//    }
+    @Override
+    public List<PostDocument> searchPost(SearchFilter filter) throws IOException {
+        BoolQuery.Builder boolQueryBuilder = QueryBuilders.bool();
+
+        if (filter.getKeyword() != null && !filter.getKeyword().isEmpty()) {
+            Query wildcardQuery = QueryBuilders.wildcard()
+                    .field("title")
+                    .value(filter.getKeyword() + "*")
+                    .build()._toQuery();
+
+            boolQueryBuilder.must(wildcardQuery);
+        }
+
+        BoolQuery boolQuery = boolQueryBuilder.build();
+
+        SearchRequest searchRequest = new SearchRequest.Builder()
+                .index("post")
+                .query(q -> q.bool(boolQuery))
+                .sort(s -> s.field(f -> f.field("_score").order(SortOrder.Desc)))
+                .from(filter.getPage() * filter.getSize())
+                .size(filter.getSize())
+                .build();
+
+        SearchResponse<PostDocument> searchResponse = elasticsearchClient.search(searchRequest, PostDocument.class);
+
+        return searchResponse.hits().hits().stream()
+                .map(Hit::source)
+                .toList();
+    }
 }
