@@ -1,7 +1,9 @@
 package com.gamerum.backend.adaptor.controller;
 
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
+import com.gamerum.backend.adaptor.dto.search.CommunitySearchFilter;
 import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
+import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.usecase.service.search.SearchService;
 import lombok.AllArgsConstructor;
@@ -28,29 +30,14 @@ public class SearchController {
                 HttpStatus.OK);
     }
 
-    //Delete
-    @GetMapping("/games")
-    public ResponseEntity<ResponseData<Iterable<GameDocument>>> getAllGames() {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "All games listed.",
-                searchService.getAllGames()),
-                HttpStatus.OK);
-    }
-//
-//    @GetMapping("/games_genre")
-//    public ResponseEntity<String> searchGamesWithGenre(@RequestParam String searchTerm,
-//                                                      @RequestParam int page,
-//                                                      @RequestParam int size) {
-//        return new ResponseEntity<>(searchService.searchGameWithGenres(searchTerm, page, size), HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/communities")
-//    public ResponseEntity<List<CommunityDocument>> searchCommunities(@RequestParam String searchTerm,
-//                                                                     @RequestParam int page,
-//                                                                     @RequestParam int size) {
-//        return new ResponseEntity<>(searchService.searchCommunity(searchTerm, page, size), HttpStatus.OK);
-//    }
+   @PostMapping("/communities")
+    public ResponseEntity<ResponseData<List<CommunityDocument>>> searchCommunities(@RequestBody CommunitySearchFilter filter) throws IOException {
+       return new ResponseEntity<>(new ResponseData<>(
+               true,
+               "Communities received",
+               searchService.searchCommunity(filter)),
+               HttpStatus.OK);
+   }
 //
 //    @GetMapping("/profiles")
 //    public ResponseEntity<List<ProfileDocument>> searchProfiles(@RequestParam String searchTerm,

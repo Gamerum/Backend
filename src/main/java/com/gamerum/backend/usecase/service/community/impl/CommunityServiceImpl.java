@@ -1,8 +1,18 @@
 package com.gamerum.backend.usecase.service.community.impl;
 
+import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
+import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
+import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
+import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
+import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
+import com.gamerum.backend.external.persistence.relational.entity.Profile;
+import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
+import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
+import com.gamerum.backend.usecase.service.community.CommunityMemberService;
 import com.gamerum.backend.usecase.service.community.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,6 +37,12 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Autowired
     private CommunityRepository communityRepository;
+    @Autowired
+    private CommunityMemberRepository communityMemberRepository;
+    @Autowired
+    private ProfileRepository profileRepository;
+    @Autowired
+    private ElasticsearchRepository elasticsearchRepository;
 
     @Autowired
     private CacheUtils cacheUtils;
@@ -44,8 +61,27 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public Community createCommunity(Community community) {
-        return communityRepository.save(community);
+    public CommunityGetDTO createCommunity(CommunityCreateDTO communityCreateDTO) throws IOException {
+        Optional<Profile> creatorProfile = profileRepository.findById(communityCreateDTO.getCreatorProfileId());
+        if (creatorProfile.isEmpty())
+            throw new RuntimeException();
+
+        Community community = CommunityMapper.INSTANCE.communityCreateDTOToCommunity(communityCreateDTO);
+        community = communityRepository.save(community);
+
+        CommunityMember creator = new CommunityMember();
+        creator.setCommunity(community);
+        creator.setProfile(creatorProfile.get());
+        creator.setRole(CommunityMember.Role.OWNER);
+        creator = communityMemberRepository.save(creator);
+
+        community.getMembers().add(creator);
+
+        CommunityGetDTO communityGetDTO = CommunityMapper.INSTANCE.communityToCommunityGetDTO(community);
+        GameDocument game = elasticsearchRepository.getById("game", community.getGameId(), GameDocument.class);
+        communityGetDTO.setGame(game);
+
+        return communityGetDTO;
     }
 
     @Override

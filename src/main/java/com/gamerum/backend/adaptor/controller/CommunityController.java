@@ -1,5 +1,8 @@
 package com.gamerum.backend.adaptor.controller;
 
+import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
+import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
+import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import com.gamerum.backend.usecase.service.community.CommunityMemberService;
@@ -10,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -37,8 +41,12 @@ public class CommunityController {
     // Create a new community
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<Community> createCommunity(@RequestBody Community community) {
-        return new ResponseEntity<>(communityService.createCommunity(community),HttpStatus.CREATED);
+    public ResponseEntity<ResponseData<CommunityGetDTO>> createCommunity(@RequestBody CommunityCreateDTO community) throws IOException {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Community Created",
+                communityService.createCommunity(community)),
+                HttpStatus.CREATED);
     }
 
     // Update an existing community
