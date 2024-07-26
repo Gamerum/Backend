@@ -14,7 +14,7 @@ public class GamesDbSynchronizerJob {
         this.synchronizer = synchronizer;
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void runSyncJob() throws IOException {
         synchronizer.syncGames();
     }

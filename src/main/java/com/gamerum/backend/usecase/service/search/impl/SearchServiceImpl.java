@@ -8,8 +8,10 @@ import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.gamerum.backend.adaptor.dto.search.CommunitySearchFilter;
 import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
+import com.gamerum.backend.adaptor.dto.search.SearchFilter;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.usecase.service.search.SearchService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,22 +28,18 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<GameDocument> searchGame(GameSearchFilter filter) throws IOException {
-        // Create a bool query builder
         BoolQuery.Builder boolQueryBuilder = QueryBuilders.bool();
 
         if (filter.getKeyword() != null && !filter.getKeyword().isEmpty()) {
-            // Fuzzy query on the name field
             Query fuzzyQuery = QueryBuilders.fuzzy()
                     .field("name")
                     .value(filter.getKeyword())
                     .fuzziness("1")
                     .build()._toQuery();
 
-            // Add the fuzzy query to the must clause
             boolQueryBuilder.must(fuzzyQuery);
         }
 
-        // Conditionally add the terms query based on the presence of genreIds
         if (filter.getGenreIds() != null && !filter.getGenreIds().isEmpty()) {
             for (Integer genreId : filter.getGenreIds()) {
                 Query termQuery = QueryBuilders.term()
@@ -52,10 +50,8 @@ public class SearchServiceImpl implements SearchService {
             }
         }
 
-        // Build the bool query
         BoolQuery boolQuery = boolQueryBuilder.build();
 
-        // Create the search request
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index("game")
                 .query(q -> q.bool(boolQuery))
@@ -64,10 +60,8 @@ public class SearchServiceImpl implements SearchService {
                 .size(filter.getSize())
                 .build();
 
-        // Execute the search
         SearchResponse<GameDocument> searchResponse = elasticsearchClient.search(searchRequest, GameDocument.class);
 
-        // Extract and return the results
         List<GameDocument> results = searchResponse.hits().hits().stream()
                 .map(Hit::source)
                 .toList();
@@ -77,23 +71,18 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<CommunityDocument> searchCommunity(CommunitySearchFilter filter) throws IOException {
-
-        // Create a bool query builder
         BoolQuery.Builder boolQueryBuilder = QueryBuilders.bool();
 
         if (filter.getKeyword() != null && !filter.getKeyword().isEmpty()) {
-            // Fuzzy query on the name field
             Query fuzzyQuery = QueryBuilders.fuzzy()
                     .field("title")
                     .value(filter.getKeyword())
                     .fuzziness("1")
                     .build()._toQuery();
 
-            // Add the fuzzy query to the must clause
             boolQueryBuilder.must(fuzzyQuery);
         }
 
-        // Conditionally add the terms query based on the presence of genreIds
         if (filter.getGameId() != null && !filter.getGameId().isEmpty()) {
                 Query termQuery = QueryBuilders.term()
                         .field("gameId")
@@ -102,10 +91,8 @@ public class SearchServiceImpl implements SearchService {
                 boolQueryBuilder.must(termQuery);
         }
 
-        // Build the bool query
         BoolQuery boolQuery = boolQueryBuilder.build();
 
-        // Create the search request
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index("community")
                 .query(q -> q.bool(boolQuery))
@@ -114,22 +101,43 @@ public class SearchServiceImpl implements SearchService {
                 .size(filter.getSize())
                 .build();
 
-        // Execute the search
         SearchResponse<CommunityDocument> searchResponse = elasticsearchClient.search(searchRequest, CommunityDocument.class);
-
-        // Extract and return the results
 
         return searchResponse.hits().hits().stream()
                 .map(Hit::source)
                 .toList();
    }
 
-//    @Override
-//    public Page<ProfileDocument> searchProfile(SearchFilter filter) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        return profileRepository.findByNicknameFuzzy(searchTerm, pageable);
-//    }
-//
+    @Override
+    public List<ProfileDocument> searchProfile(SearchFilter filter) throws IOException {
+        BoolQuery.Builder boolQueryBuilder = QueryBuilders.bool();
+
+        if (filter.getKeyword() != null && !filter.getKeyword().isEmpty()) {
+            Query wildcardQuery = QueryBuilders.wildcard()
+                    .field("nickname")
+                    .value(filter.getKeyword() + "*")
+                    .build()._toQuery();
+
+            boolQueryBuilder.must(wildcardQuery);
+        }
+
+        BoolQuery boolQuery = boolQueryBuilder.build();
+
+        SearchRequest searchRequest = new SearchRequest.Builder()
+                .index("profile")
+                .query(q -> q.bool(boolQuery))
+                .sort(s -> s.field(f -> f.field("_score").order(SortOrder.Desc)))
+                .from(filter.getPage() * filter.getSize())
+                .size(filter.getSize())
+                .build();
+
+        SearchResponse<ProfileDocument> searchResponse = elasticsearchClient.search(searchRequest, ProfileDocument.class);
+
+        return searchResponse.hits().hits().stream()
+                .map(Hit::source)
+                .toList();
+    }
+
 //    @Override
 //    public Page<PostDocument> searchPost(SearchFilter filter) {
 //        Pageable pageable = PageRequest.of(page, size);

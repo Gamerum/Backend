@@ -3,8 +3,10 @@ package com.gamerum.backend.adaptor.controller;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.dto.search.CommunitySearchFilter;
 import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
+import com.gamerum.backend.adaptor.dto.search.SearchFilter;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.usecase.service.search.SearchService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,14 +40,16 @@ public class SearchController {
                searchService.searchCommunity(filter)),
                HttpStatus.OK);
    }
-//
-//    @GetMapping("/profiles")
-//    public ResponseEntity<List<ProfileDocument>> searchProfiles(@RequestParam String searchTerm,
-//                                                                   @RequestParam int page,
-//                                                                   @RequestParam int size) {
-//        return new ResponseEntity<>(searchService.searchProfile(searchTerm, page, size), HttpStatus.OK);
-//    }
-//
+
+    @PostMapping("/profiles")
+    public ResponseEntity<ResponseData<List<ProfileDocument>>> searchProfiles(@RequestBody SearchFilter filter) throws IOException {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Profiles received",
+                searchService.searchProfile(filter)),
+                HttpStatus.OK);
+    }
+
 //    @GetMapping("/posts")
 //    public ResponseEntity<List<PostDocument>> searchPosts(@RequestParam String searchTerm,
 //                                                             @RequestParam int page,
