@@ -5,6 +5,7 @@ import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
 import com.gamerum.backend.adaptor.dto.search.SearchFilter;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import org.springframework.data.domain.Page;
 
@@ -15,5 +16,5 @@ public interface SearchService {
     List<GameDocument> searchGame(GameSearchFilter filter) throws IOException;
     List<CommunityDocument> searchCommunity(CommunitySearchFilter filter) throws IOException;
     List<ProfileDocument> searchProfile(SearchFilter filter) throws IOException;
-//    Page<PostDocument> searchPost(SearchFilter filter);
+    List<PostDocument> searchPost(SearchFilter filter)throws IOException;
 }
