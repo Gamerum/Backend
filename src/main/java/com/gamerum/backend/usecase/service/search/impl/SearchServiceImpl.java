@@ -31,13 +31,12 @@ public class SearchServiceImpl implements SearchService {
         BoolQuery.Builder boolQueryBuilder = QueryBuilders.bool();
 
         if (filter.getKeyword() != null && !filter.getKeyword().isEmpty()) {
-            Query fuzzyQuery = QueryBuilders.fuzzy()
+            Query wildcardQuery = QueryBuilders.wildcard()
                     .field("name")
-                    .value(filter.getKeyword())
-                    .fuzziness("1")
+                    .value(filter.getKeyword() + "*")
                     .build()._toQuery();
 
-            boolQueryBuilder.must(fuzzyQuery);
+            boolQueryBuilder.must(wildcardQuery);
         }
 
         if (filter.getGenreIds() != null && !filter.getGenreIds().isEmpty()) {
@@ -74,13 +73,12 @@ public class SearchServiceImpl implements SearchService {
         BoolQuery.Builder boolQueryBuilder = QueryBuilders.bool();
 
         if (filter.getKeyword() != null && !filter.getKeyword().isEmpty()) {
-            Query fuzzyQuery = QueryBuilders.fuzzy()
+            Query wildcardQuery = QueryBuilders.wildcard()
                     .field("title")
-                    .value(filter.getKeyword())
-                    .fuzziness("1")
+                    .value(filter.getKeyword() + "*")
                     .build()._toQuery();
 
-            boolQueryBuilder.must(fuzzyQuery);
+            boolQueryBuilder.must(wildcardQuery);
         }
 
         if (filter.getGameId() != null && !filter.getGameId().isEmpty()) {
