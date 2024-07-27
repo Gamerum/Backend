@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MessageUpdateDTO {
+    private Long id;
     private String message;
     private Long updaterProfileId;
 }
