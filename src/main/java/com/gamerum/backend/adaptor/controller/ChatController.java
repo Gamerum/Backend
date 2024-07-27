@@ -99,9 +99,17 @@ public class ChatController {
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @GetMapping("/participants")
-    public ResponseEntity<List<ChatParticipant>> getChatParticipants() {
-        return new ResponseEntity<>(chatParticipantService.getChatParticipants(),HttpStatus.OK);
+    @GetMapping("/{chatId}/participants")
+    public ResponseEntity<ResponseData<List<ChatParticipantGetDTO>>> getChatParticipants(
+            @PathVariable Long chatId,
+            @RequestParam(required = false) int page,
+            @RequestParam int size) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Participants received.",
+                ChatParticipantMapper.INSTANCE.chatParticipantsToChatParticipantGetDTOs(
+                        chatParticipantService.getChatParticipants(chatId, page, size))),
+                HttpStatus.OK);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})

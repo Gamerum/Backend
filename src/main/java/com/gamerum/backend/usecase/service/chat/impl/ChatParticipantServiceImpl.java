@@ -13,10 +13,11 @@ import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ChatParticipantServiceImpl implements ChatParticipantService {
@@ -54,8 +55,9 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     @Override
-    public List<ChatParticipant> getChatParticipants() {
-        return (List<ChatParticipant>) chatParticipantRepository.findAll();
+    public List<ChatParticipant> getChatParticipants(Long chatId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return chatParticipantRepository.findByChatId(chatId, pageable);
     }
 
 }
