@@ -77,11 +77,7 @@ public class CommunityServiceImpl implements CommunityService {
 
         community.getMembers().add(creator);
 
-        CommunityGetDTO communityGetDTO = CommunityMapper.INSTANCE.communityToCommunityGetDTO(community);
-        GameDocument game = elasticsearchRepository.getById("game", community.getGameId(), GameDocument.class);
-        communityGetDTO.setGame(game);
-
-        return communityGetDTO;
+        return CommunityMapper.INSTANCE.communityToCommunityGetDTO(community);
     }
 
     @Override
