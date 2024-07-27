@@ -18,13 +18,13 @@ public class PostDocument extends DocumentBase{
     private String id;
     private String title;
     private String text;
-    private String communityId;
+    private CommunityDocument community;
 
-    public PostDocument(Post post) {
+    public PostDocument(Post post, CommunityDocument communityDocument) {
         id = post.getId().toString();
         title = post.getTitle();
         text = post.getText();
-        communityId = post.getCommunity().getId().toString();
+        community = communityDocument;
     }
 
     @Override

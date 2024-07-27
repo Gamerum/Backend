@@ -19,13 +19,13 @@ public class CommunityDocument extends DocumentBase {
     private String id;
     private String title;
     private String description;
-    private String gameId;
+    private GameDocument game;
 
-    public CommunityDocument(Community community) {
+    public CommunityDocument(Community community, GameDocument gameDocument) {
         id = community.getId().toString();
         title = community.getTitle();
         description = community.getDescription();
-        gameId = community.getGameId();
+        game = gameDocument;
     }
 
     @Override
