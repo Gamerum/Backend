@@ -54,7 +54,7 @@ public class ChatServiceImpl implements ChatService {
                             new NotFoundException("Profile")))
                     .map(profile -> new ChatParticipant(profile, newChat, creator.getId(), false))
                     .toList();
-            List<ChatParticipant> participants = (List<ChatParticipant>) chatParticipantRepository.saveAll(chatParticipants);
+            List<ChatParticipant> participants = chatParticipantRepository.saveAll(chatParticipants);
             newChat.getParticipants().addAll(participants);
         }
 

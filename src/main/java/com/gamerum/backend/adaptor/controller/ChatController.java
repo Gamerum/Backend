@@ -13,7 +13,6 @@ import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.chat.ChatMapper;
 import com.gamerum.backend.adaptor.mapper.chat.ChatParticipantMapper;
 import com.gamerum.backend.adaptor.mapper.chat.MessageMapper;
-import com.gamerum.backend.external.persistence.relational.entity.Message;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import com.gamerum.backend.usecase.service.chat.MessageService;
