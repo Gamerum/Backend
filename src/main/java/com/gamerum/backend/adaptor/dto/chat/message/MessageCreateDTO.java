@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MessageCreateDTO {
     private Long senderProfileId;
-    private Long chatId;
     private String text;
+    private boolean isSent;
 }

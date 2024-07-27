@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
@@ -37,7 +38,11 @@ public class Message {
     @Column(name = "updated_by_profile_id")
     private Long updatedBy;
 
-    public Message() {
+    public Message(Chat chat, Profile profile, String text, boolean isSent){
+        this.chat = chat;
+        this.profile = profile;
+        this.text = text;
+        this.isSent = isSent;
         createdAt = LocalDateTime.now();
     }
 }
