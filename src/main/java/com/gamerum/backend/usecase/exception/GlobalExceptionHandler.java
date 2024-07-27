@@ -57,12 +57,22 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ChatParticipantExistsException.class)
-    public ResponseEntity<ErrorResponse> handleChatParticipantExistsException(Exception ex) {
-        logger.error("\n\nChatParticipantExistsException: {}", ex.getMessage(), ex);
+    @ExceptionHandler({
+            NotParticipatedException.class,
+            AlreadyParticipatedException.class})
+    public ResponseEntity<ErrorResponse> handleParticipationException(Exception ex) {
+        logger.error("\n\nParticipationException: {}", ex.getMessage(), ex);
         return new ResponseEntity<>(
-                new ErrorResponse("ChatParticipantExistsException", ex.getMessage()),
+                new ErrorResponse("ParticipationException", ex.getMessage()),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotAllowedException.class)
+    public ResponseEntity<ErrorResponse> handleNotAllowedException(Exception ex) {
+        logger.error("\n\nNotAllowedException: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(
+                new ErrorResponse("NotAllowedException", ex.getMessage()),
+                HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)

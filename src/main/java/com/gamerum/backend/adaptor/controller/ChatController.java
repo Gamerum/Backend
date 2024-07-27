@@ -8,10 +8,8 @@ import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.chat.ChatMapper;
 import com.gamerum.backend.adaptor.mapper.chat.ChatParticipantMapper;
-import com.gamerum.backend.external.persistence.relational.entity.Chat;
 import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
 import com.gamerum.backend.external.persistence.relational.entity.Message;
-import com.gamerum.backend.usecase.exception.ChatParticipantExistsException;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import com.gamerum.backend.usecase.service.message.MessageService;
@@ -78,7 +76,7 @@ public class ChatController {
     @PostMapping("/{chatId}/participants")
     public ResponseEntity<ResponseData<ChatParticipantGetDTO>> addChatParticipant(
             @PathVariable long chatId,
-            @RequestBody ChatParticipantCreateDTO chatParticipantCreateDTO) throws ChatParticipantExistsException {
+            @RequestBody ChatParticipantCreateDTO chatParticipantCreateDTO) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Participant added.",
@@ -88,10 +86,16 @@ public class ChatController {
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @DeleteMapping("/participants/{id}")
-    public ResponseEntity<Void> deleteChatParticipant(@PathVariable Long chatParticipantId) {
-        chatParticipantService.deleteByIdChatParticipant(chatParticipantId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("{chatId}/participants")
+    public ResponseEntity<Response> deleteChatParticipant(
+            @PathVariable Long chatId,
+            @RequestParam Long chatParticipantId,
+            @RequestParam Long deleterProfileId) {
+        chatParticipantService.deleteByIdChatParticipant(chatId, chatParticipantId, deleterProfileId);
+        return new ResponseEntity<>(new Response(
+                true,
+                "Participant removed."),
+                HttpStatus.NO_CONTENT);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
