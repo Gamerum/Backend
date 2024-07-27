@@ -10,7 +10,6 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -18,13 +17,12 @@ import java.util.List;
 
 @Mapper(uses = {CommunityMemberMapper.class, PostMapper.class}, componentModel = "spring")
 public abstract class CommunityMapper {
-    public static CommunityMapper INSTANCE = Mappers.getMapper(CommunityMapper.class);
 
     @Autowired
     private ElasticsearchRepository elasticsearchRepository;
 
     @Mapping(source = "posts", target = "popularPosts")
-    public abstract CommunityGetDTO communityToCommunityGetDTO(Community community);
+    public abstract CommunityGetDTO communityToCommunityGetDTO(Community community) throws IOException;
 
     @Mapping(source = "creatorProfileId", target = "createdBy")
     public abstract Community communityCreateDTOToCommunity(CommunityCreateDTO communityCreateDTO);
