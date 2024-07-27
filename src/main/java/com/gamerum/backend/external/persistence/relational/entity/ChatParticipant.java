@@ -44,6 +44,7 @@ public class ChatParticipant {
         this.profile = profile;
         this.chat = chat;
         this.isAdmin = isAdmin;
+        this.joinedBy = joinedBy;
         joinedAt = LocalDateTime.now();
     }
 }
