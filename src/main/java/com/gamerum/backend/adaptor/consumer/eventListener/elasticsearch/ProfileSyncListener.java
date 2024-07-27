@@ -1,33 +1,26 @@
 package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
-import com.gamerum.backend.external.persistence.elasticsearch.repository.ProfileESRepository;
+import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostUpdate;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @Component
 public class ProfileSyncListener {
-    private final ProfileESRepository profileESRepository;
 
-    public ProfileSyncListener(ProfileESRepository profileESRepository) {
-        this.profileESRepository = profileESRepository;
-    }
+    private final ElasticsearchRepository elasticsearchRepository;
 
-    @PostPersist
-    public void handleAfterSave(Profile profile) {
-        ProfileDocument document = new ProfileDocument(profile);
-        profileESRepository.save(document);
+    public ProfileSyncListener(ElasticsearchRepository elasticsearchRepository) {
+        this.elasticsearchRepository = elasticsearchRepository;
     }
 
     @PostUpdate
-    public void handleAfterUpdate(Profile profile) {
-        if (!profile.isActive()) {
-            profileESRepository.deleteById(profile.getId().toString());
-            return;
-        }
-        ProfileDocument document = new ProfileDocument(profile);
-        profileESRepository.save(document);
+    @PostPersist
+    public void handleAfterSave(Profile profile) throws IOException {
+        elasticsearchRepository.save(new ProfileDocument(profile));
     }
 }
