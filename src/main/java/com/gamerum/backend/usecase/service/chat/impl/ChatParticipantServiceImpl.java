@@ -1,6 +1,7 @@
 package com.gamerum.backend.usecase.service.chat.impl;
 
 import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantCreateDTO;
+import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantUpdateDTO;
 import com.gamerum.backend.external.persistence.relational.entity.Chat;
 import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
@@ -34,10 +35,10 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     public ChatParticipant createChatParticipant(long chatId, ChatParticipantCreateDTO chatParticipantCreateDTO) {
 
         Chat chat = chatRepository.findById(chatId).orElseThrow(() ->
-                new NotFoundException(Chat.class, "ID", chatId));
+                new NotFoundException("Chat"));
 
         Profile profile = profileRepository.findById(chatParticipantCreateDTO.getProfileId())
-                .orElseThrow(() -> new NotFoundException(Profile.class, "ID", chatParticipantCreateDTO.getProfileId()));
+                .orElseThrow(() -> new NotFoundException("Profile"));
 
         if (chatParticipantRepository.existsByChatIdAndProfileId(chatId, profile.getId()))
             throw new AlreadyParticipatedException(profile.getNickname());
@@ -47,10 +48,10 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     @Override
-    public void deleteByIdChatParticipant(Long chatId, Long chatParticipantId, Long deleterProfileId){
-        ChatParticipant participant = chatParticipantRepository.findByChatIdAndProfileId(chatId, deleterProfileId)
-                        .orElseThrow(NotParticipatedException::new);
-        if (!participant.isAdmin()) throw new NotAllowedException();
+    public void deleteByIdChatParticipant(Long chatId, Long chatParticipantId, Long deleterProfileId) {
+        ChatParticipant deleter = chatParticipantRepository.findByChatIdAndProfileId(chatId, deleterProfileId)
+                .orElseThrow(NotParticipatedException::new);
+        if (!deleter.isAdmin()) throw new NotAllowedException();
         chatParticipantRepository.deleteById(chatParticipantId);
     }
 
@@ -58,6 +59,21 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     public List<ChatParticipant> getChatParticipants(Long chatId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return chatParticipantRepository.findByChatId(chatId, pageable);
+    }
+
+    @Override
+    public ChatParticipant updateChatParticipant(long chatId, ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
+        ChatParticipant updater = chatParticipantRepository.findByChatIdAndProfileId(chatId,
+                chatParticipantUpdateDTO.getUpdaterProfileId()).orElseThrow(NotParticipatedException::new);
+
+        if (!updater.isAdmin()) throw new NotAllowedException();
+
+        ChatParticipant participant = chatParticipantRepository.findById(chatParticipantUpdateDTO.getId())
+                .orElseThrow(NotParticipatedException::new);
+
+        participant.setAdmin(chatParticipantUpdateDTO.isAdmin());
+
+        return chatParticipantRepository.save(participant);
     }
 
 }

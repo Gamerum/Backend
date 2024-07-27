@@ -38,7 +38,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public Chat createChat(ChatCreateDTO chat) {
         Profile creator = profileRepository.findById(chat.getCreatorProfileId())
-                .orElseThrow(() -> new NotFoundException(Profile.class, "ID", chat.getCreatorProfileId()));
+                .orElseThrow(() -> new NotFoundException("Profile"));
 
         Chat newChat = chatRepository.save(new Chat(creator.getId()));
 
@@ -51,7 +51,7 @@ public class ChatServiceImpl implements ChatService {
         if (chat.getParticipantProfileIds() != null) {
             List<ChatParticipant> chatParticipants = chat.getParticipantProfileIds().stream()
                     .map(id -> profileRepository.findById(id).orElseThrow(() ->
-                            new NotFoundException(Profile.class, "ID", id)))
+                            new NotFoundException("Profile")))
                     .map(profile -> new ChatParticipant(profile, newChat, creator.getId(), false))
                     .toList();
             List<ChatParticipant> participants = (List<ChatParticipant>) chatParticipantRepository.saveAll(chatParticipants);
