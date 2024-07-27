@@ -4,6 +4,7 @@ import com.gamerum.backend.adaptor.dto.chat.ChatCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.ChatGetDTO;
 import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantGetDTO;
+import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantUpdateDTO;
 import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.chat.ChatMapper;
@@ -112,6 +113,19 @@ public class ChatController {
                 HttpStatus.OK);
     }
 
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @PutMapping("/{chatId}/participants")
+    public ResponseEntity<ResponseData<ChatParticipantGetDTO>> updateChatParticipant(
+            @PathVariable Long chatId,
+            @RequestBody ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Participant updated",
+                ChatParticipantMapper.INSTANCE.chatParticipantToChatParticipantGetDTO(
+                        chatParticipantService.updateChatParticipant(chatId, chatParticipantUpdateDTO))),
+                HttpStatus.OK
+        );
+    }
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PostMapping("/messages")
     public ResponseEntity<Message> addMessage(@RequestBody Message message) {
