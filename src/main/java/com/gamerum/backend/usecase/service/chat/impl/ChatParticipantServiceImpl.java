@@ -54,14 +54,6 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     @Override
-    public ChatParticipant getChatParticipantId(Long chatParticipantId) {
-        Optional<ChatParticipant> chatParticipant = chatParticipantRepository.findById(chatParticipantId);
-        if(chatParticipant.isEmpty())
-            throw new RuntimeException();
-        return chatParticipant.get();
-    }
-
-    @Override
     public List<ChatParticipant> getChatParticipants() {
         return (List<ChatParticipant>) chatParticipantRepository.findAll();
     }
