@@ -42,7 +42,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Autowired
     private ProfileRepository profileRepository;
     @Autowired
-    private ElasticsearchRepository elasticsearchRepository;
+    private CommunityMapper communityMapper;
 
     @Autowired
     private CacheUtils cacheUtils;
@@ -66,7 +66,7 @@ public class CommunityServiceImpl implements CommunityService {
         if (creatorProfile.isEmpty())
             throw new RuntimeException();
 
-        Community community = CommunityMapper.INSTANCE.communityCreateDTOToCommunity(communityCreateDTO);
+        Community community = communityMapper.communityCreateDTOToCommunity(communityCreateDTO);
         community = communityRepository.save(community);
 
         CommunityMember creator = new CommunityMember();
@@ -77,7 +77,7 @@ public class CommunityServiceImpl implements CommunityService {
 
         community.getMembers().add(creator);
 
-        return CommunityMapper.INSTANCE.communityToCommunityGetDTO(community);
+        return communityMapper.communityToCommunityGetDTO(community);
     }
 
     @Override
