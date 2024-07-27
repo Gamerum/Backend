@@ -155,8 +155,16 @@ public class ChatController {
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @GetMapping("/messages/{id}")
-    public ResponseEntity<List<Message>> getAllMessages(@PathVariable Long chatId) {
-        return new ResponseEntity<>(messageService.getAllMessages(chatId),HttpStatus.OK);
+    @GetMapping("/{chatId}/messages")
+    public ResponseEntity<ResponseData<List<MessageGetDTO>>> getAllMessages(
+            @PathVariable Long chatId,
+            @RequestParam(required = false) int page,
+            @RequestParam int size) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Messages received.",
+                MessageMapper.INSTANCE.messagesToMessageGetDTOs(
+                        messageService.getAllMessages(chatId, page, size))),
+                HttpStatus.OK);
     }
 }

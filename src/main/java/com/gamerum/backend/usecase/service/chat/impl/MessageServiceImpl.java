@@ -14,6 +14,8 @@ import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.chat.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,7 +71,8 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> getAllMessages(Long chatId) {
-        return messageRepository.findByChatId(chatId);
+    public List<Message> getAllMessages(Long chatId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return messageRepository.findByChatId(chatId, pageable);
     }
 }
