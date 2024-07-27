@@ -1,5 +1,6 @@
 package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
 
+import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
@@ -21,7 +22,9 @@ public class PostSyncListener {
     @PostPersist
     @PostUpdate
     public void handleAfterSave(Post post) throws IOException {
-        elasticsearchRepository.save(new PostDocument(post));
+        CommunityDocument community = elasticsearchRepository.getById(
+                "community", post.getCommunity().getId().toString(), CommunityDocument.class);
+        elasticsearchRepository.save(new PostDocument(post, community));
     }
 
     @PostRemove
