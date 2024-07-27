@@ -86,7 +86,7 @@ public class ChatController {
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @DeleteMapping("{chatId}/participants")
+    @DeleteMapping("/{chatId}/participants")
     public ResponseEntity<Response> deleteChatParticipant(
             @PathVariable Long chatId,
             @RequestParam Long chatParticipantId,
@@ -96,12 +96,6 @@ public class ChatController {
                 true,
                 "Participant removed."),
                 HttpStatus.NO_CONTENT);
-    }
-
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @GetMapping("/participants/{id}")
-    public ResponseEntity<ChatParticipant> getChatParticipantById(@PathVariable Long chatParticipantId) {
-        return new ResponseEntity<>(chatParticipantService.getChatParticipantId(chatParticipantId), HttpStatus.OK);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
