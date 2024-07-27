@@ -1,11 +1,12 @@
-package com.gamerum.backend.usecase.service.message;
+package com.gamerum.backend.usecase.service.chat;
 
+import com.gamerum.backend.adaptor.dto.chat.message.MessageCreateDTO;
 import com.gamerum.backend.external.persistence.relational.entity.Message;
 
 import java.util.List;
 
 public interface MessageService {
-    Message createMessage(Message message);
+    Message createMessage(Long chatId, MessageCreateDTO messageCreateDTO);
     void deleteByIdMessage(Long messageId);
     List<Message> getAllMessages(Long chatId);
 }

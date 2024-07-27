@@ -2,6 +2,8 @@ package com.gamerum.backend.adaptor.controller;
 
 import com.gamerum.backend.adaptor.dto.chat.ChatCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.ChatGetDTO;
+import com.gamerum.backend.adaptor.dto.chat.message.MessageCreateDTO;
+import com.gamerum.backend.adaptor.dto.chat.message.MessageGetDTO;
 import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantGetDTO;
 import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantUpdateDTO;
@@ -9,11 +11,11 @@ import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.chat.ChatMapper;
 import com.gamerum.backend.adaptor.mapper.chat.ChatParticipantMapper;
-import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
+import com.gamerum.backend.adaptor.mapper.chat.MessageMapper;
 import com.gamerum.backend.external.persistence.relational.entity.Message;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.chat.ChatService;
-import com.gamerum.backend.usecase.service.message.MessageService;
+import com.gamerum.backend.usecase.service.chat.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -127,9 +129,16 @@ public class ChatController {
         );
     }
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @PostMapping("/messages")
-    public ResponseEntity<Message> addMessage(@RequestBody Message message) {
-        return new ResponseEntity<>(messageService.createMessage(message),HttpStatus.CREATED);
+    @PostMapping("/{chatId}/messages")
+    public ResponseEntity<ResponseData<MessageGetDTO>> addMessage(
+            @PathVariable Long chatId,
+            @RequestBody MessageCreateDTO messageCreateDTO) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Message saved.",
+                MessageMapper.INSTANCE.messageToMessageGetDTO(
+                        messageService.createMessage(chatId, messageCreateDTO))),
+                HttpStatus.CREATED);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
