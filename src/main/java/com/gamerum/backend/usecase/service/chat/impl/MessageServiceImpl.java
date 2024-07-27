@@ -1,6 +1,7 @@
 package com.gamerum.backend.usecase.service.chat.impl;
 
 import com.gamerum.backend.adaptor.dto.chat.message.MessageCreateDTO;
+import com.gamerum.backend.adaptor.dto.chat.message.MessageUpdateDTO;
 import com.gamerum.backend.external.persistence.relational.entity.Chat;
 import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
 import com.gamerum.backend.external.persistence.relational.entity.Message;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -74,5 +76,27 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> getAllMessages(Long chatId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return messageRepository.findByChatId(chatId, pageable);
+    }
+
+    @Override
+    public Message updateMessage(Long chatId, MessageUpdateDTO messageUpdateDTO) {
+        Message message = messageRepository.findByIdAndChatId(messageUpdateDTO.getId(), chatId)
+                .orElseThrow(() -> new NotFoundException("Message"));
+
+        message.setText(messageUpdateDTO.getMessage());
+        message.setUpdatedAt(LocalDateTime.now());
+        message.setUpdatedBy(messageUpdateDTO.getUpdaterProfileId());
+
+        if (Objects.equals(message.getProfile().getId(), messageUpdateDTO.getUpdaterProfileId()))
+            return messageRepository.save(message);
+
+        ChatParticipant participant =
+                chatParticipantRepository.findByChatIdAndProfileId(chatId, messageUpdateDTO.getUpdaterProfileId())
+                        .orElseThrow(NotParticipatedException::new);
+
+        if (!participant.isAdmin())
+            throw new NotAllowedException();
+
+        return messageRepository.save(message);
     }
 }

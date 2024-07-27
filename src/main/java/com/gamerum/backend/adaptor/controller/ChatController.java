@@ -4,6 +4,7 @@ import com.gamerum.backend.adaptor.dto.chat.ChatCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.ChatGetDTO;
 import com.gamerum.backend.adaptor.dto.chat.message.MessageCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.message.MessageGetDTO;
+import com.gamerum.backend.adaptor.dto.chat.message.MessageUpdateDTO;
 import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantGetDTO;
 import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantUpdateDTO;
@@ -165,6 +166,19 @@ public class ChatController {
                 "Messages received.",
                 MessageMapper.INSTANCE.messagesToMessageGetDTOs(
                         messageService.getAllMessages(chatId, page, size))),
+                HttpStatus.OK);
+    }
+
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @PutMapping("/{chatId}/messages")
+    public ResponseEntity<ResponseData<MessageGetDTO>> updateMessage(
+            @PathVariable Long chatId,
+            @RequestBody MessageUpdateDTO messageUpdateDTO){
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Message updated.",
+                MessageMapper.INSTANCE.messageToMessageGetDTO(
+                        messageService.updateMessage(chatId, messageUpdateDTO))),
                 HttpStatus.OK);
     }
 }
