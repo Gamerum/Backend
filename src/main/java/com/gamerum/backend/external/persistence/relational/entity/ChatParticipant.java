@@ -40,7 +40,7 @@ public class ChatParticipant {
     @Column(name = "updated_by_profile_id")
     private Long updatedBy;
 
-    public ChatParticipant(Profile profile, Chat chat, boolean isAdmin) {
+    public ChatParticipant(Profile profile, Chat chat, long joinedBy, boolean isAdmin) {
         this.profile = profile;
         this.chat = chat;
         this.isAdmin = isAdmin;

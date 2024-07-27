@@ -7,6 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ChatParticipantCreateDTO {
     private Long profileId;
-    private Long chatId;
     private Long addedByProfileId;
 }
