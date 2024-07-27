@@ -57,6 +57,14 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ChatParticipantExistsException.class)
+    public ResponseEntity<ErrorResponse> handleChatParticipantExistsException(Exception ex) {
+        logger.error("\n\nChatParticipantExistsException: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(
+                new ErrorResponse("ChatParticipantExistsException", ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         logger.error("\n\nException: {}", ex.getMessage(), ex);

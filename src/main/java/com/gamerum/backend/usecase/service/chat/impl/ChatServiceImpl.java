@@ -30,7 +30,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public Chat getByChatId(Long chatId) {
         Optional<Chat> chat = chatRepository.findByIdWithParticipants(chatId);
-        if(chat.isEmpty())
+        if (chat.isEmpty())
             throw new RuntimeException();
         return chat.get();
     }
@@ -43,7 +43,8 @@ public class ChatServiceImpl implements ChatService {
         Chat newChat = chatRepository.save(new Chat(creator.getId()));
 
         //Set Chat Admin
-        ChatParticipant admin = chatParticipantRepository.save(new ChatParticipant(creator, newChat, true));
+        ChatParticipant admin = chatParticipantRepository.save(
+                new ChatParticipant(creator, newChat, creator.getId(), true));
         newChat.getParticipants().add(admin);
 
         //Set Chat Participants
@@ -51,7 +52,7 @@ public class ChatServiceImpl implements ChatService {
             List<ChatParticipant> chatParticipants = chat.getParticipantProfileIds().stream()
                     .map(id -> profileRepository.findById(id).orElseThrow(() ->
                             new NotFoundException(Profile.class, "ID", id)))
-                    .map(profile -> new ChatParticipant(profile, newChat,false))
+                    .map(profile -> new ChatParticipant(profile, newChat, creator.getId(), false))
                     .toList();
             List<ChatParticipant> participants = (List<ChatParticipant>) chatParticipantRepository.saveAll(chatParticipants);
             newChat.getParticipants().addAll(participants);
@@ -62,7 +63,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void deleteChat(Long chatId) {
-       chatRepository.deleteById(chatId);
+        chatRepository.deleteById(chatId);
     }
 
     @Override

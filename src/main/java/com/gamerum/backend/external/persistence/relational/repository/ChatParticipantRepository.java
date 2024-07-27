@@ -8,4 +8,5 @@ import java.util.Set;
 
 @Repository
 public interface ChatParticipantRepository extends CrudRepository<ChatParticipant, Long> {
+    boolean existsByChatIdAndProfileId(Long chatId, Long profileId);
 }

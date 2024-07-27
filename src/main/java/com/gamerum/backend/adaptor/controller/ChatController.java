@@ -2,12 +2,16 @@ package com.gamerum.backend.adaptor.controller;
 
 import com.gamerum.backend.adaptor.dto.chat.ChatCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.ChatGetDTO;
+import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantCreateDTO;
+import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantGetDTO;
 import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.chat.ChatMapper;
+import com.gamerum.backend.adaptor.mapper.chat.ChatParticipantMapper;
 import com.gamerum.backend.external.persistence.relational.entity.Chat;
 import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
 import com.gamerum.backend.external.persistence.relational.entity.Message;
+import com.gamerum.backend.usecase.exception.ChatParticipantExistsException;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import com.gamerum.backend.usecase.service.message.MessageService;
@@ -50,7 +54,7 @@ public class ChatController {
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{chatId}")
     public ResponseEntity<Response> deleteChat(@PathVariable Long chatId) {
         chatService.deleteChat(chatId);
         return new ResponseEntity<>(new Response(
@@ -65,15 +69,22 @@ public class ChatController {
                                                                    @RequestParam int size) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
-                "Chats received",
+                "Chats received.",
                 ChatMapper.INSTANCE.chatsToChatGetDTOs(chatService.getChats(page, size))),
                 HttpStatus.OK);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @PostMapping("/participants")
-    public ResponseEntity<ChatParticipant> addChatParticipant(@RequestBody ChatParticipant chatParticipant) {
-        return new ResponseEntity<>(chatParticipantService.createChatParticipant(chatParticipant), HttpStatus.CREATED);
+    @PostMapping("/{chatId}/participants")
+    public ResponseEntity<ResponseData<ChatParticipantGetDTO>> addChatParticipant(
+            @PathVariable long chatId,
+            @RequestBody ChatParticipantCreateDTO chatParticipantCreateDTO) throws ChatParticipantExistsException {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Participant added.",
+                ChatParticipantMapper.INSTANCE.chatParticipantToChatParticipantGetDTO(
+                        chatParticipantService.createChatParticipant(chatId, chatParticipantCreateDTO))),
+                HttpStatus.CREATED);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
