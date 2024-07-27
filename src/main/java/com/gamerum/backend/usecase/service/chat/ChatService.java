@@ -10,5 +10,5 @@ public interface ChatService {
     Chat getByChatId(Long id);
     Chat createChat(ChatCreateDTO chat);
     void deleteChat(Long id);
-    List<Chat> getChats();
+    List<Chat> getChats(int page, int size);
 }

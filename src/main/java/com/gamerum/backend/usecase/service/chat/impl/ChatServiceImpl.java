@@ -9,6 +9,8 @@ import com.gamerum.backend.external.persistence.relational.repository.ChatReposi
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,7 +66,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<Chat> getChats() {
-        return (List<Chat>) chatRepository.findAll();
+    public List<Chat> getChats(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return chatRepository.findAll(pageable).getContent();
     }
 }
