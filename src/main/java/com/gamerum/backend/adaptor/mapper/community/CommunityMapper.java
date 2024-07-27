@@ -1,5 +1,6 @@
 package com.gamerum.backend.adaptor.mapper.community;
 
+import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityMetadataDTO;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
@@ -12,10 +13,13 @@ import java.util.Set;
 
 @Mapper(uses = {CommunityMemberMapper.class, PostMapper.class})
 public interface CommunityMapper {
-    CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
+    CommunityMapper INSTANCE = Mappers.getMapper(CommunityMapper.class);
 
     @Mapping(source = "posts", target = "popularPosts")
     CommunityGetDTO communityToCommunityGetDTO(Community community);
+
+    @Mapping(source = "creatorProfileId", target = "createdBy")
+    Community communityCreateDTOToCommunity(CommunityCreateDTO communityCreateDTO);
 
     CommunityMetadataDTO communityToCommunityMetadataDTO(Community community);
 

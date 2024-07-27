@@ -4,37 +4,55 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode(callSuper = true)
 @Document(indexName = "game")
 @Data
 @AllArgsConstructor
-public class GameDocument {
+public class GameDocument extends DocumentBase{
     @Id
     private String id;
     private String name;
-    @Field(type = FieldType.Nested, includeInParent = true)
-    private List<String> genres;
+    private List<String> alternativeNames;
+    private List<Integer> genreIds;
+
 
     // Factory method for JSON deserialization
     @JsonCreator
     public static GameDocument fromJson(@JsonProperty("id") String id,
                                         @JsonProperty("name") String name,
-                                        @JsonProperty("genres") List<Genre> genres) {
-        List<String> genreNames = genres == null ? null : genres.stream()
-                .map(Genre::getName)
+                                        @JsonProperty("alternative_names") List<AlternativeName> alternativeNameEntities,
+                                        @JsonProperty("genres") List<GenreEntity> genreEntities) {
+
+        List<String> alternativeNames = alternativeNameEntities == null ? null : alternativeNameEntities.stream()
+                .map(AlternativeName::getName)
+                .toList();
+
+        List<Integer> genreIds = genreEntities == null ? null : genreEntities.stream()
+                .map(GenreEntity::getId)
                 .collect(Collectors.toList());
-        return new GameDocument(id, name, genreNames);
+
+        return new GameDocument(id, name, alternativeNames, genreIds);
+    }
+
+    @Override
+    public String getIndex() {
+        return "game";
     }
 
     @Data
-    public static class Genre {
+    public static class GenreEntity {
+        private int id;
+    }
+
+    @Data
+    public static class AlternativeName {
         private long id;
         private String name;
     }

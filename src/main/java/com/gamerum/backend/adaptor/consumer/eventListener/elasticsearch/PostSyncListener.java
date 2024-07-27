@@ -1,30 +1,31 @@
 package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
-import com.gamerum.backend.external.persistence.elasticsearch.repository.PostESRepository;
+import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import jakarta.persistence.PostUpdate;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @Component
 public class PostSyncListener {
-    private final PostESRepository postESRepository;
+    private final ElasticsearchRepository elasticsearchRepository;
 
-    public PostSyncListener(PostESRepository postESRepository) {
-        this.postESRepository = postESRepository;
+    public PostSyncListener(ElasticsearchRepository elasticsearchRepository) {
+        this.elasticsearchRepository = elasticsearchRepository;
     }
 
     @PostPersist
     @PostUpdate
-    public void handleAfterSave(Post post) {
-        PostDocument document = new PostDocument(post);
-        postESRepository.save(document);
+    public void handleAfterSave(Post post) throws IOException {
+        elasticsearchRepository.save(new PostDocument(post));
     }
 
     @PostRemove
-    public void handleAfterDelete(Post post) {
-        postESRepository.deleteById(post.getId().toString());
+    public void handleAfterDelete(Post post) throws IOException {
+        elasticsearchRepository.deleteById(post.getId().toString(), "post");
     }
 }

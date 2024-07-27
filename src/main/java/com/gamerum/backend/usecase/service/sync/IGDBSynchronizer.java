@@ -1,28 +1,31 @@
 package com.gamerum.backend.usecase.service.sync;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch.core.*;
+import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import com.gamerum.backend.external.client.api.igdb.IGDBClient;
 import com.gamerum.backend.external.client.api.igdb.query.IGDBDefaultQueries;
 import com.gamerum.backend.external.client.api.Token;
 import com.gamerum.backend.external.client.api.twitch.TwitchClient;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
-import com.gamerum.backend.external.persistence.elasticsearch.repository.GameESRepository;
+import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.file.FileRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.file.NoSuchFileException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class IGDBSynchronizer {
     private final IGDBClient igdbClient;
     private final TwitchClient twitchClient;
-    private final GameESRepository gameRepository;
     private final FileRepository fileRepository;
+    private final ElasticsearchRepository elasticsearchRepository;
 
     private final String logFilePath = "sync_games_log.txt";
 
@@ -38,11 +41,11 @@ public class IGDBSynchronizer {
     private String grantType;
 
 
-    public IGDBSynchronizer(IGDBClient igdbClient, TwitchClient twitchClient, GameESRepository gameRepository, FileRepository fileRepository) {
+    public IGDBSynchronizer(IGDBClient igdbClient, TwitchClient twitchClient, FileRepository fileRepository, ElasticsearchRepository elasticsearchRepository) {
         this.igdbClient = igdbClient;
         this.twitchClient = twitchClient;
-        this.gameRepository = gameRepository;
         this.fileRepository = fileRepository;
+        this.elasticsearchRepository = elasticsearchRepository;
     }
 
     @PostConstruct
@@ -54,6 +57,8 @@ public class IGDBSynchronizer {
         if (token.isExpired())
             token = twitchClient.getToken(clientId, clientSecret, grantType);
 
+        //elasticsearchRepository.deleteIndex("game");
+
         String date = getLastSyncDate();
         int page = 0;
 
@@ -64,10 +69,10 @@ public class IGDBSynchronizer {
                 "igdb-api-jvm",
                 query);
 
-        if(games.isEmpty()) return;
-        gameRepository.saveAll(games);
+        if (games.isEmpty()) return;
+        elasticsearchRepository.saveAll(games);
 
-        saveLastSyncDate();
+        //saveLastSyncDate();
     }
 
     private String getLastSyncDate() {
