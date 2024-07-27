@@ -2,6 +2,7 @@ package com.gamerum.backend.adaptor.controller;
 
 import com.gamerum.backend.adaptor.dto.chat.ChatCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.ChatGetDTO;
+import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.chat.ChatMapper;
 import com.gamerum.backend.external.persistence.relational.entity.Chat;
@@ -34,7 +35,7 @@ public class ChatController {
     public ResponseEntity<ResponseData<ChatGetDTO>> getChatById(@PathVariable Long chatId) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
-                "Chat Received",
+                "Chat received.",
                 ChatMapper.INSTANCE.chatToChatGetDTO(chatService.getByChatId(chatId))),
                 HttpStatus.OK);
     }
@@ -43,22 +44,30 @@ public class ChatController {
     @PostMapping
     public ResponseEntity<ResponseData<ChatGetDTO>> createChat(@RequestBody ChatCreateDTO chatCreateDTO) {
         return new ResponseEntity<>(new ResponseData<>(true,
-                "Chat created!",
+                "Chat created.",
                 ChatMapper.INSTANCE.chatToChatGetDTO(chatService.createChat(chatCreateDTO))),
                 HttpStatus.CREATED);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteChat(@PathVariable Long chatId) {
+    public ResponseEntity<Response> deleteChat(@PathVariable Long chatId) {
         chatService.deleteChat(chatId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(new Response(
+                true,
+                "Chat deleted."),
+                HttpStatus.NO_CONTENT);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping
-    public ResponseEntity<List<Chat>> getChats() {
-        return new ResponseEntity<>(chatService.getChats(), HttpStatus.OK);
+    public ResponseEntity<ResponseData<List<ChatGetDTO>>> getChats(@RequestParam(required = false) int page,
+                                                                   @RequestParam int size) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Chats received",
+                ChatMapper.INSTANCE.chatsToChatGetDTOs(chatService.getChats(page, size))),
+                HttpStatus.OK);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
