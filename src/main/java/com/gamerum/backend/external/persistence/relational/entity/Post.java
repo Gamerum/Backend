@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "Posts")
 @EntityListeners(PostSyncListener.class)

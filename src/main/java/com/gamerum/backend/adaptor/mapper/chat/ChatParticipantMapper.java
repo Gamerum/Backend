@@ -13,6 +13,7 @@ public interface ChatParticipantMapper {
     ChatParticipantMapper INSTANCE = Mappers.getMapper(ChatParticipantMapper.class);
 
     @Mapping(source = "profile.nickname", target = "nickname")
+    @Mapping(source = "admin", target = "isAdmin")
     ChatParticipantGetDTO chatParticipantToChatParticipantGetDTO(ChatParticipant chatParticipant);
 
     List<ChatParticipantGetDTO> chatParticipantsToChatParticipantGetDTOs(List<ChatParticipant> chatParticipants);
