@@ -9,6 +9,7 @@ import com.gamerum.backend.external.persistence.relational.repository.ChatPartic
 import com.gamerum.backend.external.persistence.relational.repository.ChatRepository;
 import com.gamerum.backend.external.persistence.relational.repository.MessageRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
+import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.chat.MessageService;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MessageServiceImpl implements MessageService {
@@ -47,7 +49,22 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteByIdMessage(Long messageId) {
+    public void deleteByIdMessage(Long chatId, Long messageId, Long deleterId) {
+        Message message = messageRepository.findByIdAndChatId(messageId, chatId)
+                        .orElseThrow(() -> new NotFoundException("Message"));
+
+        if (Objects.equals(message.getProfile().getId(), deleterId)){
+            messageRepository.deleteById(messageId);
+            return;
+        }
+
+        // delete by admin
+        ChatParticipant chatParticipant = chatParticipantRepository.findByChatIdAndProfileId(chatId, deleterId)
+                .orElseThrow(NotParticipatedException::new);
+
+        if (!chatParticipant.isAdmin())
+            throw new NotAllowedException();
+
         messageRepository.deleteById(messageId);
     }
 

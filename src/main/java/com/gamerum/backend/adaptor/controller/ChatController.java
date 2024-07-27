@@ -142,10 +142,16 @@ public class ChatController {
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @DeleteMapping("/messages/{id}")
-    public ResponseEntity<Void> deleteMessage(@PathVariable Long mesaageId) {
-        messageService.deleteByIdMessage(mesaageId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/{chatId}/messages")
+    public ResponseEntity<Response> deleteMessage(
+            @PathVariable Long chatId,
+            @RequestParam Long messageId,
+            @RequestParam Long deleterId) {
+        messageService.deleteByIdMessage(chatId, messageId, deleterId);
+        return new ResponseEntity<>(new Response(
+                true,
+                "Message deleted."),
+                HttpStatus.NO_CONTENT);
     }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
