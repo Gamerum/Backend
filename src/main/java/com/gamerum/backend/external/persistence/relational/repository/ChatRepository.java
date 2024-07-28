@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Long> {
-    @Query("SELECT c FROM Chat c JOIN FETCH c.participants, c.messages WHERE c.id = :id")
+    @Query("SELECT c FROM Chat c JOIN FETCH c.participants JOIN FETCH c.messages WHERE c.id = :id")
     Optional<Chat> findByIdWithParticipantsAndMessages(Long id);
 
     @Query("SELECT DISTINCT c FROM Chat c " +
