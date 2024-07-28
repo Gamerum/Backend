@@ -49,8 +49,11 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
         if (chatParticipantRepository.existsByChatIdAndProfileId(chatId, profile.getId()))
             throw new AlreadyParticipatedException(profile.getNickname());
 
-        return chatParticipantRepository.save(
-                new ChatParticipant(profile, chat, chatParticipantCreateDTO.getAddedByProfileId(), false));
+        return chatParticipantRepository.save(ChatParticipant.builder()
+                .profile(profile)
+                .chat(chat)
+                .isAdmin(false)
+                .build());
     }
 
     @Override
@@ -107,8 +110,6 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
                 .orElseThrow(NotParticipatedException::new);
 
         participant.setAdmin(chatParticipantUpdateDTO.isAdmin());
-        participant.setUpdatedAt(LocalDateTime.now());
-        participant.setUpdatedBy(profileId);
 
         return chatParticipantRepository.save(participant);
     }
