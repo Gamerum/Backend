@@ -1,34 +1,26 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 @Entity
 @Table(name = "DeletedUsers")
-public class DeletedUser {
+public class DeletedUser extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String username;
+
     private String email;
-
-    @Setter(AccessLevel.NONE)
-    @Column(name = "deleted_at", nullable = false)
-    private LocalDateTime deletedAt;
-
-    @Column(name = "deleted_by_profile_id")
-    private long deletedBy;
 
     @Column(name = "deletion_reason", nullable = false)
     private String deletionReason;
-
-    public DeletedUser() {
-        deletedAt = LocalDateTime.now();
-    }
 }

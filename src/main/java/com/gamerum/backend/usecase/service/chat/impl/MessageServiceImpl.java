@@ -51,7 +51,12 @@ public class MessageServiceImpl implements MessageService {
             throw new NotParticipatedException();
 
         return messageRepository.save(
-                new Message(chat, profile, messageCreateDTO.getText(), messageCreateDTO.isSent()));
+                Message.builder()
+                        .chat(chat)
+                        .profile(profile)
+                        .text(messageCreateDTO.getText())
+                        .isSent(messageCreateDTO.isSent())
+                .build());
     }
 
     @Override
@@ -101,8 +106,6 @@ public class MessageServiceImpl implements MessageService {
                 .orElseThrow(() -> new NotFoundException("Message"));
 
         message.setText(messageUpdateDTO.getMessage());
-        message.setUpdatedAt(LocalDateTime.now());
-        message.setUpdatedBy(profileId);
 
         if (!Objects.equals(message.getProfile().getId(), profileId))
             throw new NotAllowedException();

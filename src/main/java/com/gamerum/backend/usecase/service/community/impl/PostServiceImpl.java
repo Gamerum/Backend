@@ -80,7 +80,6 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postUpdateDTO.getTitle());
         post.setTag(postUpdateDTO.getTag());
         post.setText(postUpdateDTO.getText());
-        post.setUpdatedAt(LocalDateTime.now());
 
         return postRepository.save(post);
     }
