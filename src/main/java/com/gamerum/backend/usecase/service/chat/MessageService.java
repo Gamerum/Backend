@@ -7,8 +7,8 @@ import com.gamerum.backend.external.persistence.relational.entity.Message;
 import java.util.List;
 
 public interface MessageService {
-    Message createMessage(Long chatId, MessageCreateDTO messageCreateDTO);
-    void deleteByIdMessage(Long chatId, Long messageId, Long deleterId);
-    List<Message> getAllMessages(Long chatId, int page, int size);
-    Message updateMessage(Long chatId, MessageUpdateDTO messageUpdateDTO);
+    Message createMessage(Long chatId, MessageCreateDTO messageCreateDTO, String token);
+    void deleteByIdMessage(Long chatId, Long messageId, String token);
+    List<Message> getAllMessages(Long chatId, int page, int size, String token);
+    Message updateMessage(Long chatId, MessageUpdateDTO messageUpdateDTO, String token);
 }

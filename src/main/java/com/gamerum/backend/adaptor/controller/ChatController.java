@@ -147,12 +147,14 @@ public class ChatController {
     @PostMapping("/{chatId}/messages")
     public ResponseEntity<ResponseData<MessageGetDTO>> addMessage(
             @PathVariable Long chatId,
+            @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody MessageCreateDTO messageCreateDTO) {
+        String token = authorizationHeader.substring(7);
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Message saved.",
                 MessageMapper.INSTANCE.messageToMessageGetDTO(
-                        messageService.createMessage(chatId, messageCreateDTO))),
+                        messageService.createMessage(chatId, messageCreateDTO, token))),
                 HttpStatus.CREATED);
     }
 
@@ -161,8 +163,9 @@ public class ChatController {
     public ResponseEntity<Response> deleteMessage(
             @PathVariable Long chatId,
             @RequestParam Long messageId,
-            @RequestParam Long deleterId) {
-        messageService.deleteByIdMessage(chatId, messageId, deleterId);
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        messageService.deleteByIdMessage(chatId, messageId, token);
         return new ResponseEntity<>(new Response(
                 true,
                 "Message deleted."),
@@ -174,12 +177,14 @@ public class ChatController {
     public ResponseEntity<ResponseData<List<MessageGetDTO>>> getAllMessages(
             @PathVariable Long chatId,
             @RequestParam(required = false) int page,
-            @RequestParam int size) {
+            @RequestParam int size,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Messages received.",
                 MessageMapper.INSTANCE.messagesToMessageGetDTOs(
-                        messageService.getAllMessages(chatId, page, size))),
+                        messageService.getAllMessages(chatId, page, size, token))),
                 HttpStatus.OK);
     }
 
@@ -187,12 +192,14 @@ public class ChatController {
     @PutMapping("/{chatId}/messages")
     public ResponseEntity<ResponseData<MessageGetDTO>> updateMessage(
             @PathVariable Long chatId,
-            @RequestBody MessageUpdateDTO messageUpdateDTO) {
+            @RequestBody MessageUpdateDTO messageUpdateDTO,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Message updated.",
                 MessageMapper.INSTANCE.messageToMessageGetDTO(
-                        messageService.updateMessage(chatId, messageUpdateDTO))),
+                        messageService.updateMessage(chatId, messageUpdateDTO, token))),
                 HttpStatus.OK);
     }
 }
