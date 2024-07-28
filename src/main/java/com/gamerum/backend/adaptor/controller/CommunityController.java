@@ -3,9 +3,12 @@ package com.gamerum.backend.adaptor.controller;
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
+import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberCreateDTO;
+import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberGetDTO;
 import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
+import com.gamerum.backend.adaptor.mapper.community.CommunityMemberMapper;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import com.gamerum.backend.usecase.service.community.CommunityMemberService;
@@ -31,6 +34,8 @@ public class CommunityController {
 
     @Autowired
     private CommunityMapper communityMapper;
+    @Autowired
+    private CommunityMemberMapper communityMemberMapper;
 
     // Get a community by ID
     @GetMapping("/{communityId}")
@@ -86,42 +91,46 @@ public class CommunityController {
     }
 
     // Create a community member
-    @PostMapping("/members")
+    @PostMapping("/{communityId}/members")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public ResponseEntity<CommunityMember> createCommunityMember(@RequestBody CommunityMember communityMember) {
-        return new ResponseEntity<>(communityMemberService.createCommunityMember(communityMember), HttpStatus.CREATED);
-    }
-
-    // Get a community member by ID
-    @GetMapping("/public/members/{id}")
-    public ResponseEntity<CommunityMember> getCommunityMember(@PathVariable Long communityMemberid) {
-        return new ResponseEntity<>(communityMemberService.getCommunityMember(communityMemberid), HttpStatus.OK);
+    public ResponseEntity<ResponseData<CommunityMemberGetDTO>> createCommunityMember(
+            @PathVariable Long communityId,
+            @RequestBody CommunityMemberCreateDTO communityMemberCreateDTO) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Member added",
+                CommunityMemberMapper.INSTANCE.communityMemberToCommunityMemberGetDTO(
+                        communityMemberService.createCommunityMember(communityId, communityMemberCreateDTO))),
+                HttpStatus.CREATED);
     }
 
     // Get all community members
-    @GetMapping("/public/members")
-    public ResponseEntity<List<CommunityMember>> getAllCommunityMembers() {
-        return new ResponseEntity<>(communityMemberService.getCommunityMembers(), HttpStatus.OK);
+    @GetMapping("/{communityId}/members")
+    public ResponseEntity<ResponseData<List<CommunityMemberGetDTO>>> getAllCommunityMembers(
+            @PathVariable Long communityId,
+            @RequestParam(required = false) int page,
+            @RequestParam int size) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Members received.",
+                CommunityMemberMapper.INSTANCE.communityMembersToCommunityMemberGetDTOs(
+                        communityMemberService.getCommunityMembers(communityId, page, size))),
+                HttpStatus.OK);
     }
 
     // Delete a community member
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<Void> deleteCommunityMember(@PathVariable Long communityMemberid) {
-        communityMemberService.deleteCommunityMember(communityMemberid);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    // Get community members by community ID
-    @GetMapping("/public/{communityId}/members")
-    public ResponseEntity<List<CommunityMember>> getCommunityMembersByCommunity(@PathVariable Long communityId) {
-        return new ResponseEntity<>(communityMemberService.getCommunityMembersByCommunity(communityId), HttpStatus.OK);
-    }
-
-    // Get community members by profile ID
-    @GetMapping("/public/profiles/{profileId}/members")
-    public ResponseEntity<List<CommunityMember>> getCommunityMembersByProfile(@PathVariable Long profileId) {
-        return new ResponseEntity<>(communityMemberService.getCommunityMembersByProfile(profileId), HttpStatus.OK);
+    @DeleteMapping("/{communityId}/members")
+    public ResponseEntity<Response> deleteCommunityMember(
+            @PathVariable Long communityId,
+            @RequestBody Long communityMemberId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        communityMemberService.deleteCommunityMember(communityId, communityMemberId, token);
+        return new ResponseEntity<>(new Response(
+                true,
+                "Member deleted."),
+                HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/public/populars")

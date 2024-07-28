@@ -1,14 +1,12 @@
 package com.gamerum.backend.usecase.service.community;
 
+import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberCreateDTO;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 
 import java.util.List;
 
 public interface CommunityMemberService {
-    CommunityMember createCommunityMember(CommunityMember communityMember);
-    CommunityMember getCommunityMember(Long communityMemberId);
-    List<CommunityMember> getCommunityMembers();
-    void deleteCommunityMember(Long communityMemberId);
-    List<CommunityMember> getCommunityMembersByCommunity(Long communityId);
-    List<CommunityMember> getCommunityMembersByProfile(Long profileId);
+    CommunityMember createCommunityMember(Long communityId,CommunityMemberCreateDTO communityMemberCreateDTO);
+    List<CommunityMember> getCommunityMembers(Long communityId, int page, int size);
+    void deleteCommunityMember(Long communityId, Long communityMemberId, String token);
 }
