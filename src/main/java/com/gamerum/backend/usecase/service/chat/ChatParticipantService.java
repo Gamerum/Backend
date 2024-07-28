@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ChatParticipantService {
     ChatParticipant createChatParticipant(long chatId, ChatParticipantCreateDTO chatParticipantCreateDTO);
-    void deleteByIdChatParticipant(Long chatId, Long chatParticipantId, Long deleterProfileId);
-    List<ChatParticipant> getChatParticipants(Long chatId, int page, int size);
-    ChatParticipant updateChatParticipant(long chatId, ChatParticipantUpdateDTO chatParticipantUpdateDTO);
+    void deleteByIdChatParticipant(Long chatId, Long chatParticipantId, String token);
+    List<ChatParticipant> getChatParticipants(Long chatId, int page, int size, String token);
+    ChatParticipant updateChatParticipant(long chatId, ChatParticipantUpdateDTO chatParticipantUpdateDTO, String token);
 }

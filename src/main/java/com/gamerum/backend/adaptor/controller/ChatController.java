@@ -102,8 +102,9 @@ public class ChatController {
     public ResponseEntity<Response> deleteChatParticipant(
             @PathVariable Long chatId,
             @RequestParam Long chatParticipantId,
-            @RequestParam Long deleterProfileId) {
-        chatParticipantService.deleteByIdChatParticipant(chatId, chatParticipantId, deleterProfileId);
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        chatParticipantService.deleteByIdChatParticipant(chatId, chatParticipantId, token);
         return new ResponseEntity<>(new Response(
                 true,
                 "Participant removed."),
@@ -115,12 +116,14 @@ public class ChatController {
     public ResponseEntity<ResponseData<List<ChatParticipantGetDTO>>> getChatParticipants(
             @PathVariable Long chatId,
             @RequestParam(required = false) int page,
-            @RequestParam int size) {
+            @RequestParam int size,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Participants received.",
                 ChatParticipantMapper.INSTANCE.chatParticipantsToChatParticipantGetDTOs(
-                        chatParticipantService.getChatParticipants(chatId, page, size))),
+                        chatParticipantService.getChatParticipants(chatId, page, size, token))),
                 HttpStatus.OK);
     }
 
@@ -128,12 +131,14 @@ public class ChatController {
     @PutMapping("/{chatId}/participants")
     public ResponseEntity<ResponseData<ChatParticipantGetDTO>> updateChatParticipant(
             @PathVariable Long chatId,
+            @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
+        String token = authorizationHeader.substring(7);
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Participant updated",
                 ChatParticipantMapper.INSTANCE.chatParticipantToChatParticipantGetDTO(
-                        chatParticipantService.updateChatParticipant(chatId, chatParticipantUpdateDTO))),
+                        chatParticipantService.updateChatParticipant(chatId, chatParticipantUpdateDTO, token))),
                 HttpStatus.OK
         );
     }
