@@ -3,6 +3,7 @@ package com.gamerum.backend.adaptor.controller;
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
+import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
@@ -69,10 +70,15 @@ public class CommunityController {
 
     // Delete a community
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCommunity(@PathVariable Long communityId) {
-        communityService.deleteCommunity(communityId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/{communityId}")
+    public ResponseEntity<Response> deleteCommunity(
+            @PathVariable Long communityId,
+            @RequestParam Long deleterId){
+        communityService.deleteCommunity(communityId, deleterId);
+        return new ResponseEntity<>(new Response(
+                true,
+                "Community deleted."),
+                HttpStatus.NO_CONTENT);
     }
 
     // Get a community by title
