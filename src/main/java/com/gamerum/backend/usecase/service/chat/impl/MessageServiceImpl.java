@@ -40,11 +40,11 @@ public class MessageServiceImpl implements MessageService {
     private JwtUtil jwtUtil;
 
     @Override
-    public Message createMessage(Long chatId, MessageCreateDTO messageCreateDTO, String token) {
+    public Message createMessage(Long chatId, MessageCreateDTO messageCreateDTO) {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new NotFoundException("Chat"));
 
-        Profile profile = profileRepository.findById(jwtUtil.getProfileIdFromToken(token))
+        Profile profile = profileRepository.findById(jwtUtil.getCurrentUserProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
 
         if (chatParticipantRepository.existsByChatIdAndProfileId(chatId, profile.getId()))
@@ -60,16 +60,16 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteByIdMessage(Long chatId, Long messageId, String token) {
+    public void deleteByIdMessage(Long chatId, Long messageId) {
         Message message = messageRepository.findByIdAndChatId(messageId, chatId)
                 .orElseThrow(() -> new NotFoundException("Message"));
 
-        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
+        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
             messageRepository.deleteById(messageId);
             return;
         }
 
-        Long profileId = jwtUtil.getProfileIdFromToken(token);
+        Long profileId = jwtUtil.getCurrentUserProfileId();
 
         if (Objects.equals(message.getProfile().getId(), profileId)) {
             messageRepository.deleteById(messageId);
@@ -86,28 +86,26 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> getAllMessages(Long chatId, int page, int size, String token) {
+    public List<Message> getAllMessages(Long chatId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN))
+        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN))
             return messageRepository.findByChatId(chatId, pageable);
 
-        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, jwtUtil.getProfileIdFromToken(token)))
+        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, jwtUtil.getCurrentUserProfileId()))
             throw new NotParticipatedException();
 
         return messageRepository.findByChatId(chatId, pageable);
     }
 
     @Override
-    public Message updateMessage(Long chatId, MessageUpdateDTO messageUpdateDTO, String token) {
-        Long profileId = jwtUtil.getProfileIdFromToken(token);
-
+    public Message updateMessage(Long chatId, MessageUpdateDTO messageUpdateDTO) {
         Message message = messageRepository.findByIdAndChatId(messageUpdateDTO.getId(), chatId)
                 .orElseThrow(() -> new NotFoundException("Message"));
 
         message.setText(messageUpdateDTO.getMessage());
 
-        if (!Objects.equals(message.getProfile().getId(), profileId))
+        if (!Objects.equals(message.getProfile().getId(), jwtUtil.getCurrentUserProfileId()))
             throw new NotAllowedException();
 
         return messageRepository.save(message);

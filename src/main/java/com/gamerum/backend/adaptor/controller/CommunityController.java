@@ -62,14 +62,12 @@ public class CommunityController {
     @PutMapping("/{communityId}")
     public ResponseEntity<ResponseData<CommunityGetDTO>> updateCommunity(
             @PathVariable Long communityId,
-            @RequestBody CommunityUpdateDTO communityUpdateDTO,
-            @RequestHeader("Authorization") String authorizationHeader) throws IOException {
-        String token = authorizationHeader.substring(7);
+            @RequestBody CommunityUpdateDTO communityUpdateDTO) throws IOException {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Community updated",
                 communityMapper.communityToCommunityGetDTO(
-                        communityService.updateCommunity(communityId, communityUpdateDTO, token))),
+                        communityService.updateCommunity(communityId, communityUpdateDTO))),
                 HttpStatus.OK);
     }
 
@@ -77,10 +75,8 @@ public class CommunityController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping("/{communityId}")
     public ResponseEntity<Response> deleteCommunity(
-            @PathVariable Long communityId,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
-        communityService.deleteCommunity(communityId, token);
+            @PathVariable Long communityId) {
+        communityService.deleteCommunity(communityId);
         return new ResponseEntity<>(new Response(
                 true,
                 "Community deleted."),
@@ -120,10 +116,8 @@ public class CommunityController {
     @DeleteMapping("/{communityId}/members")
     public ResponseEntity<Response> deleteCommunityMember(
             @PathVariable Long communityId,
-            @RequestBody Long communityMemberId,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
-        communityMemberService.deleteCommunityMember(communityId, communityMemberId, token);
+            @RequestBody Long communityMemberId) {
+        communityMemberService.deleteCommunityMember(communityId, communityMemberId);
         return new ResponseEntity<>(new Response(
                 true,
                 "Member deleted."),

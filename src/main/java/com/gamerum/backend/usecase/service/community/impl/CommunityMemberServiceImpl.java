@@ -68,14 +68,14 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
     }
 
     @Override
-    public void deleteCommunityMember(Long communityId, Long communityMemberId, String token) {
-        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
+    public void deleteCommunityMember(Long communityId, Long communityMemberId) {
+        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
             communityMemberRepository.deleteById(communityMemberId);
             return;
         }
 
         CommunityMember deleter = communityMemberRepository
-                .findByProfileIdAndCommunityId(jwtUtil.getProfileIdFromToken(token), communityId)
+                .findByProfileIdAndCommunityId(jwtUtil.getCurrentUserProfileId(), communityId)
                 .orElseThrow(NotParticipatedException::new);
 
         if (Objects.equals(deleter.getId(), communityMemberId)) {
