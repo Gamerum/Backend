@@ -37,8 +37,10 @@ public class ChatController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/{chatId}")
-    public ResponseEntity<ResponseData<ChatGetDTO>> getChatById(@PathVariable long chatId,
-                                                                @RequestParam String token) {
+    public ResponseEntity<ResponseData<ChatGetDTO>> getChatById(
+            @PathVariable long chatId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Chat received.",
@@ -58,7 +60,8 @@ public class ChatController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping("/{chatId}")
     public ResponseEntity<Response> deleteChat(@PathVariable Long chatId,
-                                               @RequestParam(required = false) String token) {
+                                               @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
         chatService.deleteChat(chatId, token);
         return new ResponseEntity<>(new Response(
                 true,
@@ -69,10 +72,11 @@ public class ChatController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping
     public ResponseEntity<ResponseData<List<ChatGetDTO>>> getChats(
-            @RequestParam String token,
+            @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam int size,
             @RequestParam(required = false) int page,
             @RequestParam(required = false) long profileId) {
+        String token = authorizationHeader.substring(7);
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Chats received.",
