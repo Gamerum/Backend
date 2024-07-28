@@ -2,6 +2,7 @@ package com.gamerum.backend.usecase.service.community.impl;
 
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
+import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
@@ -10,6 +11,8 @@ import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
+import com.gamerum.backend.usecase.exception.NotAllowedException;
+import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.service.community.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -47,7 +51,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public Community getCommunity(Long communityId) {
         Optional<Community> community = communityRepository.findById(communityId);
-        if(community.isEmpty())
+        if (community.isEmpty())
             throw new RuntimeException();
         return community.get();
     }
@@ -58,7 +62,7 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public CommunityGetDTO createCommunity(CommunityCreateDTO communityCreateDTO) throws IOException {
+    public Community createCommunity(CommunityCreateDTO communityCreateDTO) throws IOException {
         Optional<Profile> creatorProfile = profileRepository.findById(communityCreateDTO.getCreatorProfileId());
         if (creatorProfile.isEmpty())
             throw new RuntimeException();
@@ -74,14 +78,27 @@ public class CommunityServiceImpl implements CommunityService {
 
         community.getMembers().add(creator);
 
-        return communityMapper.communityToCommunityGetDTO(community);
+        return community;
     }
 
     @Override
-    public Community updateCommunity(Community community) {
-        if (!communityRepository.existsById(community.getId())){
-            throw new RuntimeException();
-        }
+    public Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO) {
+        Community community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException("Community"));
+
+        CommunityMember updater = communityMemberRepository
+                .findByProfileIdAndCommunityId(communityUpdateDTO.getUpdaterProfileId(), communityId)
+                .orElseThrow(() -> new NotFoundException("Member"));
+
+        if (updater.getRole() == CommunityMember.Role.USER)
+            throw new NotAllowedException();
+
+        community.setTitle(communityUpdateDTO.getTitle());
+        community.setDescription(communityUpdateDTO.getDescription());
+        community.setTags(communityUpdateDTO.getTags());
+        community.setUpdatedAt(LocalDateTime.now());
+        community.setUpdatedBy(communityUpdateDTO.getUpdaterProfileId());
+
         return communityRepository.save(community);
     }
 
@@ -103,7 +120,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public String getCommunityTags(Long communityId) {
         Optional<String> optionalTags = communityRepository.findById(communityId).get().getTags().describeConstable();
-        if(optionalTags.isEmpty())
+        if (optionalTags.isEmpty())
             throw new RuntimeException();
         return optionalTags.get();
     }

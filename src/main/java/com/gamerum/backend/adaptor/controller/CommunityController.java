@@ -2,7 +2,9 @@ package com.gamerum.backend.adaptor.controller;
 
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
+import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
+import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import com.gamerum.backend.usecase.service.community.CommunityMemberService;
@@ -26,16 +28,17 @@ public class CommunityController {
     @Autowired
     private CommunityMemberService communityMemberService;
 
+    @Autowired
+    private CommunityMapper communityMapper;
     // Get a community by ID
-    @GetMapping("/public/{id}")
-    public ResponseEntity<Community> getCommunity(@PathVariable Long communityId) {
-        return new ResponseEntity<>(communityService.getCommunity(communityId), HttpStatus.OK) ;
-    }
-
-    // Get all communities
-    @GetMapping("/public")
-    public ResponseEntity<List<Community>> getAllCommunities() {
-        return new ResponseEntity<>(communityService.getAllCommunities(),HttpStatus.OK);
+    @GetMapping("/{communityId}")
+    public ResponseEntity<ResponseData<CommunityGetDTO>> getCommunity(@PathVariable Long communityId) throws IOException {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Community received",
+                communityMapper.communityToCommunityGetDTO(
+                        communityService.getCommunity(communityId))),
+                HttpStatus.OK) ;
     }
 
     // Create a new community
@@ -45,16 +48,23 @@ public class CommunityController {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Community Created",
-                communityService.createCommunity(community)),
+                communityMapper.communityToCommunityGetDTO(
+                        communityService.createCommunity(community))),
                 HttpStatus.CREATED);
     }
 
     // Update an existing community
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @PutMapping("/{id}")
-    public ResponseEntity<Community> updateCommunity(@PathVariable Long communityId, @RequestBody Community community) {
-        community.setId(communityId);
-        return new ResponseEntity<>(communityService.updateCommunity(community),HttpStatus.OK);
+    @PutMapping("/{communityId}")
+    public ResponseEntity<ResponseData<CommunityGetDTO>> updateCommunity(
+            @PathVariable Long communityId,
+            @RequestBody CommunityUpdateDTO communityUpdateDTO) throws IOException {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Community updated",
+                communityMapper.communityToCommunityGetDTO(
+                        communityService.updateCommunity(communityId, communityUpdateDTO))),
+                HttpStatus.OK);
     }
 
     // Delete a community
