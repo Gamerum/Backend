@@ -8,6 +8,6 @@ import lombok.Getter;
 public class CommunityCreateDTO {
     private String title;
     private String description;
-    private Long gameId;
+    private String gameId;
     private Long creatorProfileId;
 }

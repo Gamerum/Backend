@@ -9,5 +9,4 @@ public class CommunityUpdateDTO {
     private String title;
     private String description;
     private String tags;
-    private Long updaterProfileId;
 }

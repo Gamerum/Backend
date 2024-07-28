@@ -11,6 +11,7 @@ import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
+import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
@@ -48,33 +49,29 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Autowired
     private CacheUtils cacheUtils;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Override
     public Community getCommunity(Long communityId) {
-        Optional<Community> community = communityRepository.findById(communityId);
-        if (community.isEmpty())
-            throw new RuntimeException();
-        return community.get();
+       return communityRepository.findById(communityId)
+               .orElseThrow(() -> new NotFoundException("Community"));
     }
 
     @Override
-    public List<Community> getAllCommunities() {
-        return (List<Community>) communityRepository.findAll();
-    }
-
-    @Override
-    public Community createCommunity(CommunityCreateDTO communityCreateDTO) throws IOException {
-        Optional<Profile> creatorProfile = profileRepository.findById(communityCreateDTO.getCreatorProfileId());
-        if (creatorProfile.isEmpty())
-            throw new RuntimeException();
+    public Community createCommunity(CommunityCreateDTO communityCreateDTO) {
+        Profile creatorProfile = profileRepository.findById(communityCreateDTO.getCreatorProfileId())
+                .orElseThrow(() -> new NotFoundException("Profile"));
 
         Community community = communityMapper.communityCreateDTOToCommunity(communityCreateDTO);
         community = communityRepository.save(community);
 
-        CommunityMember creator = new CommunityMember();
-        creator.setCommunity(community);
-        creator.setProfile(creatorProfile.get());
-        creator.setRole(CommunityMember.Role.OWNER);
+        CommunityMember creator = new CommunityMember(
+                creatorProfile,
+                community,
+                CommunityMember.Role.OWNER,
+                communityCreateDTO.getCreatorProfileId());
+
         creator = communityMemberRepository.save(creator);
 
         community.getMembers().add(creator);
@@ -83,12 +80,14 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO) {
+    public Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO, String token) {
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("Community"));
 
+        Long profileId = jwtUtil.getProfileIdFromToken(token);
+
         CommunityMember updater = communityMemberRepository
-                .findByProfileIdAndCommunityId(communityUpdateDTO.getUpdaterProfileId(), communityId)
+                .findByProfileIdAndCommunityId(profileId, communityId)
                 .orElseThrow(() -> new NotFoundException("Member"));
 
         if (updater.getRole() == CommunityMember.Role.USER)
@@ -98,17 +97,14 @@ public class CommunityServiceImpl implements CommunityService {
         community.setDescription(communityUpdateDTO.getDescription());
         community.setTags(communityUpdateDTO.getTags());
         community.setUpdatedAt(LocalDateTime.now());
-        community.setUpdatedBy(communityUpdateDTO.getUpdaterProfileId());
+        community.setUpdatedBy(profileId);
 
         return communityRepository.save(community);
     }
 
     @Override
-    public void deleteCommunity(Long communityId, Long deleterId) {
-        Profile profile = profileRepository.findById(deleterId)
-                .orElseThrow(() -> new NotFoundException("Profile"));
-
-        if (profile.getUser().getRole() == UserRole.ROLE_ADMIN) {
+    public void deleteCommunity(Long communityId, String token) {
+        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
             cacheUtils.invalidateCacheListIfConditionMet(cacheName, popularCommunitiesCacheKey,
                     Community.class, cachedCommunities ->
                             cachedCommunities.stream().anyMatch(community -> Objects.equals(community.getId(), communityId))
@@ -118,8 +114,10 @@ public class CommunityServiceImpl implements CommunityService {
             return;
         }
 
+        Long profileId = jwtUtil.getProfileIdFromToken(token);
+
         CommunityMember deleter = communityMemberRepository
-                .findByProfileIdAndCommunityId(deleterId, communityId)
+                .findByProfileIdAndCommunityId(profileId, communityId)
                 .orElseThrow(() -> new NotFoundException("Member"));
 
         if (deleter.getRole() != CommunityMember.Role.OWNER)
@@ -131,19 +129,6 @@ public class CommunityServiceImpl implements CommunityService {
         );
 
         communityRepository.deleteById(communityId);
-    }
-
-    @Override
-    public Community getCommunityByTitle(String communityName) {
-        return communityRepository.findByTitle(communityName);
-    }
-
-    @Override
-    public String getCommunityTags(Long communityId) {
-        Optional<String> optionalTags = communityRepository.findById(communityId).get().getTags().describeConstable();
-        if (optionalTags.isEmpty())
-            throw new RuntimeException();
-        return optionalTags.get();
     }
 
     @Override

@@ -11,11 +11,8 @@ import java.util.List;
 
 public interface CommunityService {
     Community  getCommunity(Long communityId);
-    List<Community> getAllCommunities();
     Community createCommunity(CommunityCreateDTO communityCreateDTO) throws IOException;
-    Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO);
-    void deleteCommunity(Long communityId, Long deleterId);
-    Community getCommunityByTitle(String communityName);
-    String getCommunityTags(Long communityId);
+    Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO, String token);
+    void deleteCommunity(Long communityId, String token);
     List<Community> getTop5PopularCommunities();
 }
