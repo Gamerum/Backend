@@ -9,7 +9,6 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "Comments")
 public class Comment {
