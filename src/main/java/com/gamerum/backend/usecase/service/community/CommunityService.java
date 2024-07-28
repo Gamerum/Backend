@@ -14,7 +14,7 @@ public interface CommunityService {
     List<Community> getAllCommunities();
     Community createCommunity(CommunityCreateDTO communityCreateDTO) throws IOException;
     Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO);
-    void deleteCommunity(Long communityId);
+    void deleteCommunity(Long communityId, Long deleterId);
     Community getCommunityByTitle(String communityName);
     String getCommunityTags(Long communityId);
     List<Community> getTop5PopularCommunities();

@@ -11,6 +11,7 @@ import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
+import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.service.community.CommunityService;
@@ -103,7 +104,27 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public void deleteCommunity(Long communityId) {
+    public void deleteCommunity(Long communityId, Long deleterId) {
+        Profile profile = profileRepository.findById(deleterId)
+                .orElseThrow(() -> new NotFoundException("Profile"));
+
+        if (profile.getUser().getRole() == UserRole.ROLE_ADMIN) {
+            cacheUtils.invalidateCacheListIfConditionMet(cacheName, popularCommunitiesCacheKey,
+                    Community.class, cachedCommunities ->
+                            cachedCommunities.stream().anyMatch(community -> Objects.equals(community.getId(), communityId))
+            );
+
+            communityRepository.deleteById(communityId);
+            return;
+        }
+
+        CommunityMember deleter = communityMemberRepository
+                .findByProfileIdAndCommunityId(deleterId, communityId)
+                .orElseThrow(() -> new NotFoundException("Member"));
+
+        if (deleter.getRole() != CommunityMember.Role.OWNER)
+            throw new NotAllowedException();
+
         cacheUtils.invalidateCacheListIfConditionMet(cacheName, popularCommunitiesCacheKey,
                 Community.class, cachedCommunities ->
                         cachedCommunities.stream().anyMatch(community -> Objects.equals(community.getId(), communityId))
