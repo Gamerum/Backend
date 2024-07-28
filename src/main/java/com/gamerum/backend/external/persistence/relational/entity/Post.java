@@ -1,6 +1,7 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
 import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.PostSyncListener;
+import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,12 +9,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
 @AllArgsConstructor
 @Entity
 @Table(name = "Posts")
 @EntityListeners(PostSyncListener.class)
-public class Post {
+public class Post extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,15 +39,4 @@ public class Post {
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
-
-    @Setter(AccessLevel.NONE)
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    public Post() {
-        createdAt = LocalDateTime.now();
-    }
 }
