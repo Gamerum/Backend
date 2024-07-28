@@ -2,14 +2,12 @@ package com.gamerum.backend.usecase.service.chat.impl;
 
 import com.gamerum.backend.adaptor.dto.chat.message.MessageCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.message.MessageUpdateDTO;
-import com.gamerum.backend.external.persistence.relational.entity.Chat;
-import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
-import com.gamerum.backend.external.persistence.relational.entity.Message;
-import com.gamerum.backend.external.persistence.relational.entity.Profile;
+import com.gamerum.backend.external.persistence.relational.entity.*;
 import com.gamerum.backend.external.persistence.relational.repository.ChatParticipantRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ChatRepository;
 import com.gamerum.backend.external.persistence.relational.repository.MessageRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
+import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
@@ -54,10 +52,18 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void deleteByIdMessage(Long chatId, Long messageId, Long deleterId) {
-        Message message = messageRepository.findByIdAndChatId(messageId, chatId)
-                        .orElseThrow(() -> new NotFoundException("Message"));
+        Profile profile = profileRepository.findById(deleterId)
+                .orElseThrow(() -> new NotFoundException("Profile"));
 
-        if (Objects.equals(message.getProfile().getId(), deleterId)){
+        if (profile.getUser().getRole() == UserRole.ROLE_ADMIN) {
+            messageRepository.deleteById(messageId);
+            return;
+        }
+
+        Message message = messageRepository.findByIdAndChatId(messageId, chatId)
+                .orElseThrow(() -> new NotFoundException("Message"));
+
+        if (Objects.equals(message.getProfile().getId(), deleterId)) {
             messageRepository.deleteById(messageId);
             return;
         }

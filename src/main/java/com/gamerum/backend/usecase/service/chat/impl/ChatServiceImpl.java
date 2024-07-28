@@ -7,7 +7,11 @@ import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.ChatParticipantRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ChatRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
+import com.gamerum.backend.security.user.UserRole;
+import com.gamerum.backend.usecase.exception.HasParticipateException;
+import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
+import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +66,30 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void deleteChat(Long chatId) {
+    public void deleteChat(Long chatId, Long deleterId) {
+        if (deleterId != null) {
+            Profile profile = profileRepository.findById(deleterId)
+                    .orElseThrow(() -> new NotFoundException("Profile"));
+
+            if (profile.getUser().getRole() == UserRole.ROLE_ADMIN) {
+                chatRepository.deleteById(chatId);
+                return;
+            }
+
+            ChatParticipant deleter = chatParticipantRepository
+                    .findByChatIdAndProfileId(chatId, deleterId)
+                    .orElseThrow(NotParticipatedException::new);
+
+            if (!deleter.isAdmin())
+                throw new NotAllowedException();
+
+            chatRepository.deleteById(chatId);
+            return;
+        }
+
+        if (chatParticipantRepository.countByChatId(chatId) != 0)
+            throw new HasParticipateException();
+
         chatRepository.deleteById(chatId);
     }
 

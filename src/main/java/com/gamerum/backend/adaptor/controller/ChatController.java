@@ -56,8 +56,9 @@ public class ChatController {
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @DeleteMapping("/{chatId}")
-    public ResponseEntity<Response> deleteChat(@PathVariable Long chatId) {
-        chatService.deleteChat(chatId);
+    public ResponseEntity<Response> deleteChat(@PathVariable Long chatId,
+                                               @RequestParam(required = false) Long deleterId) {
+        chatService.deleteChat(chatId, deleterId);
         return new ResponseEntity<>(new Response(
                 true,
                 "Chat deleted."),

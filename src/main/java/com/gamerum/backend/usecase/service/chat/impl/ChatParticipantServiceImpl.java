@@ -8,6 +8,7 @@ import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.ChatParticipantRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ChatRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
+import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.AlreadyParticipatedException;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ChatParticipantServiceImpl implements ChatParticipantService {
@@ -50,9 +52,24 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
 
     @Override
     public void deleteByIdChatParticipant(Long chatId, Long chatParticipantId, Long deleterProfileId) {
+        Profile profile = profileRepository.findById(deleterProfileId)
+                .orElseThrow(() -> new NotFoundException("Profile"));
+
+        if (profile.getUser().getRole() == UserRole.ROLE_ADMIN) {
+            chatParticipantRepository.deleteById(chatParticipantId);
+            return;
+        }
+
         ChatParticipant deleter = chatParticipantRepository.findByChatIdAndProfileId(chatId, deleterProfileId)
                 .orElseThrow(NotParticipatedException::new);
+
+        if (Objects.equals(deleter.getProfile().getId(), deleterProfileId)) {
+            chatParticipantRepository.deleteById(chatParticipantId);
+            return;
+        }
+
         if (!deleter.isAdmin()) throw new NotAllowedException();
+
         chatParticipantRepository.deleteById(chatParticipantId);
     }
 

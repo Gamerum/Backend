@@ -13,4 +13,5 @@ public interface ChatParticipantRepository extends JpaRepository<ChatParticipant
     boolean existsByChatIdAndProfileId(Long chatId, Long profileId);
     Optional<ChatParticipant> findByChatIdAndProfileId(Long chatId, Long profileId);
     List<ChatParticipant> findByChatId(Long chatId, Pageable pageable);
+    Long countByChatId(Long chatId);
 }

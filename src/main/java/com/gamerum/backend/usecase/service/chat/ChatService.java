@@ -9,6 +9,6 @@ public interface ChatService {
 
     Chat getByChatId(Long id);
     Chat createChat(ChatCreateDTO chat);
-    void deleteChat(Long id);
+    void deleteChat(Long chatId, Long deleterId);
     List<Chat> getChats(int page, int size);
 }
