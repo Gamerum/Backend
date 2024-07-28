@@ -30,7 +30,7 @@ public class TokenFilter extends OncePerRequestFilter {
             String username = jwtUtil.getUsernameFromToken(token);
             List<GrantedAuthority> authorities = jwtUtil.getGrantedAuthorities(token);
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    username, null, authorities);
+                    username, token, authorities);
             auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(auth);
         }

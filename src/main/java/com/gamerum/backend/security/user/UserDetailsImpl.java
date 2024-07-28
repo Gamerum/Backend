@@ -15,7 +15,6 @@ import java.util.Objects;
 
 @Data
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserDetailsImpl implements UserDetails {
     private Long id;
     private String username;

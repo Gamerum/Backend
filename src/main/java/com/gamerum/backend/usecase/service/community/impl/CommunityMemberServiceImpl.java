@@ -52,11 +52,11 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
                 !profileRepository.existsById(communityMemberCreateDTO.getJoinedByProfileId()))
             throw new NotFoundException("Adder");
 
-        CommunityMember newMember = new CommunityMember(
-                newMemberProfile,
-                community,
-                CommunityMember.Role.USER,
-                communityMemberCreateDTO.getJoinedByProfileId());
+        CommunityMember newMember = CommunityMember.builder()
+                .profile(newMemberProfile)
+                .community(community)
+                .role(CommunityMember.Role.USER)
+                .build();
 
         return communityMemberRepository.save(newMember);
     }

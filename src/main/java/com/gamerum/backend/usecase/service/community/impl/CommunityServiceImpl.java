@@ -21,6 +21,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -53,21 +54,23 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Override
     public Community createCommunity(CommunityCreateDTO communityCreateDTO) {
-        Profile creatorProfile = profileRepository.findById(communityCreateDTO.getCreatorProfileId())
+        Long creatorId = jwtUtil.getCurrentUserProfileId();
+
+        Profile creatorProfile = profileRepository.findById(creatorId)
                 .orElseThrow(() -> new NotFoundException("Profile"));
 
         Community community = communityMapper.communityCreateDTOToCommunity(communityCreateDTO);
         community = communityRepository.save(community);
 
-        CommunityMember creator = new CommunityMember(
-                creatorProfile,
-                community,
-                CommunityMember.Role.OWNER,
-                communityCreateDTO.getCreatorProfileId());
+        CommunityMember creator = CommunityMember.builder()
+                .profile(creatorProfile)
+                .community(community)
+                .role(CommunityMember.Role.OWNER)
+                .build();
 
         creator = communityMemberRepository.save(creator);
 
-        community.getMembers().add(creator);
+        community.setMembers(List.of(creator));
 
         return community;
     }
@@ -89,8 +92,6 @@ public class CommunityServiceImpl implements CommunityService {
         community.setTitle(communityUpdateDTO.getTitle());
         community.setDescription(communityUpdateDTO.getDescription());
         community.setTags(communityUpdateDTO.getTags());
-        community.setUpdatedAt(LocalDateTime.now());
-        community.setUpdatedBy(profileId);
 
         return communityRepository.save(community);
     }

@@ -24,7 +24,6 @@ public abstract class CommunityMapper {
     @Mapping(source = "posts", target = "popularPosts")
     public abstract CommunityGetDTO communityToCommunityGetDTO(Community community) throws IOException;
 
-    @Mapping(source = "creatorProfileId", target = "createdBy")
     public abstract Community communityCreateDTOToCommunity(CommunityCreateDTO communityCreateDTO);
 
     public abstract CommunityMetadataDTO communityToCommunityMetadataDTO(Community community);

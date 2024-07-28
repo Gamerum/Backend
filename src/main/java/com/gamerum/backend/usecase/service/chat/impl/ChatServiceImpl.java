@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -47,15 +48,20 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    @Transactional
     public Chat createChat(ChatCreateDTO chat) {
         Profile creator = profileRepository.findById(chat.getCreatorProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
 
-        Chat newChat = chatRepository.save(new Chat(creator.getId()));
+        Chat newChat = chatRepository.save(new Chat());
 
         //Set Chat Admin
         ChatParticipant admin = chatParticipantRepository.save(
-                new ChatParticipant(creator, newChat, creator.getId(), true));
+                ChatParticipant.builder()
+                        .profile(creator)
+                        .chat(newChat)
+                        .isAdmin(true)
+                        .build());
 
         newChat.getParticipants().add(admin);
 
@@ -64,8 +70,13 @@ public class ChatServiceImpl implements ChatService {
             List<ChatParticipant> chatParticipants = chat.getParticipantProfileIds().stream()
                     .map(id -> profileRepository.findById(id).orElseThrow(() ->
                             new NotFoundException("Profile")))
-                    .map(profile -> new ChatParticipant(profile, newChat, creator.getId(), false))
+                    .map(profile -> ChatParticipant.builder()
+                            .profile(profile)
+                            .chat(newChat)
+                            .isAdmin(false)
+                            .build())
                     .toList();
+
             List<ChatParticipant> participants = chatParticipantRepository.saveAll(chatParticipants);
             newChat.getParticipants().addAll(participants);
         }

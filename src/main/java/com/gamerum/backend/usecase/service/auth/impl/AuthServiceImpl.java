@@ -8,6 +8,7 @@ import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.entity.User;
 import com.gamerum.backend.external.persistence.relational.repository.UserRepository;
 import com.gamerum.backend.security.jwt.JwtUtil;
+import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,14 +35,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public RegisterResponse register(RegisterRequestDTO request) {
 
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(UserRole.ROLE_USER)
+                .build();
 
-        Profile profile = new Profile();
-        profile.setNickname(request.getNickname());
-        profile.setUser(user);
+        Profile profile = Profile.builder()
+                .nickname(request.getNickname())
+                .user(user)
+                .build();
 
         user.setProfile(profile);
         userRepository.save(user);

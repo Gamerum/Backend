@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -43,6 +45,25 @@ public class JwtUtil {
 
     public Long getProfileIdFromToken(String token) {
         return getClaimFromToken(token, claims -> claims.get("profileId", Long.class));
+    }
+
+    public Long getCurrentUserProfileId() {
+        String token = getCurrentUserToken();
+        if (token.isBlank()) return null;
+        return getClaimFromToken(token, claims -> claims.get("profileId", Long.class));
+    }
+
+    public boolean currentUserHasRole(UserRole role) {
+        String token = getCurrentUserToken();
+        if (token.isBlank()) return false;
+        List<GrantedAuthority> authorities = getGrantedAuthorities(token);
+        return authorities.stream().anyMatch(a -> a.getAuthority().equals(role.toString()));
+    }
+
+    public String getCurrentUserToken() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) return (String) auth.getCredentials();
+        return "";
     }
 
     public boolean hasRole(String token, UserRole role) {

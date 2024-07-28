@@ -1,5 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,11 +8,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
 @AllArgsConstructor
 @Entity
 @Table(name = "Comments")
-public class Comment {
+public class Comment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,18 +35,4 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
-
-    @Setter(AccessLevel.NONE)
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "updated_by_profile_id")
-    private Long updatedBy;
-
-    public Comment() {
-        createdAt = LocalDateTime.now();
-    }
 }

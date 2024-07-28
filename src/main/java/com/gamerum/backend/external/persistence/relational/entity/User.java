@@ -3,12 +3,18 @@ package com.gamerum.backend.external.persistence.relational.entity;
 import com.gamerum.backend.security.user.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Users",
         uniqueConstraints = {
@@ -16,6 +22,7 @@ import java.time.LocalDateTime;
                 @UniqueConstraint(columnNames = "email")
         }
 )
+@EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,18 +46,15 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
     private Profile profile;
 
-    @Setter(AccessLevel.NONE)
-    @Column(name = "registered_at", nullable = false)
-    private LocalDateTime registeredAt;
+    @CreatedDate
+    @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @LastModifiedBy
+    private Long lastModifiedBy;
 
-    @Column(name = "updated_by_profile_id")
-    private Long updatedBy;
-
-    public User() {
-        this.registeredAt = LocalDateTime.now();
-        role = UserRole.ROLE_USER;
-    }
+    @LastModifiedDate
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModifiedDate;
 }
