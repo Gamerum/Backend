@@ -7,6 +7,7 @@ import com.gamerum.backend.external.persistence.relational.repository.ChatPartic
 import com.gamerum.backend.external.persistence.relational.repository.ChatRepository;
 import com.gamerum.backend.external.persistence.relational.repository.MessageRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
+import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
@@ -35,12 +36,15 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private ChatParticipantRepository chatParticipantRepository;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @Override
-    public Message createMessage(Long chatId, MessageCreateDTO messageCreateDTO) {
+    public Message createMessage(Long chatId, MessageCreateDTO messageCreateDTO, String token) {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new NotFoundException("Chat"));
 
-        Profile profile = profileRepository.findById(messageCreateDTO.getSenderProfileId())
+        Profile profile = profileRepository.findById(jwtUtil.getProfileIdFromToken(token))
                 .orElseThrow(() -> new NotFoundException("Profile"));
 
         if (chatParticipantRepository.existsByChatIdAndProfileId(chatId, profile.getId()))
@@ -51,25 +55,23 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteByIdMessage(Long chatId, Long messageId, Long deleterId) {
-        Profile profile = profileRepository.findById(deleterId)
-                .orElseThrow(() -> new NotFoundException("Profile"));
-
-        if (profile.getUser().getRole() == UserRole.ROLE_ADMIN) {
-            messageRepository.deleteById(messageId);
-            return;
-        }
-
+    public void deleteByIdMessage(Long chatId, Long messageId, String token) {
         Message message = messageRepository.findByIdAndChatId(messageId, chatId)
                 .orElseThrow(() -> new NotFoundException("Message"));
 
-        if (Objects.equals(message.getProfile().getId(), deleterId)) {
+        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
             messageRepository.deleteById(messageId);
             return;
         }
 
-        // delete by admin
-        ChatParticipant chatParticipant = chatParticipantRepository.findByChatIdAndProfileId(chatId, deleterId)
+        Long profileId = jwtUtil.getProfileIdFromToken(token);
+
+        if (Objects.equals(message.getProfile().getId(), profileId)) {
+            messageRepository.deleteById(messageId);
+            return;
+        }
+
+        ChatParticipant chatParticipant = chatParticipantRepository.findByChatIdAndProfileId(chatId, profileId)
                 .orElseThrow(NotParticipatedException::new);
 
         if (!chatParticipant.isAdmin())
@@ -79,28 +81,30 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> getAllMessages(Long chatId, int page, int size) {
+    public List<Message> getAllMessages(Long chatId, int page, int size, String token) {
         Pageable pageable = PageRequest.of(page, size);
+
+        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN))
+            return messageRepository.findByChatId(chatId, pageable);
+
+        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, jwtUtil.getProfileIdFromToken(token)))
+            throw new NotParticipatedException();
+
         return messageRepository.findByChatId(chatId, pageable);
     }
 
     @Override
-    public Message updateMessage(Long chatId, MessageUpdateDTO messageUpdateDTO) {
+    public Message updateMessage(Long chatId, MessageUpdateDTO messageUpdateDTO, String token) {
+        Long profileId = jwtUtil.getProfileIdFromToken(token);
+
         Message message = messageRepository.findByIdAndChatId(messageUpdateDTO.getId(), chatId)
                 .orElseThrow(() -> new NotFoundException("Message"));
 
         message.setText(messageUpdateDTO.getMessage());
         message.setUpdatedAt(LocalDateTime.now());
-        message.setUpdatedBy(messageUpdateDTO.getUpdaterProfileId());
+        message.setUpdatedBy(profileId);
 
-        if (Objects.equals(message.getProfile().getId(), messageUpdateDTO.getUpdaterProfileId()))
-            return messageRepository.save(message);
-
-        ChatParticipant participant =
-                chatParticipantRepository.findByChatIdAndProfileId(chatId, messageUpdateDTO.getUpdaterProfileId())
-                        .orElseThrow(NotParticipatedException::new);
-
-        if (!participant.isAdmin())
+        if (!Objects.equals(message.getProfile().getId(), profileId))
             throw new NotAllowedException();
 
         return messageRepository.save(message);
