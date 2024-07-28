@@ -1,14 +1,22 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
 import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.ProfileSyncListener;
+import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "Profiles",
@@ -17,7 +25,7 @@ import java.util.List;
                 @UniqueConstraint(columnNames = "user_id")
         }
 )
-@EntityListeners(ProfileSyncListener.class)
+@EntityListeners({ProfileSyncListener.class, AuditingEntityListener.class})
 public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,31 +40,29 @@ public class Profile {
     private User user;
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private List<CommunityMember> joinedCommunities = new ArrayList<>();
+    private List<CommunityMember> joinedCommunities;
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private List<Post> posts = new ArrayList<>();
+    private List<Post> posts;
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private List<ChatParticipant> participatedChats = new ArrayList<>();
+    private List<ChatParticipant> participatedChats;
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private List<Message> messages = new ArrayList<>();
+    private List<Message> messages;
 
-    @Setter(AccessLevel.NONE)
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @CreatedDate
+    @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @LastModifiedBy
+    private Long lastModifiedBy;
 
-    @Column(name = "updated_by_profile_id")
-    private Long updatedBy;
-
-    public Profile() {
-        createdAt = LocalDateTime.now();
-    }
+    @LastModifiedDate
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModifiedDate;
 }
