@@ -1,6 +1,7 @@
 package com.gamerum.backend.security.jwt;
 
 import com.gamerum.backend.security.user.UserDetailsImpl;
+import com.gamerum.backend.security.user.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -40,6 +41,15 @@ public class JwtUtil {
         return getClaimFromToken(token, claims -> claims.get("username", String.class));
     }
 
+    public Long getProfileIdFromToken(String token) {
+        return getClaimFromToken(token, claims -> claims.get("profileId", Long.class));
+    }
+
+    public boolean hasRole(String token, UserRole role) {
+        List<GrantedAuthority> authorities = getGrantedAuthorities(token);
+        return authorities.stream().anyMatch(a -> a.getAuthority().equals(role.toString()));
+    }
+
     public List<GrantedAuthority> getGrantedAuthorities(String token) {
         List<String> authorityStrings = getClaimFromToken(token, claims -> claims.get("authorities", List.class));
         if (authorityStrings == null) return Collections.emptyList();
@@ -75,6 +85,7 @@ public class JwtUtil {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", userDetails.getUsername());
+        claims.put("profileId", userDetails.getProfileId());
         claims.put("authorities", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));

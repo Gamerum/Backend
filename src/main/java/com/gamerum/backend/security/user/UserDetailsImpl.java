@@ -19,11 +19,12 @@ public class UserDetailsImpl implements UserDetails {
     private String username;
     @JsonIgnore
     private String password;
+    private Long profileId;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().toString()));
-        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), authorities);
+        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), user.getProfile().getId(), authorities);
     }
 
     @Override

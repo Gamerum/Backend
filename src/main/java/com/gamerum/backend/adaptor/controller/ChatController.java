@@ -35,17 +35,18 @@ public class ChatController {
     @Autowired
     private MessageService messageService;
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/{chatId}")
-    public ResponseEntity<ResponseData<ChatGetDTO>> getChatById(@PathVariable Long chatId) {
+    public ResponseEntity<ResponseData<ChatGetDTO>> getChatById(@PathVariable long chatId,
+                                                                @RequestParam String token) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Chat received.",
-                ChatMapper.INSTANCE.chatToChatGetDTO(chatService.getByChatId(chatId))),
+                ChatMapper.INSTANCE.chatToChatGetDTO(chatService.getByChatId(chatId, token))),
                 HttpStatus.OK);
     }
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
     public ResponseEntity<ResponseData<ChatGetDTO>> createChat(@RequestBody ChatCreateDTO chatCreateDTO) {
         return new ResponseEntity<>(new ResponseData<>(true,
@@ -54,29 +55,32 @@ public class ChatController {
                 HttpStatus.CREATED);
     }
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping("/{chatId}")
     public ResponseEntity<Response> deleteChat(@PathVariable Long chatId,
-                                               @RequestParam(required = false) Long deleterId) {
-        chatService.deleteChat(chatId, deleterId);
+                                               @RequestParam(required = false) String token) {
+        chatService.deleteChat(chatId, token);
         return new ResponseEntity<>(new Response(
                 true,
                 "Chat deleted."),
                 HttpStatus.NO_CONTENT);
     }
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping
-    public ResponseEntity<ResponseData<List<ChatGetDTO>>> getChats(@RequestParam(required = false) int page,
-                                                                   @RequestParam int size) {
+    public ResponseEntity<ResponseData<List<ChatGetDTO>>> getChats(
+            @RequestParam String token,
+            @RequestParam int size,
+            @RequestParam(required = false) int page,
+            @RequestParam(required = false) long profileId) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Chats received.",
-                ChatMapper.INSTANCE.chatsToChatGetDTOs(chatService.getChats(page, size))),
+                ChatMapper.INSTANCE.chatsToChatGetDTOs(chatService.getChats(token, page, size, profileId))),
                 HttpStatus.OK);
     }
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping("/{chatId}/participants")
     public ResponseEntity<ResponseData<ChatParticipantGetDTO>> addChatParticipant(
             @PathVariable long chatId,
@@ -89,7 +93,7 @@ public class ChatController {
                 HttpStatus.CREATED);
     }
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping("/{chatId}/participants")
     public ResponseEntity<Response> deleteChatParticipant(
             @PathVariable Long chatId,
@@ -102,7 +106,7 @@ public class ChatController {
                 HttpStatus.NO_CONTENT);
     }
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/{chatId}/participants")
     public ResponseEntity<ResponseData<List<ChatParticipantGetDTO>>> getChatParticipants(
             @PathVariable Long chatId,
@@ -116,7 +120,7 @@ public class ChatController {
                 HttpStatus.OK);
     }
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/{chatId}/participants")
     public ResponseEntity<ResponseData<ChatParticipantGetDTO>> updateChatParticipant(
             @PathVariable Long chatId,
@@ -129,7 +133,8 @@ public class ChatController {
                 HttpStatus.OK
         );
     }
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping("/{chatId}/messages")
     public ResponseEntity<ResponseData<MessageGetDTO>> addMessage(
             @PathVariable Long chatId,
@@ -142,7 +147,7 @@ public class ChatController {
                 HttpStatus.CREATED);
     }
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping("/{chatId}/messages")
     public ResponseEntity<Response> deleteMessage(
             @PathVariable Long chatId,
@@ -155,7 +160,7 @@ public class ChatController {
                 HttpStatus.NO_CONTENT);
     }
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/{chatId}/messages")
     public ResponseEntity<ResponseData<List<MessageGetDTO>>> getAllMessages(
             @PathVariable Long chatId,
@@ -169,11 +174,11 @@ public class ChatController {
                 HttpStatus.OK);
     }
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/{chatId}/messages")
     public ResponseEntity<ResponseData<MessageGetDTO>> updateMessage(
             @PathVariable Long chatId,
-            @RequestBody MessageUpdateDTO messageUpdateDTO){
+            @RequestBody MessageUpdateDTO messageUpdateDTO) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Message updated.",

@@ -7,6 +7,7 @@ import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.ChatParticipantRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ChatRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
+import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.HasParticipateException;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -30,13 +30,20 @@ public class ChatServiceImpl implements ChatService {
     private ProfileRepository profileRepository;
     @Autowired
     private ChatParticipantRepository chatParticipantRepository;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Override
-    public Chat getByChatId(Long chatId) {
-        Optional<Chat> chat = chatRepository.findByIdWithParticipants(chatId);
-        if (chat.isEmpty())
-            throw new RuntimeException();
-        return chat.get();
+    public Chat getByChatId(long chatId, String token) {
+        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN))
+            return chatRepository
+                    .findByIdWithParticipantsAndMessages(chatId)
+                    .orElseThrow(() -> new NotFoundException("Chat"));
+
+        Long profileId = jwtUtil.getProfileIdFromToken(token);
+        return chatRepository
+                .findByIdWithParticipantsAndMessagesAndProfileId(chatId, profileId)
+                .orElseThrow(() -> new NotFoundException("Chat"));
     }
 
     @Override
@@ -49,6 +56,7 @@ public class ChatServiceImpl implements ChatService {
         //Set Chat Admin
         ChatParticipant admin = chatParticipantRepository.save(
                 new ChatParticipant(creator, newChat, creator.getId(), true));
+
         newChat.getParticipants().add(admin);
 
         //Set Chat Participants
@@ -66,18 +74,16 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void deleteChat(Long chatId, Long deleterId) {
-        if (deleterId != null) {
-            Profile profile = profileRepository.findById(deleterId)
-                    .orElseThrow(() -> new NotFoundException("Profile"));
-
-            if (profile.getUser().getRole() == UserRole.ROLE_ADMIN) {
+    public void deleteChat(Long chatId, String token) {
+        if (token != null) {
+            if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
                 chatRepository.deleteById(chatId);
                 return;
             }
+            Long deleterProfileId = jwtUtil.getProfileIdFromToken(token);
 
             ChatParticipant deleter = chatParticipantRepository
-                    .findByChatIdAndProfileId(chatId, deleterId)
+                    .findByChatIdAndProfileId(chatId, deleterProfileId)
                     .orElseThrow(NotParticipatedException::new);
 
             if (!deleter.isAdmin())
@@ -94,8 +100,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<Chat> getChats(int page, int size) {
+    public List<Chat> getChats(String token, int page, int size, long profileId) {
         Pageable pageable = PageRequest.of(page, size);
-        return chatRepository.findAll(pageable).getContent();
+
+        if (profileId > 0 && jwtUtil.hasRole(token, UserRole.ROLE_ADMIN))
+            return chatRepository.findChatsByProfileId(profileId, pageable);
+
+        return chatRepository.findChatsByProfileId(jwtUtil.getProfileIdFromToken(token), pageable);
     }
 }
