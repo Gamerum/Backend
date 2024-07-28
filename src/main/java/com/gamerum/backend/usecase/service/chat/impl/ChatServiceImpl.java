@@ -75,26 +75,18 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void deleteChat(Long chatId, String token) {
-        if (token != null) {
-            if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
-                chatRepository.deleteById(chatId);
-                return;
-            }
-            Long deleterProfileId = jwtUtil.getProfileIdFromToken(token);
-
-            ChatParticipant deleter = chatParticipantRepository
-                    .findByChatIdAndProfileId(chatId, deleterProfileId)
-                    .orElseThrow(NotParticipatedException::new);
-
-            if (!deleter.isAdmin())
-                throw new NotAllowedException();
-
+        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
             chatRepository.deleteById(chatId);
             return;
         }
+        Long deleterProfileId = jwtUtil.getProfileIdFromToken(token);
 
-        if (chatParticipantRepository.countByChatId(chatId) != 0)
-            throw new HasParticipateException();
+        ChatParticipant deleter = chatParticipantRepository
+                .findByChatIdAndProfileId(chatId, deleterProfileId)
+                .orElseThrow(NotParticipatedException::new);
+
+        if (!deleter.isAdmin())
+            throw new NotAllowedException();
 
         chatRepository.deleteById(chatId);
     }
