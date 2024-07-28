@@ -7,6 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ChatParticipantUpdateDTO {
     private Long id;
-    private Long updaterProfileId;
     private boolean isAdmin;
 }
