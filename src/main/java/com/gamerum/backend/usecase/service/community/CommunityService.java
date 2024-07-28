@@ -9,8 +9,8 @@ import java.io.IOException;
 public interface CommunityService {
     Community  getCommunity(Long communityId);
     Community createCommunity(CommunityCreateDTO communityCreateDTO) throws IOException;
-    Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO, String token);
-    void deleteCommunity(Long communityId, String token);
+    Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO);
+    void deleteCommunity(Long communityId);
     //Later new Service
     //List<Community> getTop5PopularCommunities();
 }

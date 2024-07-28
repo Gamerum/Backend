@@ -38,13 +38,11 @@ public class ChatController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/{chatId}")
     public ResponseEntity<ResponseData<ChatGetDTO>> getChatById(
-            @PathVariable long chatId,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
+            @PathVariable long chatId) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Chat received.",
-                ChatMapper.INSTANCE.chatToChatGetDTO(chatService.getByChatId(chatId, token))),
+                ChatMapper.INSTANCE.chatToChatGetDTO(chatService.getByChatId(chatId))),
                 HttpStatus.OK);
     }
 
@@ -59,10 +57,8 @@ public class ChatController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping("/{chatId}")
-    public ResponseEntity<Response> deleteChat(@PathVariable Long chatId,
-                                               @RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
-        chatService.deleteChat(chatId, token);
+    public ResponseEntity<Response> deleteChat(@PathVariable Long chatId) {
+        chatService.deleteChat(chatId);
         return new ResponseEntity<>(new Response(
                 true,
                 "Chat deleted."),
@@ -72,15 +68,13 @@ public class ChatController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping
     public ResponseEntity<ResponseData<List<ChatGetDTO>>> getChats(
-            @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam int size,
             @RequestParam(required = false) int page,
             @RequestParam(required = false) long profileId) {
-        String token = authorizationHeader.substring(7);
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Chats received.",
-                ChatMapper.INSTANCE.chatsToChatGetDTOs(chatService.getChats(token, page, size, profileId))),
+                ChatMapper.INSTANCE.chatsToChatGetDTOs(chatService.getChats(page, size, profileId))),
                 HttpStatus.OK);
     }
 
@@ -101,10 +95,8 @@ public class ChatController {
     @DeleteMapping("/{chatId}/participants")
     public ResponseEntity<Response> deleteChatParticipant(
             @PathVariable Long chatId,
-            @RequestParam Long chatParticipantId,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
-        chatParticipantService.deleteByIdChatParticipant(chatId, chatParticipantId, token);
+            @RequestParam Long chatParticipantId) {
+        chatParticipantService.deleteByIdChatParticipant(chatId, chatParticipantId);
         return new ResponseEntity<>(new Response(
                 true,
                 "Participant removed."),
@@ -116,14 +108,12 @@ public class ChatController {
     public ResponseEntity<ResponseData<List<ChatParticipantGetDTO>>> getChatParticipants(
             @PathVariable Long chatId,
             @RequestParam(required = false) int page,
-            @RequestParam int size,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
+            @RequestParam int size) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Participants received.",
                 ChatParticipantMapper.INSTANCE.chatParticipantsToChatParticipantGetDTOs(
-                        chatParticipantService.getChatParticipants(chatId, page, size, token))),
+                        chatParticipantService.getChatParticipants(chatId, page, size))),
                 HttpStatus.OK);
     }
 
@@ -131,14 +121,12 @@ public class ChatController {
     @PutMapping("/{chatId}/participants")
     public ResponseEntity<ResponseData<ChatParticipantGetDTO>> updateChatParticipant(
             @PathVariable Long chatId,
-            @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
-        String token = authorizationHeader.substring(7);
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Participant updated",
                 ChatParticipantMapper.INSTANCE.chatParticipantToChatParticipantGetDTO(
-                        chatParticipantService.updateChatParticipant(chatId, chatParticipantUpdateDTO, token))),
+                        chatParticipantService.updateChatParticipant(chatId, chatParticipantUpdateDTO))),
                 HttpStatus.OK
         );
     }
@@ -147,14 +135,12 @@ public class ChatController {
     @PostMapping("/{chatId}/messages")
     public ResponseEntity<ResponseData<MessageGetDTO>> addMessage(
             @PathVariable Long chatId,
-            @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody MessageCreateDTO messageCreateDTO) {
-        String token = authorizationHeader.substring(7);
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Message saved.",
                 MessageMapper.INSTANCE.messageToMessageGetDTO(
-                        messageService.createMessage(chatId, messageCreateDTO, token))),
+                        messageService.createMessage(chatId, messageCreateDTO))),
                 HttpStatus.CREATED);
     }
 
@@ -162,10 +148,8 @@ public class ChatController {
     @DeleteMapping("/{chatId}/messages")
     public ResponseEntity<Response> deleteMessage(
             @PathVariable Long chatId,
-            @RequestParam Long messageId,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
-        messageService.deleteByIdMessage(chatId, messageId, token);
+            @RequestParam Long messageId) {
+        messageService.deleteByIdMessage(chatId, messageId);
         return new ResponseEntity<>(new Response(
                 true,
                 "Message deleted."),
@@ -177,14 +161,12 @@ public class ChatController {
     public ResponseEntity<ResponseData<List<MessageGetDTO>>> getAllMessages(
             @PathVariable Long chatId,
             @RequestParam(required = false) int page,
-            @RequestParam int size,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
+            @RequestParam int size) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Messages received.",
                 MessageMapper.INSTANCE.messagesToMessageGetDTOs(
-                        messageService.getAllMessages(chatId, page, size, token))),
+                        messageService.getAllMessages(chatId, page, size))),
                 HttpStatus.OK);
     }
 
@@ -192,14 +174,12 @@ public class ChatController {
     @PutMapping("/{chatId}/messages")
     public ResponseEntity<ResponseData<MessageGetDTO>> updateMessage(
             @PathVariable Long chatId,
-            @RequestBody MessageUpdateDTO messageUpdateDTO,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
+            @RequestBody MessageUpdateDTO messageUpdateDTO) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Message updated.",
                 MessageMapper.INSTANCE.messageToMessageGetDTO(
-                        messageService.updateMessage(chatId, messageUpdateDTO, token))),
+                        messageService.updateMessage(chatId, messageUpdateDTO))),
                 HttpStatus.OK);
     }
 }

@@ -70,11 +70,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(Long communityId, Long postId, PostUpdateDTO postUpdateDTO, String token) {
+    public Post updatePost(Long communityId, Long postId, PostUpdateDTO postUpdateDTO) {
         Post post = postRepository.findByIdAndCommunityId(postId, communityId)
                 .orElseThrow(() -> new NotFoundException("Post"));
 
-        if(!Objects.equals(post.getProfile().getId(), jwtUtil.getProfileIdFromToken(token)))
+        if(!Objects.equals(post.getProfile().getId(), jwtUtil.getCurrentUserProfileId()))
             throw new NotAllowedException();
 
         post.setTitle(postUpdateDTO.getTitle());
@@ -85,13 +85,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePostById(Long communityId, Long postId, String token) {
-        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
+    public void deletePostById(Long communityId, Long postId) {
+        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
             postRepository.deleteById(postId);
             return;
         }
 
-        Long profileId = jwtUtil.getProfileIdFromToken(token);
+        Long profileId = jwtUtil.getCurrentUserProfileId();
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Post"));

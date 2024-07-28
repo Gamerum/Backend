@@ -76,14 +76,12 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO, String token) {
+    public Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO) {
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("Community"));
 
-        Long profileId = jwtUtil.getProfileIdFromToken(token);
-
         CommunityMember updater = communityMemberRepository
-                .findByProfileIdAndCommunityId(profileId, communityId)
+                .findByProfileIdAndCommunityId(jwtUtil.getCurrentUserProfileId(), communityId)
                 .orElseThrow(() -> new NotFoundException("Member"));
 
         if (updater.getRole() == CommunityMember.Role.USER)
@@ -97,8 +95,8 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public void deleteCommunity(Long communityId, String token) {
-        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
+    public void deleteCommunity(Long communityId) {
+        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
             cacheUtils.invalidateCacheListIfConditionMet(cacheName, popularCommunitiesCacheKey,
                     Community.class, cachedCommunities ->
                             cachedCommunities.stream().anyMatch(community -> Objects.equals(community.getId(), communityId))
@@ -108,10 +106,8 @@ public class CommunityServiceImpl implements CommunityService {
             return;
         }
 
-        Long profileId = jwtUtil.getProfileIdFromToken(token);
-
         CommunityMember deleter = communityMemberRepository
-                .findByProfileIdAndCommunityId(profileId, communityId)
+                .findByProfileIdAndCommunityId(jwtUtil.getCurrentUserProfileId(), communityId)
                 .orElseThrow(() -> new NotFoundException("Member"));
 
         if (deleter.getRole() != CommunityMember.Role.OWNER)

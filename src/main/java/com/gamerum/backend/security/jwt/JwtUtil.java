@@ -43,10 +43,6 @@ public class JwtUtil {
         return getClaimFromToken(token, claims -> claims.get("username", String.class));
     }
 
-    public Long getProfileIdFromToken(String token) {
-        return getClaimFromToken(token, claims -> claims.get("profileId", Long.class));
-    }
-
     public Long getCurrentUserProfileId() {
         String token = getCurrentUserToken();
         if (token.isBlank()) return null;
@@ -64,11 +60,6 @@ public class JwtUtil {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) return (String) auth.getCredentials();
         return "";
-    }
-
-    public boolean hasRole(String token, UserRole role) {
-        List<GrantedAuthority> authorities = getGrantedAuthorities(token);
-        return authorities.stream().anyMatch(a -> a.getAuthority().equals(role.toString()));
     }
 
     public List<GrantedAuthority> getGrantedAuthorities(String token) {

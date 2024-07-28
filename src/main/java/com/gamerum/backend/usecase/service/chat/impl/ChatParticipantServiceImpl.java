@@ -57,13 +57,13 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     @Override
-    public void deleteByIdChatParticipant(Long chatId, Long chatParticipantId, String token) {
-        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
+    public void deleteByIdChatParticipant(Long chatId, Long chatParticipantId) {
+        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
             chatParticipantRepository.deleteById(chatParticipantId);
             return;
         }
 
-        Long deleterProfileId = jwtUtil.getProfileIdFromToken(token);
+        Long deleterProfileId = jwtUtil.getCurrentUserProfileId();
 
         ChatParticipant deleter = chatParticipantRepository.findByChatIdAndProfileId(chatId, deleterProfileId)
                 .orElseThrow(NotParticipatedException::new);
@@ -82,23 +82,21 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     @Override
-    public List<ChatParticipant> getChatParticipants(Long chatId, int page, int size, String token) {
+    public List<ChatParticipant> getChatParticipants(Long chatId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN))
+        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN))
             return chatParticipantRepository.findByChatId(chatId, pageable);
 
-        Long profileId = jwtUtil.getProfileIdFromToken(token);
-
-        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, profileId))
+        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, jwtUtil.getCurrentUserProfileId()))
             throw new NotParticipatedException();
 
         return chatParticipantRepository.findByChatId(chatId, pageable);
     }
 
     @Override
-    public ChatParticipant updateChatParticipant(long chatId, ChatParticipantUpdateDTO chatParticipantUpdateDTO, String token) {
-        Long profileId = jwtUtil.getProfileIdFromToken(token);
+    public ChatParticipant updateChatParticipant(long chatId, ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
+        Long profileId = jwtUtil.getCurrentUserProfileId();
 
         ChatParticipant updater = chatParticipantRepository
                 .findByChatIdAndProfileId(chatId, profileId)

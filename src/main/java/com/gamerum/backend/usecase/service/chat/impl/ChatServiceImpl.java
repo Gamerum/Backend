@@ -35,15 +35,14 @@ public class ChatServiceImpl implements ChatService {
     private JwtUtil jwtUtil;
 
     @Override
-    public Chat getByChatId(long chatId, String token) {
-        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN))
+    public Chat getByChatId(long chatId) {
+        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN))
             return chatRepository
                     .findByIdWithParticipantsAndMessages(chatId)
                     .orElseThrow(() -> new NotFoundException("Chat"));
 
-        Long profileId = jwtUtil.getProfileIdFromToken(token);
         return chatRepository
-                .findByIdWithParticipantsAndMessagesAndProfileId(chatId, profileId)
+                .findByIdWithParticipantsAndMessagesAndProfileId(chatId, jwtUtil.getCurrentUserProfileId())
                 .orElseThrow(() -> new NotFoundException("Chat"));
     }
 
@@ -85,15 +84,14 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void deleteChat(Long chatId, String token) {
-        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
+    public void deleteChat(Long chatId) {
+        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
             chatRepository.deleteById(chatId);
             return;
         }
-        Long deleterProfileId = jwtUtil.getProfileIdFromToken(token);
 
         ChatParticipant deleter = chatParticipantRepository
-                .findByChatIdAndProfileId(chatId, deleterProfileId)
+                .findByChatIdAndProfileId(chatId, jwtUtil.getCurrentUserProfileId())
                 .orElseThrow(NotParticipatedException::new);
 
         if (!deleter.isAdmin())
@@ -103,12 +101,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<Chat> getChats(String token, int page, int size, long profileId) {
+    public List<Chat> getChats(int page, int size, long profileId) {
         Pageable pageable = PageRequest.of(page, size);
 
-        if (profileId > 0 && jwtUtil.hasRole(token, UserRole.ROLE_ADMIN))
+        if (profileId > 0 && jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN))
             return chatRepository.findChatsByProfileId(profileId, pageable);
 
-        return chatRepository.findChatsByProfileId(jwtUtil.getProfileIdFromToken(token), pageable);
+        return chatRepository.findChatsByProfileId(jwtUtil.getCurrentUserProfileId(), pageable);
     }
 }

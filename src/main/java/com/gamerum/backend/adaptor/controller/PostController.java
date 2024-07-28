@@ -41,13 +41,11 @@ public class PostController {
     public ResponseEntity<ResponseData<PostGetDTO>> updatePost(
             @PathVariable Long communityId,
             @RequestParam Long postId,
-            @RequestBody PostUpdateDTO postUpdateDTO,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
+            @RequestBody PostUpdateDTO postUpdateDTO) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Post updated.",
-                PostMapper.INSTANCE.postToPostGetDTO(postService.updatePost(communityId, postId, postUpdateDTO, token))),
+                PostMapper.INSTANCE.postToPostGetDTO(postService.updatePost(communityId, postId, postUpdateDTO))),
                 HttpStatus.OK);
     }
 
@@ -55,10 +53,8 @@ public class PostController {
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     public ResponseEntity<Response> deletePostById(
             @PathVariable Long communityId,
-            @RequestParam Long postId,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
-        postService.deletePostById(communityId, postId, token);
+            @RequestParam Long postId) {
+        postService.deletePostById(communityId, postId);
         return new ResponseEntity<>(new Response(
                 true,
                 "Post deleted."),
