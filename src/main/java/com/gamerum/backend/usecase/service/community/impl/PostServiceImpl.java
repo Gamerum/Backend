@@ -1,9 +1,13 @@
 package com.gamerum.backend.usecase.service.community.impl;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostUpdateDTO;
 import com.gamerum.backend.adaptor.mapper.community.PostMapper;
+import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
+import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
@@ -11,6 +15,7 @@ import com.gamerum.backend.external.persistence.relational.repository.CommunityR
 import com.gamerum.backend.external.persistence.relational.repository.PostRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.security.jwt.JwtUtil;
+import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
@@ -36,6 +41,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private CommunityMemberRepository communityMemberRepository;
+
+    @Autowired
+    private ElasticsearchRepository elasticsearchRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -78,36 +86,35 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePostById(Long postId) {
+    public void deletePostById(Long communityId, Long postId, String token) {
+        if (jwtUtil.hasRole(token, UserRole.ROLE_ADMIN)) {
+            postRepository.deleteById(postId);
+            return;
+        }
+
+        Long profileId = jwtUtil.getProfileIdFromToken(token);
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("Post"));
+
+        if (Objects.equals(post.getProfile().getId(), profileId)) {
+            postRepository.delete(post);
+            return;
+        }
+
+        CommunityMember deleter = communityMemberRepository
+                .findByProfileIdAndCommunityId(profileId, communityId)
+                .orElseThrow(() -> new NotFoundException("Member"));
+
+        if (deleter.getRole() == CommunityMember.Role.USER)
+            throw new NotAllowedException();
+
         postRepository.deleteById(postId);
     }
 
     @Override
-    public Post getPostById(Long postId) {
-        Optional<Post> post = postRepository.findById(postId);
-        if (post.isEmpty()) {
-            throw new RuntimeException();
-        }
-        return post.get();
-    }
-
-    @Override
-    public List<Post> getAllCommunityPosts(Long communityId) {
-        return postRepository.findByCommunityId(communityId);
-    }
-
-    @Override
-    public List<Post> getAllProfilePosts(Long profileId) {
-        return postRepository.findByProfileId(profileId);
-    }
-
-    @Override
-    public Post getPostByTitle(String title) {
-        return postRepository.findByTitle(title);
-    }
-
-    @Override
-    public List<Post> getAllTagPosts(String tag) {
-        return postRepository.findByTag(tag);
+    public Post getPostById(Long communityId, Long postId) {
+        return postRepository.findByIdAndCommunityId(postId, communityId)
+                .orElseThrow(() -> new NotFoundException("Post"));
     }
 }

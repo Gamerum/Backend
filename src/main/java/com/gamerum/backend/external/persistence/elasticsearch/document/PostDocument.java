@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import java.time.LocalDateTime;
+
 @EqualsAndHashCode(callSuper = true)
 @Document(indexName = "post")
 @Data
@@ -18,7 +20,10 @@ public class PostDocument extends DocumentBase{
     private String id;
     private String title;
     private String text;
+    private Long clickCount;
     private CommunityDocument community;
+    private Long createdTimestamp;
+    private Long lastModifiedTimestamp;
 
     public PostDocument(Post post, CommunityDocument communityDocument) {
         id = post.getId().toString();
