@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "CommunityMembers")
@@ -47,7 +48,11 @@ public class CommunityMember {
     @Column(name = "updated_by_profile_id")
     private Long updatedBy;
 
-    public CommunityMember() {
+    public CommunityMember(Profile profile, Community community, Role role, long joinedBy) {
+        this.profile = profile;
+        this.community = community;
+        this.role = role;
         joinedAt = LocalDateTime.now();
+        this.joinedBy = joinedBy;
     }
 }

@@ -29,7 +29,9 @@ public class Community {
     private String description;
 
     private String tags;
+
     private long clickCount;
+
     @Column(nullable = false)
     private String gameId;
 
