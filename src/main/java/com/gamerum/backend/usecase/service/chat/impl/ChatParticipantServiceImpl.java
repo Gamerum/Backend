@@ -73,6 +73,9 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
         if (!deleter.isAdmin()) throw new NotAllowedException();
 
         chatParticipantRepository.deleteById(chatParticipantId);
+
+        if (chatParticipantRepository.countByChatId(chatId) == 0)
+            chatRepository.deleteById(chatId);
     }
 
     @Override
@@ -95,7 +98,7 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
         Long profileId = jwtUtil.getProfileIdFromToken(token);
 
         ChatParticipant updater = chatParticipantRepository
-                .findByChatIdAndProfileId(chatId,profileId)
+                .findByChatIdAndProfileId(chatId, profileId)
                 .orElseThrow(NotParticipatedException::new);
 
         if (!updater.isAdmin()) throw new NotAllowedException();
