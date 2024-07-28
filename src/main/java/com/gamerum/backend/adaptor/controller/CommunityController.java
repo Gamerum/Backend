@@ -9,8 +9,6 @@ import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMemberMapper;
-import com.gamerum.backend.external.persistence.relational.entity.Community;
-import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import com.gamerum.backend.usecase.service.community.CommunityMemberService;
 import com.gamerum.backend.usecase.service.community.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +32,7 @@ public class CommunityController {
 
     @Autowired
     private CommunityMapper communityMapper;
-    @Autowired
-    private CommunityMemberMapper communityMemberMapper;
+
 
     // Get a community by ID
     @GetMapping("/{communityId}")
@@ -131,10 +128,5 @@ public class CommunityController {
                 true,
                 "Member deleted."),
                 HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping("/public/populars")
-    public ResponseEntity<List<Community>> getTop5PopularCommunities() {
-        return new ResponseEntity<>(communityService.getTop5PopularCommunities(), HttpStatus.OK);
     }
 }

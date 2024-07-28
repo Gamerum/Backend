@@ -1,7 +1,12 @@
 package com.gamerum.backend.adaptor.controller;
 
+import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
+import com.gamerum.backend.adaptor.dto.community.post.PostGetDTO;
+import com.gamerum.backend.adaptor.dto.community.post.PostUpdateDTO;
+import com.gamerum.backend.adaptor.dto.response.ResponseData;
+import com.gamerum.backend.adaptor.mapper.community.PostMapper;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
-import com.gamerum.backend.usecase.service.post.PostService;
+import com.gamerum.backend.usecase.service.community.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/communities/{communityId}/posts")
 public class PostController {
 
     @Autowired
@@ -20,16 +25,30 @@ public class PostController {
     // Create a new post
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        return new ResponseEntity<>(postService.createPost(post), HttpStatus.CREATED);
+    public ResponseEntity<ResponseData<PostGetDTO>> createPost(
+            @PathVariable Long communityId,
+            @RequestBody PostCreateDTO postCreateDTO) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Post created.",
+                PostMapper.INSTANCE.postToPostGetDTO(postService.createPost(communityId, postCreateDTO))),
+                HttpStatus.CREATED);
     }
 
     // Update an existing post
-    @PutMapping("/{id}")
+    @PutMapping
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    public ResponseEntity<Post> updatePost(@PathVariable Long postId, @RequestBody Post post) {
-        post.setId(postId);
-        return new ResponseEntity<>(postService.updatePost(post), HttpStatus.OK);
+    public ResponseEntity<ResponseData<PostGetDTO>> updatePost(
+            @PathVariable Long communityId,
+            @RequestParam Long postId,
+            @RequestBody PostUpdateDTO postUpdateDTO,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Post updated.",
+                PostMapper.INSTANCE.postToPostGetDTO(postService.updatePost(communityId, postId, postUpdateDTO, token))),
+                HttpStatus.OK);
     }
 
     // Delete a post by ID

@@ -6,11 +6,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostRepository extends CrudRepository<Post, Long> {
     Post findByTitle(String title);
+    Optional<Post> findByIdAndCommunityId(Long id, Long communityId);
     List<Post> findByTag(String tag);
-    List<Post> findByCommunityId(@Param("community_id")Long id);
-    List<Post> findByProfileId(@Param("profile_id")Long id);
+    List<Post> findByCommunityId(Long id);
+    List<Post> findByProfileId(Long id);
+
 }

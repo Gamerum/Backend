@@ -1,7 +1,6 @@
 package com.gamerum.backend.usecase.service.community.impl;
 
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
-import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
@@ -19,16 +18,10 @@ import com.gamerum.backend.usecase.service.community.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @CacheConfig(cacheNames = "${cache.config.data.community.cache_name}")
@@ -131,10 +124,11 @@ public class CommunityServiceImpl implements CommunityService {
         communityRepository.deleteById(communityId);
     }
 
-    @Override
-    @Cacheable(key = popularCommunitiesCacheKey, unless = "#result == null || #result.size() == 0")
-    public List<Community> getTop5PopularCommunities() {
-        Pageable pageable = PageRequest.of(0, 5);
-        return communityRepository.findAllByOrderByClickCountDesc(pageable);
-    }
+    //Later new Service
+//    @Override
+//    @Cacheable(key = popularCommunitiesCacheKey, unless = "#result == null || #result.size() == 0")
+//    public List<Community> getTop5PopularCommunities() {
+//        Pageable pageable = PageRequest.of(0, 5);
+//        return communityRepository.findAllByOrderByClickCountDesc(pageable);
+//    }
 }

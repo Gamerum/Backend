@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "Posts")
 @EntityListeners(PostSyncListener.class)
@@ -44,9 +43,6 @@ public class Post {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @Column(name = "updated_by_profile_id")
-    private Long updatedBy;
 
     public Post() {
         createdAt = LocalDateTime.now();

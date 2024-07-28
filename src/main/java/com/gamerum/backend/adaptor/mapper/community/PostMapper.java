@@ -1,5 +1,6 @@
 package com.gamerum.backend.adaptor.mapper.community;
 
+import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostGetDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostMetadataDTO;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
@@ -18,6 +19,9 @@ public interface PostMapper {
     @Mapping(source = "community.id", target = "communityId")
     @Mapping(source = "community.title", target = "communityName")
     PostGetDTO postToPostGetDTO(Post post);
+
+
+    Post postCreateDTOToPost(PostCreateDTO postCreateDTO);
 
     @Mapping(source = "profile.id", target = "writerId")
     @Mapping(source = "profile.nickname", target = "writerNickname")
