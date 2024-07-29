@@ -5,7 +5,6 @@ import com.gamerum.backend.external.persistence.relational.audit.entity.Auditabl
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "Posts")
 @EntityListeners(PostSyncListener.class)
@@ -37,6 +37,7 @@ public class Post extends Auditable {
     @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
+    @Transient
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 }

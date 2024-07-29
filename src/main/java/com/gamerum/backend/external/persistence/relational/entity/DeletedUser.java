@@ -4,11 +4,10 @@ import com.gamerum.backend.external.persistence.relational.audit.entity.Auditabl
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "DeletedUsers")

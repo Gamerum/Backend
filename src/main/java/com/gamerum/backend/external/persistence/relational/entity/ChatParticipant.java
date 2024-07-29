@@ -1,10 +1,9 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -22,7 +21,8 @@ public class ChatParticipant extends Auditable {
     @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;
 

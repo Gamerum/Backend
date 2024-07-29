@@ -5,13 +5,13 @@ import com.gamerum.backend.external.persistence.relational.audit.entity.Auditabl
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "Communities",
@@ -38,9 +38,11 @@ public class Community extends Auditable {
     @Column(nullable = false)
     private String gameId;
 
+    @Transient
     @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
     private List<CommunityMember> members = new ArrayList<>();
 
+    @Transient
     @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<>();
 }
