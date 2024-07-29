@@ -4,8 +4,6 @@ import com.gamerum.backend.external.persistence.relational.audit.entity.Auditabl
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
@@ -29,11 +27,4 @@ public class Message extends Auditable {
     @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
-
-    public Message(Chat chat, Profile profile, String text, boolean isSent){
-        this.chat = chat;
-        this.profile = profile;
-        this.text = text;
-        this.isSent = isSent;
-    }
 }

@@ -4,16 +4,10 @@ import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.ProfileS
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor
@@ -25,8 +19,8 @@ import java.util.List;
                 @UniqueConstraint(columnNames = "user_id")
         }
 )
-@EntityListeners({ProfileSyncListener.class, AuditingEntityListener.class})
-public class Profile {
+@EntityListeners(ProfileSyncListener.class)
+public class Profile extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,30 +33,23 @@ public class Profile {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    @Transient
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
     private List<CommunityMember> joinedCommunities;
 
+    @Transient
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
     private List<Post> posts;
 
+    @Transient
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
     private List<Comment> comments;
 
+    @Transient
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
     private List<ChatParticipant> participatedChats;
 
+    @Transient
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
     private List<Message> messages;
-
-    @CreatedDate
-    @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
-
-    @LastModifiedBy
-    private Long lastModifiedBy;
-
-    @LastModifiedDate
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
 }

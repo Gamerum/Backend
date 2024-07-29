@@ -1,16 +1,11 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import com.gamerum.backend.security.user.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,8 +17,7 @@ import java.util.Date;
                 @UniqueConstraint(columnNames = "email")
         }
 )
-@EntityListeners(AuditingEntityListener.class)
-public class User {
+public class User extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,16 +39,4 @@ public class User {
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
     private Profile profile;
-
-    @CreatedDate
-    @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
-
-    @LastModifiedBy
-    private Long lastModifiedBy;
-
-    @LastModifiedDate
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
 }

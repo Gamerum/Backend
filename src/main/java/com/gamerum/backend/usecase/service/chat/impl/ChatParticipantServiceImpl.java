@@ -20,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,11 +42,16 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
         Chat chat = chatRepository.findById(chatId).orElseThrow(() ->
                 new NotFoundException("Chat"));
 
+        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, jwtUtil.getCurrentUserProfileId()))
+            throw new NotAllowedException();
+
         Profile profile = profileRepository.findById(chatParticipantCreateDTO.getProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
 
         if (chatParticipantRepository.existsByChatIdAndProfileId(chatId, profile.getId()))
             throw new AlreadyParticipatedException(profile.getNickname());
+
+
 
         return chatParticipantRepository.save(ChatParticipant.builder()
                 .profile(profile)
