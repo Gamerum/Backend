@@ -15,5 +15,5 @@ public class PostMetadataDTO {
     private String writerId;
     private String writerNickname;
     private Date createdDate;
-    private Date updatedDate;
+    private Date lastModifiedDate;
 }

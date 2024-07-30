@@ -1,6 +1,5 @@
 package com.gamerum.backend.external.persistence.relational.audit.impl;
 
-import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
