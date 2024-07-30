@@ -1,10 +1,8 @@
-package com.gamerum.backend.usecase.service.community;
+package com.gamerum.backend.usecase.service.community.post;
 
 import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostUpdateDTO;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
-
-import java.util.List;
 
 public interface PostService {
     Post createPost(Long communityId, PostCreateDTO postCreateDTO);
