@@ -11,7 +11,6 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class CommunityGetDTO {
     private Long id;
