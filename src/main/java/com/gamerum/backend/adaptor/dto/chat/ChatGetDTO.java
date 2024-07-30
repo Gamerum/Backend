@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class ChatGetDTO {
     private Long id;
