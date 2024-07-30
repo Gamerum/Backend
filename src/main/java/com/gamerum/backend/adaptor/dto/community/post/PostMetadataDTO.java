@@ -2,12 +2,10 @@ package com.gamerum.backend.adaptor.dto.community.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class PostMetadataDTO {
     private Long id;
@@ -16,6 +14,6 @@ public class PostMetadataDTO {
     private String text;
     private String writerId;
     private String writerNickname;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Date createdDate;
+    private Date updatedDate;
 }

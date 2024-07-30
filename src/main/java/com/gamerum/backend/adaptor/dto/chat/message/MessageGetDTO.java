@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class MessageGetDTO {
     private Long senderProfileId;
