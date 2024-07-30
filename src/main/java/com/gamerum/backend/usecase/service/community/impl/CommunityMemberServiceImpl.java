@@ -7,13 +7,13 @@ import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
-import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.AlreadyParticipatedException;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.community.CommunityMemberService;
+import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,11 +35,11 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
     private ProfileRepository profileRepository;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private CurrentUser currentUser;
 
     @Override
     public CommunityMember createCommunityMember(Long communityId, CommunityMemberCreateDTO communityMemberCreateDTO) {
-        if (!Objects.equals(communityMemberCreateDTO.getProfileId(), jwtUtil.getCurrentUserProfileId()))
+        if (!Objects.equals(communityMemberCreateDTO.getProfileId(), currentUser.getProfileId()))
             throw new NotAllowedException();
 
         Community community = communityRepository.findById(communityId)
@@ -68,13 +68,13 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
 
     @Override
     public void deleteCommunityMember(Long communityId, Long communityMemberId) {
-        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
+        if (currentUser.hasRole(UserRole.ROLE_ADMIN)) {
             communityMemberRepository.deleteById(communityMemberId);
             return;
         }
 
         CommunityMember deleter = communityMemberRepository
-                .findByProfileIdAndCommunityId(jwtUtil.getCurrentUserProfileId(), communityId)
+                .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
                 .orElseThrow(NotParticipatedException::new);
 
         if (Objects.equals(deleter.getId(), communityMemberId)) {

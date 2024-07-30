@@ -21,9 +21,9 @@ public class Chat extends Auditable {
 
     @Transient
     @OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<ChatParticipant> participants = new ArrayList<>();
+    private List<ChatParticipant> participants;
 
     @Transient
     @OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Message> messages = new ArrayList<>();
+    private List<Message> messages;
 }

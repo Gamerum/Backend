@@ -8,12 +8,12 @@ import com.gamerum.backend.external.persistence.relational.entity.Post;
 import com.gamerum.backend.external.persistence.relational.repository.CommentRepository;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.PostRepository;
-import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.community.post.CommentService;
+import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private PostRepository postRepository;
     @Autowired
-    private JwtUtil jwtUtil;
+    private CurrentUser currentUser;
 
     @Override
     public Comment createComment(Long postId, CommentCreateDTO commentCreateDTO) {
@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
                 orElseThrow(() -> new NotFoundException("Post"));
 
         CommunityMember communityMember = communityMemberRepository.
-                findByProfileIdAndCommunityId(jwtUtil.getCurrentUserProfileId(), post.getCommunity().getId()).
+                findByProfileIdAndCommunityId(currentUser.getProfileId(), post.getCommunity().getId()).
                 orElseThrow(NotParticipatedException::new);
 
         return commentRepository.save(Comment.builder()
@@ -58,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(commentUpdateDTO.getId()).
                 orElseThrow(() -> new NotFoundException("Comment"));
 
-        if (!Objects.equals(comment.getProfile().getId(), jwtUtil.getCurrentUserProfileId()))
+        if (!Objects.equals(comment.getProfile().getId(), currentUser.getProfileId()))
             throw new NotAllowedException();
 
         comment.setText(commentUpdateDTO.getText());
@@ -71,9 +71,9 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(commentId).
                 orElseThrow(() -> new NotFoundException("Comment"));
 
-        Long profileId = jwtUtil.getCurrentUserProfileId();
+        Long profileId = currentUser.getProfileId();
 
-        boolean isAdmin = jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN);
+        boolean isAdmin = currentUser.hasRole(UserRole.ROLE_ADMIN);
         boolean isCommentWriter = Objects.equals(comment.getProfile().getId(), profileId);
         boolean isPostWriter = Objects.equals(comment.getPost().getProfile().getId(), profileId);
 

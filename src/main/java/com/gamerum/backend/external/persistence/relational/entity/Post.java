@@ -39,5 +39,5 @@ public class Post extends Auditable {
 
     @Transient
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
 }

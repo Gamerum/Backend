@@ -9,12 +9,12 @@ import com.gamerum.backend.external.persistence.relational.repository.ChatPartic
 import com.gamerum.backend.external.persistence.relational.repository.ChatRepository;
 import com.gamerum.backend.external.persistence.relational.repository.MessageRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
-import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.chat.ChatService;
+import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -42,13 +42,14 @@ public class ChatServiceImpl implements ChatService {
     @Autowired
     private MessageRepository messageRepository;
     @Autowired
-    private JwtUtil jwtUtil;
+    private CurrentUser currentUser;
 
     @Override
     @Transactional(readOnly = true)
     public Chat getByChatId(long chatId) {
-        boolean isAdmin = jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN);
-        boolean isMemberOfTheChat = chatParticipantRepository.existsByChatIdAndProfileId(chatId, jwtUtil.getCurrentUserProfileId());
+        boolean isAdmin = currentUser.hasRole(UserRole.ROLE_ADMIN);
+        boolean isMemberOfTheChat = chatParticipantRepository
+                .existsByChatIdAndProfileId(chatId, currentUser.getProfileId());
 
         if (!isAdmin && !isMemberOfTheChat)
             throw new NotAllowedException();
@@ -56,8 +57,10 @@ public class ChatServiceImpl implements ChatService {
         Chat chat =  chatRepository.findById(chatId)
                 .orElseThrow(() -> new NotFoundException("Chat not found"));
 
-        List<ChatParticipant> participants = chatParticipantRepository.findByChatId(chatId, PageRequest.of(0, participantPageSize));
-        List<Message> messages = messageRepository.findByChatId(chatId, PageRequest.of(0, messagesPageSize));
+        List<ChatParticipant> participants = chatParticipantRepository
+                .findByChatId(chatId, PageRequest.of(0, participantPageSize));
+        List<Message> messages = messageRepository
+                .findByChatId(chatId, PageRequest.of(0, messagesPageSize));
 
         chat.setParticipants(participants);
         chat.setMessages(messages);
@@ -68,7 +71,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     @Transactional
     public Chat createChat(ChatCreateDTO chat) {
-        Profile creator = profileRepository.findById(jwtUtil.getCurrentUserProfileId())
+        Profile creator = profileRepository.findById(currentUser.getProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
 
         Chat newChat = chatRepository.save(new Chat());
@@ -104,13 +107,13 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void deleteChat(Long chatId) {
-        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
+        if (currentUser.hasRole(UserRole.ROLE_ADMIN)) {
             chatRepository.deleteById(chatId);
             return;
         }
 
         ChatParticipant deleter = chatParticipantRepository
-                .findByChatIdAndProfileId(chatId, jwtUtil.getCurrentUserProfileId())
+                .findByChatIdAndProfileId(chatId, currentUser.getProfileId())
                 .orElseThrow(NotParticipatedException::new);
 
         if (!deleter.isAdmin())
@@ -123,9 +126,9 @@ public class ChatServiceImpl implements ChatService {
     public List<Chat> getChats(int page, int size, long profileId) {
         Pageable pageable = PageRequest.of(page, size);
 
-        if (profileId > 0 && jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN))
+        if (profileId > 0 && currentUser.hasRole(UserRole.ROLE_ADMIN))
             return chatParticipantRepository.findChatsByProfileId(profileId, pageable);
 
-        return chatParticipantRepository.findChatsByProfileId(jwtUtil.getCurrentUserProfileId(), pageable);
+        return chatParticipantRepository.findChatsByProfileId(currentUser.getProfileId(), pageable);
     }
 }

@@ -40,9 +40,9 @@ public class Community extends Auditable {
 
     @Transient
     @OneToMany(mappedBy = "community")
-    private List<CommunityMember> members = new ArrayList<>();
+    private List<CommunityMember> members;
 
     @Transient
     @OneToMany(mappedBy = "community")
-    private List<Post> posts = new ArrayList<>();
+    private List<Post> posts;
 }
