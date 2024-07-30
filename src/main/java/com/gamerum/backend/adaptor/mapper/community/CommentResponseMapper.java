@@ -12,7 +12,7 @@ import java.util.List;
 public interface CommentResponseMapper {
     CommentResponseMapper INSTANCE = Mappers.getMapper(CommentResponseMapper.class);
 
-    //@Mapping(source = "comment.id", target = "commentId")
+    @Mapping(source = "comment.id", target = "commentId")
     @Mapping(source = "profile.id", target = "writerId")
     @Mapping(source = "profile.nickname", target = "writerNickname")
     CommentResponseGetDTO commentResponseToCommentResponseGetDTO(CommentResponse commentResponse);

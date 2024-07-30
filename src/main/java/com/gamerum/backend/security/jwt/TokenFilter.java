@@ -1,6 +1,5 @@
 package com.gamerum.backend.security.jwt;
 
-import com.gamerum.backend.security.user.UserDetailsServiceImpl;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
