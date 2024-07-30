@@ -20,10 +20,10 @@ public class Chat extends Auditable {
     private Long id;
 
     @Transient
-    @OneToMany(mappedBy = "chat", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ChatParticipant> participants = new ArrayList<>();
 
     @Transient
-    @OneToMany(mappedBy = "chat", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
 }

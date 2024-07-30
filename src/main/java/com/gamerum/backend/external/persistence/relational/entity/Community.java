@@ -35,14 +35,14 @@ public class Community extends Auditable {
 
     private long clickCount;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String gameId;
 
     @Transient
-    @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "community")
     private List<CommunityMember> members = new ArrayList<>();
 
     @Transient
-    @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "community")
     private List<Post> posts = new ArrayList<>();
 }

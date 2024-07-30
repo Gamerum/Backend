@@ -21,10 +21,10 @@ public class Message extends Auditable {
     private boolean isSent;
 
     @ManyToOne
-    @JoinColumn(name = "chat_id", nullable = false)
+    @JoinColumn(name = "chat_id", nullable = false, updatable = false)
     private Chat chat;
 
     @ManyToOne
-    @JoinColumn(name = "profile_id", nullable = false)
+    @JoinColumn(name = "profile_id", nullable = false, updatable = false)
     private Profile profile;
 }

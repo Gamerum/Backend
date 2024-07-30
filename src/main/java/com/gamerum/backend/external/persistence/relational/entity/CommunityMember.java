@@ -24,16 +24,15 @@ public class CommunityMember extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
-
-    @ManyToOne
-    @JoinColumn(name = "community_id", nullable = false)
-    private Community community;
-
-
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    @ManyToOne
+    @JoinColumn(name = "profile_id", nullable = false, updatable = false)
+    private Profile profile;
+
+    @ManyToOne
+    @JoinColumn(name = "community_id", nullable = false, updatable = false)
+    private Community community;
 }
