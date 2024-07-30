@@ -30,14 +30,14 @@ public class Post extends Auditable {
     private String text;
 
     @ManyToOne
-    @JoinColumn(name = "community_id", nullable = false)
+    @JoinColumn(name = "community_id", nullable = false, updatable = false)
     private Community community;
 
     @ManyToOne
-    @JoinColumn(name = "profile_id", nullable = false)
+    @JoinColumn(name = "profile_id", nullable = false, updatable = false)
     private Profile profile;
 
     @Transient
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 }

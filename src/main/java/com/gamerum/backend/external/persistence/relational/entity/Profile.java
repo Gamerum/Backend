@@ -28,28 +28,28 @@ public class Profile extends Auditable {
     private String nickname;
     private boolean isActive;
 
-    @EqualsAndHashCode.Exclude
-    @OneToOne(fetch = FetchType.LAZY)
+    @Transient
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @Transient
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
     private List<CommunityMember> joinedCommunities;
 
     @Transient
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
     private List<Post> posts;
 
     @Transient
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
     private List<Comment> comments;
 
     @Transient
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
     private List<ChatParticipant> participatedChats;
 
     @Transient
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
     private List<Message> messages;
 }

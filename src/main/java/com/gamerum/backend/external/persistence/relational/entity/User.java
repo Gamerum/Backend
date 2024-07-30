@@ -36,7 +36,6 @@ public class User extends Auditable {
     @Column(nullable = false)
     private UserRole role;
 
-    @EqualsAndHashCode.Exclude
-    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Profile profile;
 }

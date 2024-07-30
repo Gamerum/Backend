@@ -10,6 +10,7 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 @Builder
 @AllArgsConstructor
 @Entity
@@ -25,7 +26,7 @@ public class Comment extends Auditable {
     @JoinColumn(name = "respond_comment_id")
     private Comment responseTo;
 
-    @OneToMany(mappedBy = "responseTo", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "responseTo", cascade = CascadeType.REMOVE)
     private List<Comment> responses = new ArrayList<>();
 
     @ManyToOne
