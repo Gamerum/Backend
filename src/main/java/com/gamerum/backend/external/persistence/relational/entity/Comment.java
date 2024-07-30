@@ -24,7 +24,7 @@ public class Comment extends Auditable {
 
     @Transient
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<CommentResponse> responses = new ArrayList<>();
+    private List<CommentResponse> responses;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)

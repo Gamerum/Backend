@@ -11,12 +11,12 @@ import com.gamerum.backend.external.persistence.relational.repository.CommunityM
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
 import com.gamerum.backend.external.persistence.relational.repository.PostRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
-import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.community.post.PostService;
+import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +36,8 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private CommunityMemberRepository communityMemberRepository;
 
-
     @Autowired
-    private JwtUtil jwtUtil;
+    private CurrentUser currentUser;
 
     @Override
     public Post createPost(Long communityId, PostCreateDTO postCreateDTO) {
@@ -47,7 +46,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new NotFoundException("Community"));
 
         Profile profile = profileRepository
-                .findById(jwtUtil.getCurrentUserProfileId())
+                .findById(currentUser.getProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
 
         if (!communityMemberRepository.existsByProfileIdAndCommunityId(community.getId(), profile.getId()))
@@ -66,7 +65,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Post"));
 
-        if(!Objects.equals(post.getProfile().getId(), jwtUtil.getCurrentUserProfileId()))
+        if(!Objects.equals(post.getProfile().getId(), currentUser.getProfileId()))
             throw new NotAllowedException();
 
         post.setTitle(postUpdateDTO.getTitle());
@@ -78,12 +77,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePostById(Long postId) {
-        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
+        if (currentUser.hasRole(UserRole.ROLE_ADMIN)) {
             postRepository.deleteById(postId);
             return;
         }
 
-        Long profileId = jwtUtil.getCurrentUserProfileId();
+        Long profileId = currentUser.getProfileId();
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Post"));

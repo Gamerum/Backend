@@ -10,17 +10,16 @@ import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
-import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.service.community.CommunityService;
+import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,11 +39,10 @@ public class CommunityServiceImpl implements CommunityService {
     private ProfileRepository profileRepository;
     @Autowired
     private CommunityMapper communityMapper;
-
+    @Autowired
+    private CurrentUser currentUser;
     @Autowired
     private CacheUtils cacheUtils;
-    @Autowired
-    private JwtUtil jwtUtil;
 
     @Override
     public Community getCommunity(Long communityId) {
@@ -54,7 +52,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Override
     public Community createCommunity(CommunityCreateDTO communityCreateDTO) {
-        Long creatorId = jwtUtil.getCurrentUserProfileId();
+        Long creatorId = currentUser.getProfileId();
 
         Profile creatorProfile = profileRepository.findById(creatorId)
                 .orElseThrow(() -> new NotFoundException("Profile"));
@@ -81,7 +79,7 @@ public class CommunityServiceImpl implements CommunityService {
                 .orElseThrow(() -> new NotFoundException("Community"));
 
         CommunityMember updater = communityMemberRepository
-                .findByProfileIdAndCommunityId(jwtUtil.getCurrentUserProfileId(), communityId)
+                .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
                 .orElseThrow(() -> new NotFoundException("Member"));
 
         if (updater.getRole() == CommunityMember.Role.USER)
@@ -96,7 +94,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Override
     public void deleteCommunity(Long communityId) {
-        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
+        if (currentUser.hasRole(UserRole.ROLE_ADMIN)) {
             cacheUtils.invalidateCacheListIfConditionMet(cacheName, popularCommunitiesCacheKey,
                     Community.class, cachedCommunities ->
                             cachedCommunities.stream().anyMatch(community -> Objects.equals(community.getId(), communityId))
@@ -107,7 +105,7 @@ public class CommunityServiceImpl implements CommunityService {
         }
 
         CommunityMember deleter = communityMemberRepository
-                .findByProfileIdAndCommunityId(jwtUtil.getCurrentUserProfileId(), communityId)
+                .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
                 .orElseThrow(() -> new NotFoundException("Member"));
 
         if (deleter.getRole() != CommunityMember.Role.OWNER)

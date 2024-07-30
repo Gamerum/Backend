@@ -8,13 +8,13 @@ import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.ChatParticipantRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ChatRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
-import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.AlreadyParticipatedException;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
+import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,14 +35,14 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     private ProfileRepository profileRepository;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private CurrentUser currentUser;
 
     @Override
     public ChatParticipant createChatParticipant(long chatId, ChatParticipantCreateDTO chatParticipantCreateDTO) {
         Chat chat = chatRepository.findById(chatId).orElseThrow(() ->
                 new NotFoundException("Chat"));
 
-        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, jwtUtil.getCurrentUserProfileId()))
+        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
             throw new NotAllowedException();
 
         Profile profile = profileRepository.findById(chatParticipantCreateDTO.getProfileId())
@@ -60,12 +60,12 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
 
     @Override
     public void deleteByIdChatParticipant(Long chatId, Long chatParticipantId) {
-        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
+        if (currentUser.hasRole(UserRole.ROLE_ADMIN)) {
             chatParticipantRepository.deleteById(chatParticipantId);
             return;
         }
 
-        Long deleterProfileId = jwtUtil.getCurrentUserProfileId();
+        Long deleterProfileId = currentUser.getProfileId();
 
         ChatParticipant deleter = chatParticipantRepository.findByChatIdAndProfileId(chatId, deleterProfileId)
                 .orElseThrow(NotParticipatedException::new);
@@ -87,10 +87,10 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     public List<ChatParticipant> getChatParticipants(Long chatId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN))
+        if (currentUser.hasRole(UserRole.ROLE_ADMIN))
             return chatParticipantRepository.findByChatId(chatId, pageable);
 
-        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, jwtUtil.getCurrentUserProfileId()))
+        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
             throw new NotParticipatedException();
 
         return chatParticipantRepository.findByChatId(chatId, pageable);
@@ -98,7 +98,7 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
 
     @Override
     public ChatParticipant updateChatParticipant(long chatId, ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
-        Long profileId = jwtUtil.getCurrentUserProfileId();
+        Long profileId = currentUser.getProfileId();
 
         ChatParticipant updater = chatParticipantRepository
                 .findByChatIdAndProfileId(chatId, profileId)

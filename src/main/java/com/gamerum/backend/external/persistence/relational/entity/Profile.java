@@ -28,7 +28,6 @@ public class Profile extends Auditable {
     private String nickname;
     private boolean isActive;
 
-    @Transient
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
