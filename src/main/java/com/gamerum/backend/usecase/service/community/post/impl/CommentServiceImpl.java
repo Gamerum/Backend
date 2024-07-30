@@ -1,8 +1,8 @@
-package com.gamerum.backend.usecase.service.comment.impl;
+package com.gamerum.backend.usecase.service.community.post.impl;
 
 import com.gamerum.backend.external.persistence.relational.entity.Comment;
 import com.gamerum.backend.external.persistence.relational.repository.CommentRepository;
-import com.gamerum.backend.usecase.service.comment.CommentService;
+import com.gamerum.backend.usecase.service.community.post.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

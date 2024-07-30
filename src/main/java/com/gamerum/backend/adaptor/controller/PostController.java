@@ -2,20 +2,16 @@ package com.gamerum.backend.adaptor.controller;
 
 import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostGetDTO;
-import com.gamerum.backend.adaptor.dto.community.post.PostMetadataDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostUpdateDTO;
 import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.community.PostMapper;
-import com.gamerum.backend.external.persistence.relational.entity.Post;
-import com.gamerum.backend.usecase.service.community.PostService;
+import com.gamerum.backend.usecase.service.community.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/communities/{communityId}/posts")

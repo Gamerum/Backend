@@ -1,9 +1,8 @@
-package com.gamerum.backend.usecase.service.community.impl;
+package com.gamerum.backend.usecase.service.community.post.impl;
 
 import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostUpdateDTO;
 import com.gamerum.backend.adaptor.mapper.community.PostMapper;
-import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
@@ -17,7 +16,7 @@ import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
-import com.gamerum.backend.usecase.service.community.PostService;
+import com.gamerum.backend.usecase.service.community.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
