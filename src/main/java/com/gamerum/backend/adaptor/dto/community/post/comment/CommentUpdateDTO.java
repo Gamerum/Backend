@@ -8,5 +8,4 @@ import lombok.Getter;
 public class CommentUpdateDTO {
     private Long id;
     private String text;
-    private Long updaterProfileId;
 }

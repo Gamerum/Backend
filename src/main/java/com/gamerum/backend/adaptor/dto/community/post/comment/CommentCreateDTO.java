@@ -7,7 +7,4 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CommentCreateDTO {
     private String text;
-    private Long respondCommentId;
-    private Long postId;
-    private Long writerProfileId;
 }

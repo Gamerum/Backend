@@ -1,41 +1,94 @@
 package com.gamerum.backend.usecase.service.community.post.impl;
 
+import com.gamerum.backend.adaptor.dto.community.post.comment.CommentCreateDTO;
+import com.gamerum.backend.adaptor.dto.community.post.comment.CommentUpdateDTO;
 import com.gamerum.backend.external.persistence.relational.entity.Comment;
+import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
+import com.gamerum.backend.external.persistence.relational.entity.Post;
 import com.gamerum.backend.external.persistence.relational.repository.CommentRepository;
+import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
+import com.gamerum.backend.external.persistence.relational.repository.PostRepository;
+import com.gamerum.backend.security.jwt.JwtUtil;
+import com.gamerum.backend.security.user.UserRole;
+import com.gamerum.backend.usecase.exception.NotAllowedException;
+import com.gamerum.backend.usecase.exception.NotFoundException;
+import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.community.post.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CommentServiceImpl implements CommentService {
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private CommunityMemberRepository communityMemberRepository;
+    @Autowired
+    private PostRepository postRepository;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Override
-    public Comment createComment(Comment comment) {
-        return commentRepository.save(comment);
+    public Comment createComment(Long communityId, Long postId, CommentCreateDTO commentCreateDTO) {
+        Post post = postRepository.findByIdAndCommunityId(postId, communityId).
+                orElseThrow(() -> new NotFoundException("Post"));
+
+        CommunityMember communityMember = communityMemberRepository.
+                findByProfileIdAndCommunityId(jwtUtil.getCurrentUserProfileId(), communityId).
+                orElseThrow(NotParticipatedException::new);
+
+        return commentRepository.save(Comment.builder()
+                .text(commentCreateDTO.getText())
+                .profile(communityMember.getProfile())
+                .post(post)
+                .build());
     }
 
     @Override
-    public Comment getComment(Long commentId) {
-        Optional<Comment> comment = commentRepository.findById(commentId);
-        if(comment.isEmpty())
-            throw new RuntimeException();
-        return comment.get();
+    public List<Comment> getPostComments(Long postId, int page, int size) {
+        return commentRepository.findByPostId(postId, PageRequest.of(page, size));
     }
 
-
     @Override
-    public Comment updateComment(Comment comment) {
-        if(commentRepository.existsById(comment.getId()))
-            throw new RuntimeException();
+    public Comment updateComment(CommentUpdateDTO commentUpdateDTO) {
+        Comment comment = commentRepository.findById(commentUpdateDTO.getId()).
+                orElseThrow(() -> new NotFoundException("Comment"));
+
+        if (!Objects.equals(comment.getProfile().getId(), jwtUtil.getCurrentUserProfileId()))
+            throw new NotAllowedException();
+
+        comment.setText(commentUpdateDTO.getText());
+
         return commentRepository.save(comment);
     }
 
     @Override
     public void deleteComment(Long commentId) {
-        commentRepository.deleteById(commentId);
+        Comment comment = commentRepository.findById(commentId).
+                orElseThrow(() -> new NotFoundException("Comment"));
+
+        Long profileId = jwtUtil.getCurrentUserProfileId();
+
+        boolean isAdmin = jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN);
+        boolean isCommentWriter = Objects.equals(comment.getProfile().getId(), profileId);
+        boolean isPostWriter = Objects.equals(comment.getPost().getProfile().getId(), profileId);
+
+        if (isAdmin || isCommentWriter || isPostWriter) {
+            commentRepository.delete(comment);
+            return;
+        }
+
+        CommunityMember communityMember = communityMemberRepository.
+                findByProfileIdAndCommunityId(profileId, comment.getPost().getCommunity().getId()).
+                orElseThrow(NotParticipatedException::new);
+
+        if (communityMember.getRole().equals(CommunityMember.Role.USER))
+            throw new NotAllowedException();
+
+        commentRepository.delete(comment);
     }
 }
