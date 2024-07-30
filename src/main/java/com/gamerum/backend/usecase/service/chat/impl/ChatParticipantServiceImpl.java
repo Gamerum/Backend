@@ -51,8 +51,6 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
         if (chatParticipantRepository.existsByChatIdAndProfileId(chatId, profile.getId()))
             throw new AlreadyParticipatedException(profile.getNickname());
 
-
-
         return chatParticipantRepository.save(ChatParticipant.builder()
                 .profile(profile)
                 .chat(chat)

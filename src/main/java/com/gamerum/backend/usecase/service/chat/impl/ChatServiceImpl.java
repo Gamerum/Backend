@@ -56,11 +56,9 @@ public class ChatServiceImpl implements ChatService {
         Chat chat =  chatRepository.findById(chatId)
                 .orElseThrow(() -> new NotFoundException("Chat not found"));
 
-        // Fetch participants and messages
         List<ChatParticipant> participants = chatParticipantRepository.findByChatId(chatId, PageRequest.of(0, participantPageSize));
         List<Message> messages = messageRepository.findByChatId(chatId, PageRequest.of(0, messagesPageSize));
 
-        // Set participants and messages to the chat
         chat.setParticipants(participants);
         chat.setMessages(messages);
 
@@ -125,11 +123,9 @@ public class ChatServiceImpl implements ChatService {
     public List<Chat> getChats(int page, int size, long profileId) {
         Pageable pageable = PageRequest.of(page, size);
 
-        return chatRepository.findAll();
-//
-//        if (profileId > 0 && jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN))
-//            return chatRepository.findChatsByProfileId(profileId, pageable);
-//
-//        return chatRepository.findChatsByProfileId(jwtUtil.getCurrentUserProfileId(), pageable);
+        if (profileId > 0 && jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN))
+            return chatParticipantRepository.findChatsByProfileId(profileId, pageable);
+
+        return chatParticipantRepository.findChatsByProfileId(jwtUtil.getCurrentUserProfileId(), pageable);
     }
 }
