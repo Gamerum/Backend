@@ -3,14 +3,11 @@ package com.gamerum.backend.adaptor.dto.community.post;
 import com.gamerum.backend.adaptor.dto.community.post.comment.CommentGetDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class PostGetDTO {
     private Long id;
@@ -19,8 +16,8 @@ public class PostGetDTO {
     private String text;
     private String writerId;
     private String writerNickname;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Date createdDate;
+    private Date lastModifiedDate;
     private Long communityId;
     private String communityName;
     private List<CommentGetDTO> comments;
