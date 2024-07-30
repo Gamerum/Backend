@@ -3,8 +3,10 @@ package com.gamerum.backend.adaptor.dto.community;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class CommunityMetadataDTO {
     private Long id;
