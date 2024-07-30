@@ -1,6 +1,7 @@
 package com.gamerum.backend.security.jwt;
 
 import com.gamerum.backend.security.user.UserDetailsServiceImpl;
+import com.gamerum.backend.usecase.service.user.CurrentUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,11 +31,12 @@ public class TokenFilter extends OncePerRequestFilter {
             String username = jwtUtil.getUsernameFromToken(token);
             List<GrantedAuthority> authorities = jwtUtil.getGrantedAuthorities(token);
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    username, token, authorities);
+                    username, null, authorities);
             auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
 
+        CurrentUser.setToken(token);
         chain.doFilter(request, response);
     }
 

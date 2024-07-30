@@ -1,7 +1,6 @@
 package com.gamerum.backend.security.jwt;
 
 import com.gamerum.backend.security.user.UserDetailsImpl;
-import com.gamerum.backend.security.user.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -13,8 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -43,25 +40,6 @@ public class JwtUtil {
         return getClaimFromToken(token, claims -> claims.get("username", String.class));
     }
 
-    public Long getCurrentUserProfileId() {
-        String token = getCurrentUserToken();
-        if (token.isBlank()) return null;
-        return getClaimFromToken(token, claims -> claims.get("profileId", Long.class));
-    }
-
-    public boolean currentUserHasRole(UserRole role) {
-        String token = getCurrentUserToken();
-        if (token.isBlank()) return false;
-        List<GrantedAuthority> authorities = getGrantedAuthorities(token);
-        return authorities.stream().anyMatch(a -> a.getAuthority().equals(role.toString()));
-    }
-
-    public String getCurrentUserToken() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) return (String) auth.getCredentials();
-        return "";
-    }
-
     public List<GrantedAuthority> getGrantedAuthorities(String token) {
         List<String> authorityStrings = getClaimFromToken(token, claims -> claims.get("authorities", List.class));
         if (authorityStrings == null) return Collections.emptyList();
@@ -77,7 +55,6 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    // For retrieving any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key())
