@@ -9,5 +9,4 @@ public class PostCreateDTO {
     private String title;
     private String tag;
     private String text;
-    private long writerProfileId;
 }
