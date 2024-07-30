@@ -7,5 +7,4 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CommunityMemberCreateDTO {
     private long profileId;
-    private long joinedByProfileId;
 }

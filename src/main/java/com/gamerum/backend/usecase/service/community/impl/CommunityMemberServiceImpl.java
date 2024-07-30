@@ -39,18 +39,17 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
 
     @Override
     public CommunityMember createCommunityMember(Long communityId, CommunityMemberCreateDTO communityMemberCreateDTO) {
+        if (!Objects.equals(communityMemberCreateDTO.getProfileId(), jwtUtil.getCurrentUserProfileId()))
+            throw new NotAllowedException();
+
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("Community"));
 
         Profile newMemberProfile = profileRepository.findById(communityMemberCreateDTO.getProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
 
-        if (!communityMemberRepository.existsByProfileIdAndCommunityId(newMemberProfile.getId(), community.getId()))
+        if (communityMemberRepository.existsByProfileIdAndCommunityId(newMemberProfile.getId(), community.getId()))
             throw new AlreadyParticipatedException(newMemberProfile.getNickname());
-
-        if (newMemberProfile.getId() != communityMemberCreateDTO.getJoinedByProfileId() &&
-                !profileRepository.existsById(communityMemberCreateDTO.getJoinedByProfileId()))
-            throw new NotFoundException("Adder");
 
         CommunityMember newMember = CommunityMember.builder()
                 .profile(newMemberProfile)

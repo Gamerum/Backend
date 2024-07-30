@@ -1,7 +1,5 @@
 package com.gamerum.backend.usecase.service.community.impl;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostUpdateDTO;
 import com.gamerum.backend.adaptor.mapper.community.PostMapper;
@@ -23,10 +21,7 @@ import com.gamerum.backend.usecase.service.community.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -42,8 +37,6 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private CommunityMemberRepository communityMemberRepository;
 
-    @Autowired
-    private ElasticsearchRepository elasticsearchRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -55,7 +48,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new NotFoundException("Community"));
 
         Profile profile = profileRepository
-                .findById(postCreateDTO.getWriterProfileId())
+                .findById(jwtUtil.getCurrentUserProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
 
         if (!communityMemberRepository.existsByProfileIdAndCommunityId(community.getId(), profile.getId()))
