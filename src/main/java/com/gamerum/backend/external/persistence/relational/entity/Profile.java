@@ -52,4 +52,8 @@ public class Profile extends Auditable {
     @Transient
     @OneToMany(mappedBy = "profile", orphanRemoval = true)
     private List<Message> messages;
+
+    @Transient
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    private List<CommentResponse> commentResponses;
 }

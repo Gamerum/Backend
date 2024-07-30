@@ -4,33 +4,25 @@ import com.gamerum.backend.external.persistence.relational.audit.entity.Auditabl
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
 @Entity
-@Table(name = "Comments")
-public class Comment extends Auditable {
+@Table(name = "CommentResponses")
+public class CommentResponse extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String text;
 
-    @Transient
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<CommentResponse> responses = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "respond_comment_id", updatable = false, nullable = false)
+    private Comment comment;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
-
-    @ManyToOne
-    @JoinColumn(name = "profile_id", nullable = false)
+    @JoinColumn(name = "profile_id", nullable = false, updatable = false)
     private Profile profile;
 }

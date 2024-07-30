@@ -62,8 +62,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(Long communityId, Long postId, PostUpdateDTO postUpdateDTO) {
-        Post post = postRepository.findByIdAndCommunityId(postId, communityId)
+    public Post updatePost(Long postId, PostUpdateDTO postUpdateDTO) {
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Post"));
 
         if(!Objects.equals(post.getProfile().getId(), jwtUtil.getCurrentUserProfileId()))
@@ -77,7 +77,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePostById(Long communityId, Long postId) {
+    public void deletePostById(Long postId) {
         if (jwtUtil.currentUserHasRole(UserRole.ROLE_ADMIN)) {
             postRepository.deleteById(postId);
             return;
@@ -94,7 +94,7 @@ public class PostServiceImpl implements PostService {
         }
 
         CommunityMember deleter = communityMemberRepository
-                .findByProfileIdAndCommunityId(profileId, communityId)
+                .findByProfileIdAndCommunityId(profileId, post.getCommunity().getId())
                 .orElseThrow(() -> new NotFoundException("Member"));
 
         if (deleter.getRole() == CommunityMember.Role.USER)
@@ -104,8 +104,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getPostById(Long communityId, Long postId) {
-        return postRepository.findByIdAndCommunityId(postId, communityId)
+    public Post getPostById( Long postId) {
+        return postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Post"));
     }
 }

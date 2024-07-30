@@ -1,18 +1,16 @@
-package com.gamerum.backend.adaptor.dto.community.post.comment;
+package com.gamerum.backend.adaptor.dto.community.post.comment.response;
 
-import com.gamerum.backend.adaptor.dto.community.post.comment.response.CommentResponseGetDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @AllArgsConstructor
-public class CommentGetDTO {
+public class CommentResponseGetDTO {
     private Long id;
     private String text;
+    private Long commentId;
     private Long writerId;
     private String writerNickname;
     private LocalDateTime createdAt;

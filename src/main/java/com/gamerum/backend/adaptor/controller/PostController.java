@@ -35,36 +35,33 @@ public class PostController {
     @PutMapping
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     public ResponseEntity<ResponseData<PostGetDTO>> updatePost(
-            @PathVariable Long communityId,
             @RequestParam Long postId,
             @RequestBody PostUpdateDTO postUpdateDTO) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Post updated.",
-                PostMapper.INSTANCE.postToPostGetDTO(postService.updatePost(communityId, postId, postUpdateDTO))),
+                PostMapper.INSTANCE.postToPostGetDTO(postService.updatePost(postId, postUpdateDTO))),
                 HttpStatus.OK);
     }
 
     @DeleteMapping
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     public ResponseEntity<Response> deletePostById(
-            @PathVariable Long communityId,
             @RequestParam Long postId) {
-        postService.deletePostById(communityId, postId);
+        postService.deletePostById(postId);
         return new ResponseEntity<>(new Response(
                 true,
                 "Post deleted."),
                 HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping
+    @GetMapping("{postId}")
     public ResponseEntity<ResponseData<PostGetDTO>> getPostById(
-            @PathVariable Long communityId,
             @PathVariable Long postId) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Post received.",
-                PostMapper.INSTANCE.postToPostGetDTO(postService.getPostById(communityId, postId))),
+                PostMapper.INSTANCE.postToPostGetDTO(postService.getPostById(postId))),
                 HttpStatus.OK);
     }
 }
