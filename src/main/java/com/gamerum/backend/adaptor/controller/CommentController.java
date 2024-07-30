@@ -6,7 +6,6 @@ import com.gamerum.backend.adaptor.dto.community.post.comment.CommentUpdateDTO;
 import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.community.CommentMapper;
-import com.gamerum.backend.external.persistence.relational.entity.Comment;
 import com.gamerum.backend.usecase.service.community.post.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/communities/{communityId}/posts/{postId}")
+@RequestMapping("/api/posts/{postId}/comments")
 public class CommentController {
 
     @Autowired
@@ -26,13 +25,12 @@ public class CommentController {
     // Create a new comment
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<ResponseData<CommentGetDTO>> createComment(@PathVariable Long communityId,
-                                                                    @PathVariable Long postId,
+    public ResponseEntity<ResponseData<CommentGetDTO>> createComment(@PathVariable Long postId,
                                                                     @RequestBody CommentCreateDTO commentCreateDTO) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Comment Send",
-                CommentMapper.INSTANCE.commentToCommentGetDTO(commentService.createComment(communityId, postId, commentCreateDTO))),
+                CommentMapper.INSTANCE.commentToCommentGetDTO(commentService.createComment(postId, commentCreateDTO))),
                 HttpStatus.CREATED);
     }
 

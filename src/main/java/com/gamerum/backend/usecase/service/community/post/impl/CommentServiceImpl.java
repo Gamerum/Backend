@@ -33,12 +33,12 @@ public class CommentServiceImpl implements CommentService {
     private JwtUtil jwtUtil;
 
     @Override
-    public Comment createComment(Long communityId, Long postId, CommentCreateDTO commentCreateDTO) {
-        Post post = postRepository.findByIdAndCommunityId(postId, communityId).
+    public Comment createComment(Long postId, CommentCreateDTO commentCreateDTO) {
+        Post post = postRepository.findById(postId).
                 orElseThrow(() -> new NotFoundException("Post"));
 
         CommunityMember communityMember = communityMemberRepository.
-                findByProfileIdAndCommunityId(jwtUtil.getCurrentUserProfileId(), communityId).
+                findByProfileIdAndCommunityId(jwtUtil.getCurrentUserProfileId(), post.getCommunity().getId()).
                 orElseThrow(NotParticipatedException::new);
 
         return commentRepository.save(Comment.builder()
