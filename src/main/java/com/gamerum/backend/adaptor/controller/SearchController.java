@@ -6,6 +6,7 @@ import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
 import com.gamerum.backend.adaptor.dto.search.SearchFilter;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.usecase.service.search.SearchService;
 import lombok.AllArgsConstructor;
@@ -50,10 +51,12 @@ public class SearchController {
                 HttpStatus.OK);
     }
 
-//    @GetMapping("/posts")
-//    public ResponseEntity<List<PostDocument>> searchPosts(@RequestParam String searchTerm,
-//                                                             @RequestParam int page,
-//                                                             @RequestParam int size) {
-//        return new ResponseEntity<>(searchService.searchPost(searchTerm, page, size), HttpStatus.OK);
-//    }
+    @GetMapping("/posts")
+    public ResponseEntity<ResponseData<List<PostDocument>>> searchPosts(@RequestBody SearchFilter filter) throws IOException{
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Posts received",
+                searchService.searchPost(filter)),
+                HttpStatus.OK);
+    }
 }
