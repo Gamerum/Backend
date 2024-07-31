@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -67,9 +68,17 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
     }
 
     @Override
-    public void deleteCommunityMember(Long communityId, Long communityMemberId) {
-        if (currentUser.hasRole(UserRole.ROLE_ADMIN)) {
-            communityMemberRepository.deleteById(communityMemberId);
+    public void deleteCommunityMember(Long communityId, Long profileId) {
+        CommunityMember deletingMember = communityMemberRepository
+                .findByProfileIdAndCommunityId(profileId, communityId)
+                .orElseThrow(NotParticipatedException::new);
+
+        boolean isAdmin = currentUser.hasRole(UserRole.ROLE_ADMIN);
+        boolean isSelf = deletingMember.getProfile().getId().equals(currentUser.getProfileId());
+
+
+        if (isAdmin || isSelf) {
+            communityMemberRepository.delete(deletingMember);
             return;
         }
 
@@ -77,14 +86,9 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
                 .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
                 .orElseThrow(NotParticipatedException::new);
 
-        if (Objects.equals(deleter.getId(), communityMemberId)) {
-            communityMemberRepository.delete(deleter);
-            return;
-        }
-
         if (deleter.getRole() == CommunityMember.Role.USER)
             throw new NotAllowedException();
 
-        communityMemberRepository.deleteById(communityMemberId);
+        communityMemberRepository.deleteById(profileId);
     }
 }

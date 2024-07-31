@@ -51,7 +51,7 @@ public class IGDBSynchronizer {
         if (token.isExpired())
             token = twitchClient.getToken(clientId, clientSecret, grantType);
 
-        elasticsearchRepository.deleteIndex("game");
+      //  elasticsearchRepository.deleteIndex("game");
 
         String date = getLastSyncDate();
         int page = 0;

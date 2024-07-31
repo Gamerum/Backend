@@ -116,8 +116,8 @@ public class CommunityController {
     @DeleteMapping("/{communityId}/members")
     public ResponseEntity<Response> deleteCommunityMember(
             @PathVariable Long communityId,
-            @RequestBody Long communityMemberId) {
-        communityMemberService.deleteCommunityMember(communityId, communityMemberId);
+            @RequestParam Long profileId) {
+        communityMemberService.deleteCommunityMember(communityId, profileId);
         return new ResponseEntity<>(new Response(
                 true,
                 "Member deleted."),

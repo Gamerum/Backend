@@ -17,4 +17,6 @@ public interface CommunityMemberRepository extends JpaRepository<CommunityMember
     boolean existsByProfileIdAndCommunityId(Long profileID, Long communityID);
 
     List<CommunityMember> findByCommunityIdOrderByRoleAsc(Long communityID, Pageable pageable);
+
+    long countByCommunityId(Long communityID);
 }

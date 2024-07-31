@@ -12,6 +12,8 @@ public class AuditorAwareImpl implements AuditorAware<Long> {
 
     @Override
     public Optional<Long> getCurrentAuditor() {
-        return Optional.ofNullable(currentUser.getProfileId());
+        return currentUser.isAuthenticated() ?
+                Optional.of(currentUser.getProfileId()) :
+                Optional.empty();
     }
 }
