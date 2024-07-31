@@ -49,6 +49,32 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(Exception ex) {
+        logger.error("\n\nNotFoundException: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(
+                new ErrorResponse("NotFound exception", ex.getMessage()),
+                HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({
+            NotParticipatedException.class,
+            AlreadyParticipatedException.class})
+    public ResponseEntity<ErrorResponse> handleParticipationException(Exception ex) {
+        logger.error("\n\nParticipationException: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(
+                new ErrorResponse("ParticipationException", ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotAllowedException.class)
+    public ResponseEntity<ErrorResponse> handleNotAllowedException(Exception ex) {
+        logger.error("\n\nNotAllowedException: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(
+                new ErrorResponse("NotAllowedException", ex.getMessage()),
+                HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         logger.error("\n\nException: {}", ex.getMessage(), ex);

@@ -1,14 +1,15 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import com.gamerum.backend.security.user.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Users",
         uniqueConstraints = {
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
                 @UniqueConstraint(columnNames = "email")
         }
 )
-public class User {
+public class User extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,22 +36,6 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
-    @EqualsAndHashCode.Exclude
-    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Profile profile;
-
-    @Setter(AccessLevel.NONE)
-    @Column(name = "registered_at", nullable = false)
-    private LocalDateTime registeredAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "updated_by_profile_id")
-    private Long updatedBy;
-
-    public User() {
-        this.registeredAt = LocalDateTime.now();
-        role = UserRole.ROLE_USER;
-    }
 }

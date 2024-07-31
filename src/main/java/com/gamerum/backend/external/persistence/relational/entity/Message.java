@@ -1,16 +1,17 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Messages")
-public class Message {
+public class Message extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,24 +21,10 @@ public class Message {
     private boolean isSent;
 
     @ManyToOne
-    @JoinColumn(name = "chat_id", nullable = false)
+    @JoinColumn(name = "chat_id", nullable = false, updatable = false)
     private Chat chat;
 
     @ManyToOne
-    @JoinColumn(name = "profile_id", nullable = false)
+    @JoinColumn(name = "profile_id", nullable = false, updatable = false)
     private Profile profile;
-
-    @Setter(AccessLevel.NONE)
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "updated_by_profile_id")
-    private Long updatedBy;
-
-    public Message() {
-        createdAt = LocalDateTime.now();
-    }
 }

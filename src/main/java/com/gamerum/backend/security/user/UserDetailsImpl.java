@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gamerum.backend.external.persistence.relational.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,18 +13,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
     private Long id;
     private String username;
     @JsonIgnore
     private String password;
+    private Long profileId;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().toString()));
-        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), authorities);
+        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), user.getProfile().getId(), authorities);
     }
 
     @Override

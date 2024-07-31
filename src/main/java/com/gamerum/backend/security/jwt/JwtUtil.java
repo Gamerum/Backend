@@ -55,7 +55,6 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    // For retrieving any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key())
@@ -75,6 +74,7 @@ public class JwtUtil {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", userDetails.getUsername());
+        claims.put("profileId", userDetails.getProfileId());
         claims.put("authorities", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));

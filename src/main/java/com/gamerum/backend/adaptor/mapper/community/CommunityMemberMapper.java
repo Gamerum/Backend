@@ -7,9 +7,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
-import java.util.Set;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface CommunityMemberMapper {
     CommunityMemberMapper INSTANCE = Mappers.getMapper(CommunityMemberMapper.class);
 

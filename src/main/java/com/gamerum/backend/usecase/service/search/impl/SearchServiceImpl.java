@@ -13,6 +13,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.Community
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.usecase.service.search.SearchService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SearchServiceImpl implements SearchService {
 
-    private final ElasticsearchClient elasticsearchClient;
-
+    private final ElasticsearchRepository repository;
 
     @Override
     public List<GameDocument> searchGame(GameSearchFilter filter) throws IOException {
@@ -66,13 +66,7 @@ public class SearchServiceImpl implements SearchService {
                 .size(filter.getSize())
                 .build();
 
-        SearchResponse<GameDocument> searchResponse = elasticsearchClient.search(searchRequest, GameDocument.class);
-
-        List<GameDocument> results = searchResponse.hits().hits().stream()
-                .map(Hit::source)
-                .toList();
-
-        return results;
+        return repository.search(searchRequest, GameDocument.class);
     }
 
     @Override
@@ -106,11 +100,7 @@ public class SearchServiceImpl implements SearchService {
                 .size(filter.getSize())
                 .build();
 
-        SearchResponse<CommunityDocument> searchResponse = elasticsearchClient.search(searchRequest, CommunityDocument.class);
-
-        return searchResponse.hits().hits().stream()
-                .map(Hit::source)
-                .toList();
+        return repository.search(searchRequest, CommunityDocument.class);
    }
 
     @Override
@@ -136,11 +126,7 @@ public class SearchServiceImpl implements SearchService {
                 .size(filter.getSize())
                 .build();
 
-        SearchResponse<ProfileDocument> searchResponse = elasticsearchClient.search(searchRequest, ProfileDocument.class);
-
-        return searchResponse.hits().hits().stream()
-                .map(Hit::source)
-                .toList();
+        return repository.search(searchRequest, ProfileDocument.class);
     }
 
     @Override
@@ -166,10 +152,6 @@ public class SearchServiceImpl implements SearchService {
                 .size(filter.getSize())
                 .build();
 
-        SearchResponse<PostDocument> searchResponse = elasticsearchClient.search(searchRequest, PostDocument.class);
-
-        return searchResponse.hits().hits().stream()
-                .map(Hit::source)
-                .toList();
+        return repository.search(searchRequest, PostDocument.class);
     }
 }

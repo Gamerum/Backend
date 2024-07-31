@@ -1,10 +1,5 @@
 package com.gamerum.backend.usecase.service.sync;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
-import co.elastic.clients.elasticsearch.core.*;
-import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import com.gamerum.backend.external.client.api.igdb.IGDBClient;
 import com.gamerum.backend.external.client.api.igdb.query.IGDBDefaultQueries;
 import com.gamerum.backend.external.client.api.Token;
@@ -18,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class IGDBSynchronizer {
@@ -57,7 +51,9 @@ public class IGDBSynchronizer {
         if (token.isExpired())
             token = twitchClient.getToken(clientId, clientSecret, grantType);
 
-        //elasticsearchRepository.deleteIndex("game");
+      //  elasticsearchRepository.deleteIndex("game");
+
+       // elasticsearchRepository.deleteIndex("community");
 
         String date = getLastSyncDate();
         int page = 0;

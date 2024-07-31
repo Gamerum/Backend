@@ -1,22 +1,22 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "ChatParticipants")
-public class ChatParticipant {
+public class ChatParticipant extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
@@ -26,24 +26,4 @@ public class ChatParticipant {
 
     @Column(name = "is_admin")
     private boolean isAdmin;
-
-    @Setter(AccessLevel.NONE)
-    @Column(name = "joined_at", nullable = false)
-    private LocalDateTime joinedAt;
-
-    @Column(name = "joined_by_profile_id")
-    private long joinedBy;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "updated_by_profile_id")
-    private Long updatedBy;
-
-    public ChatParticipant(Profile profile, Chat chat, boolean isAdmin) {
-        this.profile = profile;
-        this.chat = chat;
-        this.isAdmin = isAdmin;
-        joinedAt = LocalDateTime.now();
-    }
 }
