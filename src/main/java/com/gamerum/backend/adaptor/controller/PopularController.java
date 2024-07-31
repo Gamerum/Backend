@@ -7,10 +7,7 @@ import com.gamerum.backend.usecase.service.popular.PopularService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,20 +28,22 @@ public class PopularController {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<ResponseData<List<PostDocument>>> getPopularPosts() throws IOException {
+    public ResponseEntity<ResponseData<List<PostDocument>>> getPopularPosts(@RequestParam int page) throws IOException {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Popular posts sent.",
-                popularService.getPopularPosts()),
+                popularService.getPopularPosts(page)),
                 HttpStatus.OK);
     }
 
     @GetMapping("/communities/{communityId}/pots")
-    public ResponseEntity<ResponseData<List<PostDocument>>> getCommunityPopularPosts(@PathVariable String communityId) throws IOException {
+    public ResponseEntity<ResponseData<List<PostDocument>>> getCommunityPopularPosts(
+            @PathVariable String communityId,
+            @RequestParam int page) throws IOException {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Popular posts sent.",
-                popularService.getCommunityPopularPosts(communityId)),
+                popularService.getCommunityPopularPosts(communityId, page)),
                 HttpStatus.OK);
     }
 }

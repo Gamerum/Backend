@@ -21,6 +21,12 @@ public class PopularServiceImpl implements PopularService {
     @Value("${page.community.top_popular_size}")
     private int communityTopPopularSize;
 
+    @Value("${page.post.popular_size}")
+    private int postPopularSize;
+
+    @Value("${page.community.post_size}")
+    private int communityPostSize;
+
     @Autowired
     private ElasticsearchRepository repository;
 
@@ -36,19 +42,20 @@ public class PopularServiceImpl implements PopularService {
     }
 
     @Override
-    public List<PostDocument> getPopularPosts() throws IOException {
+    public List<PostDocument> getPopularPosts(int page) throws IOException {
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index("post")
                 .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
                 .sort(s -> s.field(f -> f.field("clickCount").order(SortOrder.Desc)))
-                .size(communityTopPopularSize)
+                .from(page * postPopularSize)
+                .size(postPopularSize)
                 .build();
 
         return repository.search(searchRequest, PostDocument.class);
     }
 
     @Override
-    public List<PostDocument> getCommunityPopularPosts(String communityId) throws IOException {
+    public List<PostDocument> getCommunityPopularPosts(String communityId, int page) throws IOException {
         BoolQuery.Builder boolQueryBuilder = QueryBuilders.bool();
 
         Query wildcardQuery = QueryBuilders.term()
@@ -65,7 +72,8 @@ public class PopularServiceImpl implements PopularService {
                 .query(q -> q.bool(boolQuery))
                 .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
                 .sort(s -> s.field(f -> f.field("clickCount").order(SortOrder.Desc)))
-                .size(communityTopPopularSize)
+                .from(page * communityPostSize)
+                .size(communityPostSize)
                 .build();
 
         return repository.search(searchRequest, PostDocument.class);
