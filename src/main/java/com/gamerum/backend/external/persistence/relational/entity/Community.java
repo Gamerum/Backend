@@ -32,8 +32,6 @@ public class Community extends Auditable {
 
     private String tags;
 
-    private long clickCount;
-
     @Column(nullable = false, updatable = false)
     private String gameId;
 
