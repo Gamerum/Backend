@@ -1,10 +1,9 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.CommunityMemberCountSyncListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -13,7 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "CommunityMembers")
-public class CommunityMember extends Auditable {
+@EntityListeners(CommunityMemberCountSyncListener.class)
+public class CommunityMember extends Auditable{
     public enum Role {
         OWNER,
         MOD,
@@ -32,7 +32,7 @@ public class CommunityMember extends Auditable {
     @JoinColumn(name = "profile_id", nullable = false, updatable = false)
     private Profile profile;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "community_id", nullable = false, updatable = false)
     private Community community;
 }

@@ -38,10 +38,10 @@ public class Community extends Auditable {
     private String gameId;
 
     @Transient
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<CommunityMember> members;
 
     @Transient
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Post> posts;
 }

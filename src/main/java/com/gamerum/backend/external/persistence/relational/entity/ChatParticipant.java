@@ -1,6 +1,5 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;

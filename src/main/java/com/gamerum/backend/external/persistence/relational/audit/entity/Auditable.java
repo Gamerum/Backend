@@ -33,4 +33,7 @@ public class Auditable {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModifiedDate;
+
+    @Version
+    private Long version;
 }
