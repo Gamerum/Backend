@@ -27,11 +27,11 @@ import java.util.List;
 @Service
 public class ChatServiceImpl implements ChatService {
 
-    @Value("${page.chat.participants_size}")
-    private int participantPageSize;
+    @Value("${page.chat.init_participant_size}")
+    private int initParticipantSize;
 
-    @Value("${page.chat.messages_size}")
-    private int messagesPageSize;
+    @Value("${page.chat.init_message_size}")
+    private int initMessagesSize;
 
     @Autowired
     private ChatRepository chatRepository;
@@ -58,9 +58,9 @@ public class ChatServiceImpl implements ChatService {
                 .orElseThrow(() -> new NotFoundException("Chat not found"));
 
         List<ChatParticipant> participants = chatParticipantRepository
-                .findByChatId(chatId, PageRequest.of(0, participantPageSize));
+                .findByChatId(chatId, PageRequest.of(0, initParticipantSize));
         List<Message> messages = messageRepository
-                .findByChatId(chatId, PageRequest.of(0, messagesPageSize));
+                .findByChatId(chatId, PageRequest.of(0, initMessagesSize));
 
         chat.setParticipants(participants);
         chat.setMessages(messages);

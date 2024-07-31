@@ -3,14 +3,8 @@ package com.gamerum.backend.usecase.service.community.post.impl;
 import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostUpdateDTO;
 import com.gamerum.backend.adaptor.mapper.community.PostMapper;
-import com.gamerum.backend.external.persistence.relational.entity.Community;
-import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
-import com.gamerum.backend.external.persistence.relational.entity.Post;
-import com.gamerum.backend.external.persistence.relational.entity.Profile;
-import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
-import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
-import com.gamerum.backend.external.persistence.relational.repository.PostRepository;
-import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
+import com.gamerum.backend.external.persistence.relational.entity.*;
+import com.gamerum.backend.external.persistence.relational.repository.*;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
@@ -18,12 +12,18 @@ import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.community.post.PostService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
 public class PostServiceImpl implements PostService {
+    @Value("${page.post.init_comment_size}")
+    private int initCommentSize;
+
     @Autowired
     private PostRepository postRepository;
 
@@ -38,6 +38,8 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private CurrentUser currentUser;
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Override
     public Post createPost(Long communityId, PostCreateDTO postCreateDTO) {
@@ -104,7 +106,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getPostById( Long postId) {
-        return postRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Post"));
+
+        List<Comment> comments = commentRepository.findByPostIdOrderByCreatedDateAsc(postId, Pageable.ofSize(initCommentSize));
+        post.setComments(comments);
+
+        return post;
     }
 }
