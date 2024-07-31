@@ -34,6 +34,12 @@ public class CommunityServiceImpl implements CommunityService {
     @Value("${cache.config.data.community.cache_name}")
     private String cacheName;
 
+    @Value("${page.community.init_member_size}")
+    private int initMemberSize;
+
+    @Value("${page.community.init_post_size}")
+    private int initPostSize;
+
     @Autowired
     private CommunityRepository communityRepository;
     @Autowired
@@ -54,10 +60,10 @@ public class CommunityServiceImpl implements CommunityService {
        Community community = communityRepository.findById(communityId)
                .orElseThrow(() -> new NotFoundException("Community"));
 
-       List<Post> posts = postRepository.findByCommunityIdOrderByClickCountDescCreatedDateDesc(communityId, Pageable.ofSize(5));
+       List<Post> posts = postRepository.findByCommunityIdOrderByClickCountDescCreatedDateDesc(communityId, Pageable.ofSize(initPostSize));
        community.setPosts(posts);
 
-       List<CommunityMember> members = communityMemberRepository.findByCommunityIdOrderByRoleAsc(communityId, Pageable.ofSize(5));
+       List<CommunityMember> members = communityMemberRepository.findByCommunityIdOrderByRoleAsc(communityId, Pageable.ofSize(initMemberSize));
        community.setMembers(members);
 
        return community;
