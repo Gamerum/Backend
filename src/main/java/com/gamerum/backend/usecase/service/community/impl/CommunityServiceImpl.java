@@ -6,9 +6,11 @@ import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
+import com.gamerum.backend.external.persistence.relational.entity.Post;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
+import com.gamerum.backend.external.persistence.relational.repository.PostRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
@@ -18,6 +20,7 @@ import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +41,8 @@ public class CommunityServiceImpl implements CommunityService {
     @Autowired
     private ProfileRepository profileRepository;
     @Autowired
+    private PostRepository postRepository;
+    @Autowired
     private CommunityMapper communityMapper;
     @Autowired
     private CurrentUser currentUser;
@@ -46,8 +51,16 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Override
     public Community getCommunity(Long communityId) {
-       return communityRepository.findById(communityId)
+       Community community = communityRepository.findById(communityId)
                .orElseThrow(() -> new NotFoundException("Community"));
+
+       List<Post> posts = postRepository.findByCommunityIdOrderByClickCountDescCreatedDateDesc(communityId, Pageable.ofSize(5));
+       community.setPosts(posts);
+
+       List<CommunityMember> members = communityMemberRepository.findByCommunityIdOrderByRoleAsc(communityId, Pageable.ofSize(5));
+       community.setMembers(members);
+
+       return community;
     }
 
     @Override
