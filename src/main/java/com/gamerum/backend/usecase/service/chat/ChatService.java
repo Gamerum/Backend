@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface ChatService {
 
-    Chat getByChatId(Long id);
+    Chat getByChatId(long chatId);
     Chat createChat(ChatCreateDTO chat);
-    void deleteChat(Long id);
-    List<Chat> getChats();
+    void deleteChat(Long chatId);
+    List<Chat> getChats(int page, int size, long profileId);
 }

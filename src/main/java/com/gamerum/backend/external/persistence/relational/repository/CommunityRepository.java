@@ -9,6 +9,4 @@ import java.util.List;
 
 @Repository
 public interface CommunityRepository extends CrudRepository<Community, Long> {
-    Community findByTitle(String name);
-    List<Community> findAllByOrderByClickCountDesc(Pageable pageable);
 }

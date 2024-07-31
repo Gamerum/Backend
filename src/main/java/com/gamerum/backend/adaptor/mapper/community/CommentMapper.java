@@ -7,13 +7,11 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
-import java.util.Set;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface CommentMapper {
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
-    @Mapping(source = "responseTo.id", target = "respondCommentId")
     @Mapping(source = "profile.id", target = "writerId")
     @Mapping(source = "profile.nickname", target = "writerNickname")
     CommentGetDTO commentToCommentGetDTO(Comment comment);

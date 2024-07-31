@@ -1,16 +1,19 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.CommunityMemberCountSyncListener;
+import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "CommunityMembers")
-public class CommunityMember {
+@EntityListeners(CommunityMemberCountSyncListener.class)
+public class CommunityMember extends Auditable{
     public enum Role {
         OWNER,
         MOD,
@@ -21,33 +24,15 @@ public class CommunityMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
-
-    @ManyToOne
-    @JoinColumn(name = "community_id", nullable = false)
-    private Community community;
-
-
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @Setter(AccessLevel.NONE)
-    @Column(name = "joined_at", nullable = false)
-    private LocalDateTime joinedAt;
+    @ManyToOne
+    @JoinColumn(name = "profile_id", nullable = false, updatable = false)
+    private Profile profile;
 
-    @Column(name = "joined_by_profile_id")
-    private long joinedBy;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "updated_by_profile_id")
-    private Long updatedBy;
-
-    public CommunityMember() {
-        joinedAt = LocalDateTime.now();
-    }
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "community_id", nullable = false, updatable = false)
+    private Community community;
 }

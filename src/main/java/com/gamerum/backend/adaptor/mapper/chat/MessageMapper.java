@@ -14,7 +14,8 @@ public interface MessageMapper {
 
     @Mapping(source = "profile.id", target = "senderProfileId")
     @Mapping(source = "profile.nickname", target = "senderName")
-    @Mapping(source = "createdAt", target = "sendDate")
+    @Mapping(source = "createdDate", target = "sendDate")
+    @Mapping(source = "sent", target = "isSent")
     MessageGetDTO messageToMessageGetDTO(Message message);
 
     List<MessageGetDTO> messagesToMessageGetDTOs(List<Message> messages);

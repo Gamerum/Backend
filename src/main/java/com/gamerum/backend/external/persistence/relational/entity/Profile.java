@@ -1,16 +1,17 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
 import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.ProfileSyncListener;
+import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Profiles",
         uniqueConstraints = {
@@ -19,7 +20,7 @@ import java.util.List;
         }
 )
 @EntityListeners(ProfileSyncListener.class)
-public class Profile {
+public class Profile extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,37 +28,31 @@ public class Profile {
     private String nickname;
     private boolean isActive;
 
-    @EqualsAndHashCode.Exclude
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private List<CommunityMember> joinedCommunities = new ArrayList<>();
+    @Transient
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    private List<CommunityMember> joinedCommunities;
 
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private List<Post> posts = new ArrayList<>();
+    @Transient
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    private List<Post> posts;
 
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private List<Comment> comments = new ArrayList<>();
+    @Transient
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    private List<Comment> comments;
 
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private List<ChatParticipant> participatedChats = new ArrayList<>();
+    @Transient
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    private List<ChatParticipant> participatedChats;
 
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
-    private List<Message> messages = new ArrayList<>();
+    @Transient
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    private List<Message> messages;
 
-    @Setter(AccessLevel.NONE)
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "updated_by_profile_id")
-    private Long updatedBy;
-
-    public Profile() {
-        createdAt = LocalDateTime.now();
-    }
+    @Transient
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    private List<CommentResponse> commentResponses;
 }
