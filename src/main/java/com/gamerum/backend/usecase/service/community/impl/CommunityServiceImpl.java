@@ -139,12 +139,4 @@ public class CommunityServiceImpl implements CommunityService {
 
         communityRepository.deleteById(communityId);
     }
-
-    //Later new Service
-//    @Override
-//    @Cacheable(key = popularCommunitiesCacheKey, unless = "#result == null || #result.size() == 0")
-//    public List<Community> getTop5PopularCommunities() {
-//        Pageable pageable = PageRequest.of(0, 5);
-//        return communityRepository.findAllByOrderByClickCountDesc(pageable);
-//    }
 }

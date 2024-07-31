@@ -53,6 +53,8 @@ public class IGDBSynchronizer {
 
       //  elasticsearchRepository.deleteIndex("game");
 
+       // elasticsearchRepository.deleteIndex("community");
+
         String date = getLastSyncDate();
         int page = 0;
 

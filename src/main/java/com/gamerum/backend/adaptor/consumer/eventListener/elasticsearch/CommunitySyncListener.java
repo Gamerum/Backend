@@ -4,6 +4,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.Community
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
+import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import jakarta.persistence.PostUpdate;
@@ -49,6 +50,12 @@ public class CommunitySyncListener{
         elasticsearchRepository.deleteById(community.getId().toString(), "community");
     }
 
-
+    @PostLoad
+    public void handleAfterLoad(Community community) throws IOException {
+        CommunityDocument communityDocument = elasticsearchRepository
+                .getById("community", community.getId().toString(), CommunityDocument.class);
+        communityDocument.setClickCount(communityDocument.getClickCount() + 1);
+        elasticsearchRepository.save(communityDocument);
+    }
 }
 
