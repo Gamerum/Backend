@@ -28,6 +28,8 @@ public class Post extends Auditable {
 
     private String text;
 
+    private long clickCount;
+
     @ManyToOne
     @JoinColumn(name = "community_id", nullable = false, updatable = false)
     private Community community;
