@@ -1,11 +1,10 @@
 package com.gamerum.backend.adaptor.dto.community;
 
 import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberGetDTO;
-import com.gamerum.backend.adaptor.dto.community.post.PostMetadataDTO;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -20,5 +19,6 @@ public class CommunityGetDTO {
     private GameDocument game;
     private String tags;
     private List<CommunityMemberGetDTO> members;
-    private List<PostMetadataDTO> popularPosts;
+    @Setter
+    private List<PostDocument> popularPosts;
 }

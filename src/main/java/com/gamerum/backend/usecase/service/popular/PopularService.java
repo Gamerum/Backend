@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface PopularService {
     List<CommunityDocument> getPopularCommunities() throws IOException;
-    List<PostDocument> getPopularPosts() throws IOException;
-    List<PostDocument> getCommunityPopularPosts(String communityId) throws IOException;
+    List<PostDocument> getPopularPosts(int page) throws IOException;
+    List<PostDocument> getCommunityPopularPosts(String communityId, int page) throws IOException;
 }

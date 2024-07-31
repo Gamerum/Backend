@@ -37,9 +37,6 @@ public class CommunityServiceImpl implements CommunityService {
     @Value("${page.community.init_member_size}")
     private int initMemberSize;
 
-    @Value("${page.community.init_post_size}")
-    private int initPostSize;
-
     @Autowired
     private CommunityRepository communityRepository;
     @Autowired

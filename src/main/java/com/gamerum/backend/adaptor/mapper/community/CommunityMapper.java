@@ -4,8 +4,10 @@ import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityMetadataDTO;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
+import com.gamerum.backend.usecase.service.popular.PopularService;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,6 +23,9 @@ public abstract class CommunityMapper {
     @Autowired
     private ElasticsearchRepository elasticsearchRepository;
 
+    @Autowired
+    private PopularService popularService;
+
     @Mapping(source = "posts", target = "popularPosts")
     public abstract CommunityGetDTO communityToCommunityGetDTO(Community community) throws IOException;
 
@@ -31,11 +36,14 @@ public abstract class CommunityMapper {
     public abstract List<CommunityMetadataDTO> communitiesToCommunityMetadataDTOs(List<Community> communities);
 
     @AfterMapping
-    protected void setGameDocument(@MappingTarget CommunityGetDTO communityGetDTO, Community community) throws IOException {
+    protected void setNestedParameters(@MappingTarget CommunityGetDTO communityGetDTO, Community community) throws IOException {
         GameDocument game = elasticsearchRepository.getById(
                 "game",
                 community.getGameId(),
                 GameDocument.class);
         communityGetDTO.setGame(game);
+
+        List<PostDocument> popularPosts = popularService.getCommunityPopularPosts(String.valueOf(community.getId()), 0);
+        communityGetDTO.setPopularPosts(popularPosts);
     }
 }
