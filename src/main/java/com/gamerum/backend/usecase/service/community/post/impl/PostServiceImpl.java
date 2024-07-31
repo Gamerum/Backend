@@ -38,6 +38,7 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private CurrentUser currentUser;
+
     @Autowired
     private CommentRepository commentRepository;
 
@@ -51,7 +52,7 @@ public class PostServiceImpl implements PostService {
                 .findById(currentUser.getProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
 
-        if (!communityMemberRepository.existsByProfileIdAndCommunityId(community.getId(), profile.getId()))
+        if (!communityMemberRepository.existsByProfileIdAndCommunityId(profile.getId(), communityId))
             throw new NotParticipatedException();
 
         Post newPost = PostMapper.INSTANCE.postCreateDTOToPost(postCreateDTO);

@@ -20,6 +20,9 @@ public class PostController {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private PostMapper postMapper;
+
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PostMapping
     public ResponseEntity<ResponseData<PostGetDTO>> createPost(
@@ -28,7 +31,7 @@ public class PostController {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Post created.",
-                PostMapper.INSTANCE.postToPostGetDTO(postService.createPost(communityId, postCreateDTO))),
+                postMapper.postToPostGetDTO(postService.createPost(communityId, postCreateDTO))),
                 HttpStatus.CREATED);
     }
 
@@ -40,7 +43,7 @@ public class PostController {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Post updated.",
-                PostMapper.INSTANCE.postToPostGetDTO(postService.updatePost(postId, postUpdateDTO))),
+                postMapper.postToPostGetDTO(postService.updatePost(postId, postUpdateDTO))),
                 HttpStatus.OK);
     }
 
@@ -55,13 +58,13 @@ public class PostController {
                 HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("{postId}")
+    @GetMapping("/{postId}")
     public ResponseEntity<ResponseData<PostGetDTO>> getPostById(
             @PathVariable Long postId) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Post received.",
-                PostMapper.INSTANCE.postToPostGetDTO(postService.getPostById(postId))),
+                postMapper.postToPostGetDTO(postService.getPostById(postId))),
                 HttpStatus.OK);
     }
 }
