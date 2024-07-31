@@ -6,7 +6,6 @@ import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
-import com.gamerum.backend.external.persistence.relational.entity.Post;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
@@ -60,9 +59,6 @@ public class CommunityServiceImpl implements CommunityService {
     public Community getCommunity(Long communityId) {
        Community community = communityRepository.findById(communityId)
                .orElseThrow(() -> new NotFoundException("Community"));
-
-       List<Post> posts = postRepository.findByCommunityIdOrderByClickCountDescCreatedDateDesc(communityId, Pageable.ofSize(initPostSize));
-       community.setPosts(posts);
 
        List<CommunityMember> members = communityMemberRepository.findByCommunityIdOrderByRoleAsc(communityId, Pageable.ofSize(initMemberSize));
        community.setMembers(members);
