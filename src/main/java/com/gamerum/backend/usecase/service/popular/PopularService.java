@@ -9,4 +9,5 @@ import java.util.List;
 public interface PopularService {
     List<CommunityDocument> getPopularCommunities() throws IOException;
     List<PostDocument> getPopularPosts() throws IOException;
+    List<PostDocument> getCommunityPopularPosts(String communityId) throws IOException;
 }
