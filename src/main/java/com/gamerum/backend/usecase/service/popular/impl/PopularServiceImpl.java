@@ -1,6 +1,9 @@
 package com.gamerum.backend.usecase.service.popular.impl;
 
 import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+
 @Service
 public class PopularServiceImpl implements PopularService {
     @Value("${page.community.top_popular_size}")
@@ -42,4 +46,29 @@ public class PopularServiceImpl implements PopularService {
 
         return repository.search(searchRequest, PostDocument.class);
     }
+
+    @Override
+    public List<PostDocument> getCommunityPopularPosts(String communityId) throws IOException {
+        BoolQuery.Builder boolQueryBuilder = QueryBuilders.bool();
+
+        Query wildcardQuery = QueryBuilders.term()
+                .field("community.id")
+                .value(communityId)
+                .build()._toQuery();
+
+        boolQueryBuilder.must(wildcardQuery);
+
+        BoolQuery boolQuery = boolQueryBuilder.build();
+
+        SearchRequest searchRequest = new SearchRequest.Builder()
+                .index("post")
+                .query(q -> q.bool(boolQuery))
+                .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
+                .sort(s -> s.field(f -> f.field("clickCount").order(SortOrder.Desc)))
+                .size(communityTopPopularSize)
+                .build();
+
+        return repository.search(searchRequest, PostDocument.class);
+    }
+
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,6 +36,15 @@ public class PopularController {
                 true,
                 "Popular posts sent.",
                 popularService.getPopularPosts()),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/communities/{communityId}/pots")
+    public ResponseEntity<ResponseData<List<PostDocument>>> getCommunityPopularPosts(@PathVariable String communityId) throws IOException {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Popular posts sent.",
+                popularService.getCommunityPopularPosts(communityId)),
                 HttpStatus.OK);
     }
 }
