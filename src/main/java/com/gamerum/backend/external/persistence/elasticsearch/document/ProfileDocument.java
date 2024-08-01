@@ -1,28 +1,23 @@
 package com.gamerum.backend.external.persistence.elasticsearch.document;
 
-import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.elasticsearch.annotations.Document;
+
+import java.util.List;
 
 
 @EqualsAndHashCode(callSuper = true)
 @Document(indexName = "profile")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileDocument extends DocumentBase{
     @Id
     private String id;
     private String nickname;
-
-    public ProfileDocument(Profile profile) {
-        id = profile.getId().toString();
-        nickname = profile.getNickname();
-    }
+    private List<String> communityIds;
 
     @Override
     public String getIndex() {

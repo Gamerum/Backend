@@ -8,6 +8,7 @@ import jakarta.persistence.PostUpdate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Component
 public class ProfileSyncListener {
@@ -18,9 +19,22 @@ public class ProfileSyncListener {
         this.elasticsearchRepository = elasticsearchRepository;
     }
 
-    @PostUpdate
+
     @PostPersist
     public void handleAfterSave(Profile profile) throws IOException {
-        elasticsearchRepository.save(new ProfileDocument(profile));
+        elasticsearchRepository.save(ProfileDocument.builder()
+                .id(profile.getId().toString())
+                .nickname(profile.getNickname())
+                .communityIds(new ArrayList<>())
+                .build());
+    }
+
+    @PostUpdate
+    public void handleAfterUpdate(Profile profile) throws IOException {
+        ProfileDocument profileDocument = elasticsearchRepository.getById(
+                "profile", profile.getId().toString(), ProfileDocument.class);
+
+        profileDocument.setNickname(profile.getNickname());
+        elasticsearchRepository.save(profileDocument);
     }
 }
