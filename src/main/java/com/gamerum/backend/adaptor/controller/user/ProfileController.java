@@ -7,7 +7,6 @@ import com.gamerum.backend.adaptor.mapper.profile.ProfileMapper;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -19,16 +18,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/profiles")
 public class ProfileController {
+    private final ProfileService profileService;
+    private final ProfileMapper profileMapper;
 
-    @Autowired
-    private ProfileService profileService;
-
-    @Autowired
-    private ProfileMapper profileMapper;
+    public ProfileController(ProfileService profileService, ProfileMapper profileMapper) {
+        this.profileService = profileService;
+        this.profileMapper = profileMapper;
+    }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/{profileId}")
-    public ResponseEntity<ResponseData<ProfileGetDTO>> getProfileById(@PathVariable Long profileId) throws IOException {
+    public ResponseEntity<ResponseData<ProfileGetDTO>> getProfileById(
+            @PathVariable Long profileId) throws IOException {
         return new ResponseEntity<>(
                 new ResponseData<>(
                         true,
@@ -39,7 +40,8 @@ public class ProfileController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/{profileId}")
-    public ResponseEntity<ResponseData<ProfileGetDTO>> updateProfile(@RequestBody ProfileUpdateDTO profileUpdateDTO) throws IOException {
+    public ResponseEntity<ResponseData<ProfileGetDTO>> updateProfile(
+            @RequestBody ProfileUpdateDTO profileUpdateDTO) throws IOException {
         return new ResponseEntity<>(
                 new ResponseData<>(
                         true,

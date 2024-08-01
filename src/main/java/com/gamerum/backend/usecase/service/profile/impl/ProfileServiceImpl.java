@@ -16,13 +16,11 @@ import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,14 +31,15 @@ public class ProfileServiceImpl implements ProfileService {
     @Value("${page.profile.post_size}")
     private int postSize;
 
-    @Autowired
-    private ProfileRepository profileRepository;
+    private final ProfileRepository profileRepository;
+    private final ElasticsearchRepository elasticsearchRepository;
+    private final CurrentUser currentUser;
 
-    @Autowired
-    private ElasticsearchRepository elasticsearchRepository;
-
-    @Autowired
-    private CurrentUser currentUser;
+    public ProfileServiceImpl(ProfileRepository profileRepository, ElasticsearchRepository elasticsearchRepository, CurrentUser currentUser) {
+        this.profileRepository = profileRepository;
+        this.elasticsearchRepository = elasticsearchRepository;
+        this.currentUser = currentUser;
+    }
 
     @Override
     public Profile getProfileById(Long profileId) {
@@ -97,7 +96,7 @@ public class ProfileServiceImpl implements ProfileService {
         Profile profile = profileRepository.findById(profileUpdateDTO.getId()).
                 orElseThrow(() -> new NotFoundException("Profile"));
 
-        if (!Objects.equals(currentUser.getProfileId(), profile.getId()))
+        if (!currentUser.getProfileId().equals(profile.getId()))
             throw new NotAllowedException();
 
         profile.setNickname(profileUpdateDTO.getNickname());
