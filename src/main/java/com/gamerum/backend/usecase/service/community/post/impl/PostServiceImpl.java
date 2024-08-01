@@ -24,7 +24,6 @@ import java.util.Objects;
 
 @Service
 public class PostServiceImpl implements PostService {
-
     @Value("${cache.config.data.popular.cache_name}")
     private String popularCacheName;
 
@@ -34,26 +33,28 @@ public class PostServiceImpl implements PostService {
     @Value("${page.post.init_comment_size}")
     private int initCommentSize;
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+    private final CommunityRepository communityRepository;
+    private final ProfileRepository profileRepository;
+    private final CommunityMemberRepository communityMemberRepository;
+    private final CurrentUser currentUser;
+    private final CommentRepository commentRepository;
+    private final CacheUtils cacheUtils;
 
-    @Autowired
-    private CommunityRepository communityRepository;
-
-    @Autowired
-    private ProfileRepository profileRepository;
-
-    @Autowired
-    private CommunityMemberRepository communityMemberRepository;
-
-    @Autowired
-    private CurrentUser currentUser;
-
-    @Autowired
-    private CommentRepository commentRepository;
-
-    @Autowired
-    private CacheUtils cacheUtils;
+    public PostServiceImpl(PostRepository postRepository,
+                           CommunityRepository communityRepository,
+                           ProfileRepository profileRepository,
+                           CommunityMemberRepository communityMemberRepository,
+                           CurrentUser currentUser, CommentRepository commentRepository,
+                           CacheUtils cacheUtils) {
+        this.postRepository = postRepository;
+        this.communityRepository = communityRepository;
+        this.profileRepository = profileRepository;
+        this.communityMemberRepository = communityMemberRepository;
+        this.currentUser = currentUser;
+        this.commentRepository = commentRepository;
+        this.cacheUtils = cacheUtils;
+    }
 
     @Override
     public Post createPost(Long communityId, PostCreateDTO postCreateDTO) {
@@ -81,7 +82,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Post"));
 
-        if (!Objects.equals(post.getProfile().getId(), currentUser.getProfileId()))
+        if (!post.getProfile().getId().equals(currentUser.getProfileId()))
             throw new NotAllowedException();
 
         post.setTitle(postUpdateDTO.getTitle());
@@ -99,7 +100,7 @@ public class PostServiceImpl implements PostService {
         Long profileId = currentUser.getProfileId();
 
         boolean isAdmin = currentUser.hasRole(UserRole.ROLE_ADMIN);
-        boolean isDeleteOwnedPost = Objects.equals(post.getProfile().getId(), profileId);
+        boolean isDeleteOwnedPost = post.getProfile().getId().equals(profileId);
 
         if (!isAdmin && !isDeleteOwnedPost) {
             CommunityMember deleter = communityMemberRepository
@@ -119,12 +120,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getPostById(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundException("Post"));
-
-        List<Comment> comments = commentRepository.findByPostIdOrderByCreatedDateAsc(postId, Pageable.ofSize(initCommentSize));
+        Post post = postRepository.findById(postId) .orElseThrow(() -> new NotFoundException("Post"));
+        List<Comment> comments = commentRepository
+                .findByPostIdOrderByCreatedDateAsc(postId, Pageable.ofSize(initCommentSize));
         post.setComments(comments);
-
         return post;
     }
 }
