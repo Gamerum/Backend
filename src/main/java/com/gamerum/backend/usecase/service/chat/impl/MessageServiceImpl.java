@@ -23,20 +23,19 @@ import java.util.Objects;
 
 @Service
 public class MessageServiceImpl implements MessageService {
-    @Autowired
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
+    private final ChatRepository chatRepository;
+    private final ProfileRepository profileRepository;
+    private final ChatParticipantRepository chatParticipantRepository;
+    private final CurrentUser currentUser;
 
-    @Autowired
-    private ChatRepository chatRepository;
-
-    @Autowired
-    private ProfileRepository profileRepository;
-
-    @Autowired
-    private ChatParticipantRepository chatParticipantRepository;
-    
-    @Autowired
-    private CurrentUser currentUser;
+    public MessageServiceImpl(MessageRepository messageRepository, ChatRepository chatRepository, ProfileRepository profileRepository, ChatParticipantRepository chatParticipantRepository, CurrentUser currentUser) {
+        this.messageRepository = messageRepository;
+        this.chatRepository = chatRepository;
+        this.profileRepository = profileRepository;
+        this.chatParticipantRepository = chatParticipantRepository;
+        this.currentUser = currentUser;
+    }
 
     @Override
     public Message createMessage(Long chatId, MessageCreateDTO messageCreateDTO) {
@@ -63,38 +62,27 @@ public class MessageServiceImpl implements MessageService {
         Message message = messageRepository.findByIdAndChatId(messageId, chatId)
                 .orElseThrow(() -> new NotFoundException("Message"));
 
-        if (currentUser.hasRole(UserRole.ROLE_ADMIN)) {
-            messageRepository.deleteById(messageId);
-            return;
+        if (!currentUser.hasRole(UserRole.ROLE_ADMIN)) {
+            Long deleterProfileId = currentUser.getProfileId();
+
+            if (!message.getProfile().getId().equals(deleterProfileId)) {
+                ChatParticipant deleter = chatParticipantRepository
+                        .findByChatIdAndProfileId(chatId, deleterProfileId)
+                        .orElseThrow(NotParticipatedException::new);
+
+                if (!deleter.isMod()) throw new NotAllowedException();
+            }
         }
-
-        Long profileId = currentUser.getProfileId();
-
-        if (Objects.equals(message.getProfile().getId(), profileId)) {
-            messageRepository.deleteById(messageId);
-            return;
-        }
-
-        ChatParticipant chatParticipant = chatParticipantRepository.findByChatIdAndProfileId(chatId, profileId)
-                .orElseThrow(NotParticipatedException::new);
-
-        if (!chatParticipant.isMod())
-            throw new NotAllowedException();
-
-        messageRepository.deleteById(messageId);
+        messageRepository.delete(message);
     }
 
     @Override
     public List<Message> getAllMessages(Long chatId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        if (!currentUser.hasRole(UserRole.ROLE_ADMIN) &&
+                !chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
+            throw new NotAllowedException();
 
-        if (currentUser.hasRole(UserRole.ROLE_ADMIN))
-            return messageRepository.findByChatId(chatId, pageable);
-
-        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
-            throw new NotParticipatedException();
-
-        return messageRepository.findByChatId(chatId, pageable);
+        return messageRepository.findByChatId(chatId, PageRequest.of(page, size));
     }
 
     @Override
@@ -102,11 +90,10 @@ public class MessageServiceImpl implements MessageService {
         Message message = messageRepository.findByIdAndChatId(messageUpdateDTO.getId(), chatId)
                 .orElseThrow(() -> new NotFoundException("Message"));
 
-        message.setText(messageUpdateDTO.getMessage());
-
         if (!Objects.equals(message.getProfile().getId(), currentUser.getProfileId()))
             throw new NotAllowedException();
 
+        message.setText(messageUpdateDTO.getMessage());
         return messageRepository.save(message);
     }
 }
