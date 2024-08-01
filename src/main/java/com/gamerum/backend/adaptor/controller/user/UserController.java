@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.controller;
+package com.gamerum.backend.adaptor.controller.user;
 
 import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;

@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 public class CommunityMemberUpdateDTO {
     private Long id;
     private CommunityMember.Role role;
-    private Long updaterProfileId;
 }

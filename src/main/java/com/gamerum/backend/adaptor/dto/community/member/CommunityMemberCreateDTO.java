@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommunityMemberCreateDTO {
-    private long profileId;
+    private Long profileId;
 }

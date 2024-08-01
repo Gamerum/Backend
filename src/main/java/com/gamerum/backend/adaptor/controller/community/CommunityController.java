@@ -1,17 +1,17 @@
-package com.gamerum.backend.adaptor.controller;
+package com.gamerum.backend.adaptor.controller.community;
 
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
 import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberGetDTO;
+import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberUpdateDTO;
 import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMemberMapper;
 import com.gamerum.backend.usecase.service.community.CommunityMemberService;
 import com.gamerum.backend.usecase.service.community.CommunityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -23,18 +23,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/communities")
 public class CommunityController {
+    private final CommunityService communityService;
+    private final CommunityMemberService communityMemberService;
+    private final CommunityMapper communityMapper;
 
-    @Autowired
-    private CommunityService communityService;
+    public CommunityController(CommunityService communityService, CommunityMemberService communityMemberService, CommunityMapper communityMapper) {
+        this.communityService = communityService;
+        this.communityMemberService = communityMemberService;
+        this.communityMapper = communityMapper;
+    }
 
-    @Autowired
-    private CommunityMemberService communityMemberService;
-
-    @Autowired
-    private CommunityMapper communityMapper;
-
-
-    // Get a community by ID
     @GetMapping("/{communityId}")
     public ResponseEntity<ResponseData<CommunityGetDTO>> getCommunity(@PathVariable Long communityId) throws IOException {
         return new ResponseEntity<>(new ResponseData<>(
@@ -45,7 +43,6 @@ public class CommunityController {
                 HttpStatus.OK);
     }
 
-    // Create a new community
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
     public ResponseEntity<ResponseData<CommunityGetDTO>> createCommunity(@RequestBody CommunityCreateDTO community) throws IOException {
@@ -57,7 +54,6 @@ public class CommunityController {
                 HttpStatus.CREATED);
     }
 
-    // Update an existing community
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/{communityId}")
     public ResponseEntity<ResponseData<CommunityGetDTO>> updateCommunity(
@@ -71,7 +67,6 @@ public class CommunityController {
                 HttpStatus.OK);
     }
 
-    // Delete a community
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping("/{communityId}")
     public ResponseEntity<Response> deleteCommunity(
@@ -83,7 +78,6 @@ public class CommunityController {
                 HttpStatus.NO_CONTENT);
     }
 
-    // Create a community member
     @PostMapping("/{communityId}/members")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<ResponseData<CommunityMemberGetDTO>> createCommunityMember(
@@ -97,7 +91,18 @@ public class CommunityController {
                 HttpStatus.CREATED);
     }
 
-    // Get all community members
+    @PutMapping("/{communityId}/members")
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    public ResponseEntity<ResponseData<CommunityMemberGetDTO>> updateCommunityMember(
+            @RequestBody CommunityMemberUpdateDTO communityMemberUpdateDTO) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Member updated.",
+                CommunityMemberMapper.INSTANCE.communityMemberToCommunityMemberGetDTO(
+                        communityMemberService.updateCommunityMember(communityMemberUpdateDTO))),
+                HttpStatus.OK);
+    }
+
     @GetMapping("/{communityId}/members")
     public ResponseEntity<ResponseData<List<CommunityMemberGetDTO>>> getAllCommunityMembers(
             @PathVariable Long communityId,
@@ -111,7 +116,6 @@ public class CommunityController {
                 HttpStatus.OK);
     }
 
-    // Delete a community member
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping("/{communityId}/members")
     public ResponseEntity<Response> deleteCommunityMember(

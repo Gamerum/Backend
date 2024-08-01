@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.controller;
+package com.gamerum.backend.adaptor.controller.community;
 
 import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostGetDTO;
