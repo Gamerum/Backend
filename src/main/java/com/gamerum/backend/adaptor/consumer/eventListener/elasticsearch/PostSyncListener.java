@@ -2,6 +2,7 @@ package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
 import com.gamerum.backend.external.persistence.relational.repository.PostRepository;
@@ -16,25 +17,38 @@ import java.io.IOException;
 @Component
 public class PostSyncListener {
     private final ElasticsearchRepository elasticsearchRepository;
-    private final PostRepository postRepository;
 
-    public PostSyncListener(ElasticsearchRepository elasticsearchRepository, PostRepository postRepository) {
+    public PostSyncListener(ElasticsearchRepository elasticsearchRepository) {
         this.elasticsearchRepository = elasticsearchRepository;
-        this.postRepository = postRepository;
     }
 
     @PostPersist
-    @PostUpdate
-    public void handleAfterSave(Post post) throws IOException {
+    public void handleAfterCreate(Post post) throws IOException {
         CommunityDocument community = elasticsearchRepository.getById(
                 "community", post.getCommunity().getId().toString(), CommunityDocument.class);
+
+        ProfileDocument profile = elasticsearchRepository.getById(
+                "profile", post.getProfile().getId().toString(), ProfileDocument.class);
+
         elasticsearchRepository.save(PostDocument.builder()
                 .id(post.getId().toString())
                 .text(post.getText())
                 .title(post.getTitle())
+                .community(community)
+                .profile(profile)
                 .clickCount(0L)
                 .createdDate(post.getCreatedDate())
                 .build());
+    }
+
+    @PostUpdate
+    public void handleAfterUpdate(Post post) throws IOException {
+        PostDocument postDocument = elasticsearchRepository.getById(
+                "post", post.getId().toString(), PostDocument.class);
+
+        postDocument.setText(post.getText());
+        postDocument.setTitle(post.getTitle());
+        elasticsearchRepository.save(postDocument);
     }
 
     @PostRemove

@@ -18,6 +18,7 @@ public class PostDocument extends DocumentBase {
     private String title;
     private String text;
     private Long clickCount;
+    private ProfileDocument profile;
     private CommunityDocument community;
     private Date createdDate;
 

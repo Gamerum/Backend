@@ -1,5 +1,11 @@
 package com.gamerum.backend.adaptor.controller;
 
+import com.gamerum.backend.adaptor.dto.response.ResponseData;
+import com.gamerum.backend.adaptor.dto.user.profile.ProfileGetDTO;
+import com.gamerum.backend.adaptor.dto.user.profile.ProfileUpdateDTO;
+import com.gamerum.backend.adaptor.mapper.profile.ProfileMapper;
+import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/profiles")
 public class ProfileController {
@@ -15,39 +24,55 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
-    // Get a profile by ID
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @GetMapping("/{id}")
-    public ResponseEntity<Profile> getProfileById(@PathVariable Long profileId) {
-       return new ResponseEntity<>(profileService.getProfileById(profileId), HttpStatus.OK);
+    @Autowired
+    private ProfileMapper profileMapper;
+
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @GetMapping("/{profileId}")
+    public ResponseEntity<ResponseData<ProfileGetDTO>> getProfileById(@PathVariable Long profileId) throws IOException {
+        return new ResponseEntity<>(
+                new ResponseData<>(
+                        true,
+                        "Profile received",
+                        profileMapper.profileToProfileGetDTO(profileService.getProfileById(profileId))),
+                HttpStatus.OK);
     }
 
-    // Create a new profile
-    @PostMapping("public/**")
-    public ResponseEntity<Profile> createProfile(@RequestBody Profile profile) {
-        return new ResponseEntity<>(profileService.createProfile(profile),HttpStatus.CREATED);
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @PutMapping("/{profileId}")
+    public ResponseEntity<ResponseData<ProfileGetDTO>> updateProfile(@RequestBody ProfileUpdateDTO profileUpdateDTO) throws IOException {
+        return new ResponseEntity<>(
+                new ResponseData<>(
+                        true,
+                        "Profile updated",
+                        profileMapper.profileToProfileGetDTO(profileService.updateProfile(profileUpdateDTO))),
+                HttpStatus.OK);
     }
 
-    // Update an existing profile
-    @Secured("ROLE_USER")
-    @PutMapping("/{id}")
-    public ResponseEntity<Profile> updateProfile(@PathVariable Long profileId, @RequestBody Profile profile) {
-        profile.setId(profileId);
-        return new ResponseEntity<>(profileService.updateProfile(profile), HttpStatus.OK);
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @GetMapping("/{profileId}/communities")
+    public ResponseEntity<ResponseData<List<CommunityDocument>>> getProfileCommunities(
+            @PathVariable Long profileId,
+            @RequestParam int page) throws IOException {
+        return new ResponseEntity<>(
+                new ResponseData<>(
+                        true,
+                        "Profile Communities received",
+                        profileService.getCommunities(profileId, page)),
+                HttpStatus.OK);
     }
 
-    // Delete a profile by ID
-    @DeleteMapping("/{id}")
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
-    public ResponseEntity<Void> deleteProfile(@PathVariable Long profileId) {
-        profileService.deleteProfile(profileId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @GetMapping("/{profileId}/posts")
+    public ResponseEntity<ResponseData<List<PostDocument>>> getProfilePosts(
+            @PathVariable Long profileId,
+            @RequestParam int page) throws IOException {
+        return new ResponseEntity<>(
+                new ResponseData<>(
+                        true,
+                        "Profile Posts received",
+                        profileService.getPosts(profileId, page)),
+                HttpStatus.OK);
     }
 
-    // Get a profile by nickname
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @GetMapping("/nickname/{nickname}")
-    public ResponseEntity<Profile> getProfileByNickname(@PathVariable String nickname) {
-        return new ResponseEntity<>(profileService.getProfileNickName(nickname),HttpStatus.OK);
-    }
 }
