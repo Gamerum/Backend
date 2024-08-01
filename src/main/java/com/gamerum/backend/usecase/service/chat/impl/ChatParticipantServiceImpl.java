@@ -17,6 +17,7 @@ import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     @Override
+    @Transactional
     public void deleteByIdChatParticipant(Long chatId, Long chatParticipantId) {
         if (!currentUser.hasRole(UserRole.ROLE_ADMIN)) {
             Long deleterProfileId = currentUser.getProfileId();
