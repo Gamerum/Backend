@@ -33,26 +33,26 @@ public class Profile extends Auditable {
     private User user;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<CommunityMember> joinedCommunities;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Post> posts;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Comment> comments;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ChatParticipant> participatedChats;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Message> messages;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<CommentResponse> commentResponses;
 }
