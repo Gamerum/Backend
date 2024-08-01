@@ -43,7 +43,7 @@ public abstract class CommunityMapper {
                 GameDocument.class);
         communityGetDTO.setGame(game);
 
-        List<PostDocument> popularPosts = popularService.getCommunityPopularPosts(String.valueOf(community.getId()), 0);
+        List<PostDocument> popularPosts = popularService.getCommunityPopularPosts(community.getId().toString(), 0);
         communityGetDTO.setPopularPosts(popularPosts);
     }
 }

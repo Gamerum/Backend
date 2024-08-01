@@ -37,6 +37,6 @@ public class Post extends Auditable {
     private Profile profile;
 
     @Transient
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments;
 }

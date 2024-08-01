@@ -2,9 +2,12 @@ package com.gamerum.backend.external.persistence.elasticsearch.document;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.jackson.Jacksonized;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -14,7 +17,9 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(callSuper = true)
 @Document(indexName = "game")
 @Data
+@Builder
 @AllArgsConstructor
+@JacksonStdImpl
 public class GameDocument extends DocumentBase{
     @Id
     private String id;
