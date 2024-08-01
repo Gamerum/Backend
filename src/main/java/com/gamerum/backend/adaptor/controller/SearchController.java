@@ -9,8 +9,6 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocum
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.usecase.service.search.SearchService;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +18,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/search")
-@AllArgsConstructor
 public class SearchController {
     private final SearchService searchService;
 
+    public SearchController(SearchService searchService) {
+        this.searchService = searchService;
+    }
+
     @PostMapping("/games")
-    public ResponseEntity<ResponseData<List<GameDocument>>> searchGamesWithName(@RequestBody GameSearchFilter filter) throws IOException {
+    public ResponseEntity<ResponseData<List<GameDocument>>> searchGamesWithName(
+            @RequestBody GameSearchFilter filter) throws IOException {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Games received",
@@ -34,7 +36,8 @@ public class SearchController {
     }
 
    @PostMapping("/communities")
-    public ResponseEntity<ResponseData<List<CommunityDocument>>> searchCommunities(@RequestBody CommunitySearchFilter filter) throws IOException {
+    public ResponseEntity<ResponseData<List<CommunityDocument>>> searchCommunities(
+            @RequestBody CommunitySearchFilter filter) throws IOException {
        return new ResponseEntity<>(new ResponseData<>(
                true,
                "Communities received",
@@ -43,7 +46,8 @@ public class SearchController {
    }
 
     @PostMapping("/profiles")
-    public ResponseEntity<ResponseData<List<ProfileDocument>>> searchProfiles(@RequestBody SearchFilter filter) throws IOException {
+    public ResponseEntity<ResponseData<List<ProfileDocument>>> searchProfiles(
+            @RequestBody SearchFilter filter) throws IOException {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Profiles received",
@@ -52,7 +56,8 @@ public class SearchController {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<ResponseData<List<PostDocument>>> searchPosts(@RequestBody SearchFilter filter) throws IOException{
+    public ResponseEntity<ResponseData<List<PostDocument>>> searchPosts(
+            @RequestBody SearchFilter filter) throws IOException{
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Posts received",

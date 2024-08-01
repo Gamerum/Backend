@@ -1,11 +1,8 @@
 package com.gamerum.backend.usecase.service.search.impl;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.gamerum.backend.adaptor.dto.search.CommunitySearchFilter;
 import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
 import com.gamerum.backend.adaptor.dto.search.SearchFilter;
@@ -15,17 +12,18 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocum
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.usecase.service.search.SearchService;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class SearchServiceImpl implements SearchService {
-
     private final ElasticsearchRepository repository;
+
+    public SearchServiceImpl(ElasticsearchRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public List<GameDocument> searchGame(GameSearchFilter filter) throws IOException {
