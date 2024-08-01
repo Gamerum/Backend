@@ -54,5 +54,5 @@ public class Profile extends Auditable {
 
     @Transient
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<CommentResponse> commentResponses;
+    private List<Reply> commentRespons;
 }

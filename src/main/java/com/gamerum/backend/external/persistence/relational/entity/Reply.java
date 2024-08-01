@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "CommentResponses")
-public class CommentResponse extends Auditable {
+public class Reply extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
