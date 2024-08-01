@@ -5,23 +5,25 @@ import com.gamerum.backend.adaptor.dto.auth.RegisterRequestDTO;
 import com.gamerum.backend.adaptor.dto.response.auth.LoginResponse;
 import com.gamerum.backend.adaptor.dto.response.auth.RegisterResponse;
 import com.gamerum.backend.usecase.service.auth.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/auth")
 public class AuthController {
+    private final AuthService authService;
 
-    @Autowired
-    private AuthService authService;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
-    @PostMapping("/api/public/auth/register")
+    @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequestDTO request) {
         return new ResponseEntity<>(authService.register(request), HttpStatus.CREATED);
     }
 
-    @PostMapping("/api/public/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequestDTO request) {
         return new ResponseEntity<>(authService.login(request), HttpStatus.OK);
     }
