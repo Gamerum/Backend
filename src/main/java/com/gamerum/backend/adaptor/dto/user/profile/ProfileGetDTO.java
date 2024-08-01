@@ -1,6 +1,5 @@
 package com.gamerum.backend.adaptor.dto.user.profile;
 
-import com.gamerum.backend.adaptor.dto.community.CommunityMetadataDTO;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import lombok.AllArgsConstructor;
