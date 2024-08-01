@@ -78,7 +78,7 @@ public class MessageServiceImpl implements MessageService {
         ChatParticipant chatParticipant = chatParticipantRepository.findByChatIdAndProfileId(chatId, profileId)
                 .orElseThrow(NotParticipatedException::new);
 
-        if (!chatParticipant.isAdmin())
+        if (!chatParticipant.isMod())
             throw new NotAllowedException();
 
         messageRepository.deleteById(messageId);

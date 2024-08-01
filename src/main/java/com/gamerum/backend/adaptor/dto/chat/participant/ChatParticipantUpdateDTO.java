@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChatParticipantUpdateDTO {
     private Long id;
-    private boolean isAdmin;
+    private boolean isMod;
 }

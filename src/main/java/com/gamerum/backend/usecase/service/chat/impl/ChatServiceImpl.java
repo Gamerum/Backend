@@ -81,7 +81,7 @@ public class ChatServiceImpl implements ChatService {
                 ChatParticipant.builder()
                         .profile(creator)
                         .chat(newChat)
-                        .isAdmin(true)
+                        .isMod(true)
                         .build());
 
         newChat.getParticipants().add(admin);
@@ -94,7 +94,7 @@ public class ChatServiceImpl implements ChatService {
                     .map(profile -> ChatParticipant.builder()
                             .profile(profile)
                             .chat(newChat)
-                            .isAdmin(false)
+                            .isMod(false)
                             .build())
                     .toList();
 
@@ -116,7 +116,7 @@ public class ChatServiceImpl implements ChatService {
                 .findByChatIdAndProfileId(chatId, currentUser.getProfileId())
                 .orElseThrow(NotParticipatedException::new);
 
-        if (!deleter.isAdmin())
+        if (!deleter.isMod())
             throw new NotAllowedException();
 
         chatRepository.deleteById(chatId);
