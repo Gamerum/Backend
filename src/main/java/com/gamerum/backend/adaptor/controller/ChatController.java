@@ -38,7 +38,7 @@ public class ChatController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/{chatId}")
     public ResponseEntity<ResponseData<ChatGetDTO>> getChatById(
-            @PathVariable long chatId) {
+            @PathVariable Long chatId) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Chat received.",
@@ -70,7 +70,7 @@ public class ChatController {
     public ResponseEntity<ResponseData<List<ChatGetDTO>>> getChats(
             @RequestParam int size,
             @RequestParam(required = false) int page,
-            @RequestParam(required = false) long profileId) {
+            @RequestParam(required = false) Long profileId) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Chats received.",
@@ -81,7 +81,7 @@ public class ChatController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping("/{chatId}/participants")
     public ResponseEntity<ResponseData<ChatParticipantGetDTO>> addChatParticipant(
-            @PathVariable long chatId,
+            @PathVariable Long chatId,
             @RequestBody ChatParticipantCreateDTO chatParticipantCreateDTO) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,

@@ -15,38 +15,38 @@ import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ChatParticipantServiceImpl implements ChatParticipantService {
-    @Autowired
-    private ChatParticipantRepository chatParticipantRepository;
+    private final ChatParticipantRepository chatParticipantRepository;
+    private final ChatRepository chatRepository;
+    private final ProfileRepository profileRepository;
+    private final CurrentUser currentUser;
 
-    @Autowired
-    private ChatRepository chatRepository;
-
-    @Autowired
-    private ProfileRepository profileRepository;
-
-    @Autowired
-    private CurrentUser currentUser;
+    public ChatParticipantServiceImpl(ChatParticipantRepository chatParticipantRepository,
+                                      ChatRepository chatRepository,
+                                      ProfileRepository profileRepository,
+                                      CurrentUser currentUser) {
+        this.chatParticipantRepository = chatParticipantRepository;
+        this.chatRepository = chatRepository;
+        this.profileRepository = profileRepository;
+        this.currentUser = currentUser;
+    }
 
     @Override
-    public ChatParticipant createChatParticipant(long chatId, ChatParticipantCreateDTO chatParticipantCreateDTO) {
-        Chat chat = chatRepository.findById(chatId).orElseThrow(() ->
-                new NotFoundException("Chat"));
-
-        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
-            throw new NotAllowedException();
+    public ChatParticipant createChatParticipant(Long chatId, ChatParticipantCreateDTO chatParticipantCreateDTO) {
+        Chat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new NotFoundException("Chat"));
 
         Profile profile = profileRepository.findById(chatParticipantCreateDTO.getProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
+
+        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
+            throw new NotAllowedException();
 
         if (chatParticipantRepository.existsByChatIdAndProfileId(chatId, profile.getId()))
             throw new AlreadyParticipatedException(profile.getNickname());
@@ -54,63 +54,48 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
         return chatParticipantRepository.save(ChatParticipant.builder()
                 .profile(profile)
                 .chat(chat)
-                .isAdmin(false)
+                .isMod(false)
                 .build());
     }
 
     @Override
     public void deleteByIdChatParticipant(Long chatId, Long chatParticipantId) {
-        if (currentUser.hasRole(UserRole.ROLE_ADMIN)) {
-            chatParticipantRepository.deleteById(chatParticipantId);
-            return;
+        if (!currentUser.hasRole(UserRole.ROLE_ADMIN)) {
+            Long deleterProfileId = currentUser.getProfileId();
+
+            ChatParticipant deleter = chatParticipantRepository
+                    .findByChatIdAndProfileId(chatId, deleterProfileId)
+                    .orElseThrow(NotParticipatedException::new);
+
+            if (!deleter.isMod() && !deleter.getProfile().getId().equals(deleterProfileId))
+                throw new NotAllowedException();
         }
-
-        Long deleterProfileId = currentUser.getProfileId();
-
-        ChatParticipant deleter = chatParticipantRepository.findByChatIdAndProfileId(chatId, deleterProfileId)
-                .orElseThrow(NotParticipatedException::new);
-
-        if (Objects.equals(deleter.getProfile().getId(), deleterProfileId)) {
-            chatParticipantRepository.deleteById(chatParticipantId);
-            return;
-        }
-
-        if (!deleter.isAdmin()) throw new NotAllowedException();
-
         chatParticipantRepository.deleteById(chatParticipantId);
-
         if (chatParticipantRepository.countByChatId(chatId) == 0)
             chatRepository.deleteById(chatId);
     }
 
     @Override
     public List<ChatParticipant> getChatParticipants(Long chatId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        if (currentUser.hasRole(UserRole.ROLE_ADMIN))
-            return chatParticipantRepository.findByChatId(chatId, pageable);
-
-        if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
+        if (!currentUser.hasRole(UserRole.ROLE_ADMIN) &&
+                !chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
             throw new NotParticipatedException();
-
-        return chatParticipantRepository.findByChatId(chatId, pageable);
+        return chatParticipantRepository.findByChatId(chatId, PageRequest.of(page, size));
     }
 
     @Override
-    public ChatParticipant updateChatParticipant(long chatId, ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
-        Long profileId = currentUser.getProfileId();
-
+    public ChatParticipant updateChatParticipant(Long chatId, ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
         ChatParticipant updater = chatParticipantRepository
-                .findByChatIdAndProfileId(chatId, profileId)
+                .findByChatIdAndProfileId(chatId, currentUser.getProfileId())
                 .orElseThrow(NotParticipatedException::new);
 
-        if (!updater.isAdmin()) throw new NotAllowedException();
+        if (!updater.isMod()) throw new NotAllowedException();
 
-        ChatParticipant participant = chatParticipantRepository.findById(chatParticipantUpdateDTO.getId())
+        ChatParticipant participant = chatParticipantRepository
+                .findById(chatParticipantUpdateDTO.getId())
                 .orElseThrow(NotParticipatedException::new);
 
-        participant.setAdmin(chatParticipantUpdateDTO.isAdmin());
-
+        participant.setMod(chatParticipantUpdateDTO.isMod());
         return chatParticipantRepository.save(participant);
     }
 
