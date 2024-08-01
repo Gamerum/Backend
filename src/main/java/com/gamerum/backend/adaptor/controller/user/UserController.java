@@ -15,8 +15,11 @@ import javax.security.auth.login.CredentialException;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PutMapping("/{userId}/change_email")
     public ResponseEntity<ResponseData<String>> changeEmail(
