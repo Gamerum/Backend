@@ -4,7 +4,6 @@ import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.usecase.service.popular.PopularService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/popular")
 public class PopularController {
-    @Autowired
-    private PopularService popularService;
+    private final PopularService popularService;
+
+    public PopularController(PopularService popularService) {
+        this.popularService = popularService;
+    }
 
     @GetMapping("/communities")
     public ResponseEntity<ResponseData<List<CommunityDocument>>> getPopularCommunities() throws IOException {
