@@ -27,7 +27,6 @@ import java.util.Objects;
 
 @Service
 public class CommunityServiceImpl implements CommunityService {
-
     @Value("${cache.config.data.popular.cache_name}")
     private String popularCacheName;
 
@@ -37,57 +36,58 @@ public class CommunityServiceImpl implements CommunityService {
     @Value("${page.community.init_member_size}")
     private int initMemberSize;
 
-    @Autowired
-    private CommunityRepository communityRepository;
+    private final CommunityRepository communityRepository;
+    private final CommunityMemberRepository communityMemberRepository;
+    private final ProfileRepository profileRepository;
+    private final CommunityMapper communityMapper;
+    private final CurrentUser currentUser;
+    private final CacheUtils cacheUtils;
 
-    @Autowired
-    private CommunityMemberRepository communityMemberRepository;
-
-    @Autowired
-    private ProfileRepository profileRepository;
-
-    @Autowired
-    private CommunityMapper communityMapper;
-
-    @Autowired
-    private CurrentUser currentUser;
-
-    @Autowired
-    private CacheUtils cacheUtils;
+    public CommunityServiceImpl(CommunityRepository communityRepository,
+                                CommunityMemberRepository communityMemberRepository,
+                                ProfileRepository profileRepository,
+                                CommunityMapper communityMapper,
+                                CurrentUser currentUser,
+                                CacheUtils cacheUtils) {
+        this.communityRepository = communityRepository;
+        this.communityMemberRepository = communityMemberRepository;
+        this.profileRepository = profileRepository;
+        this.communityMapper = communityMapper;
+        this.currentUser = currentUser;
+        this.cacheUtils = cacheUtils;
+    }
 
     @Override
     public Community getCommunity(Long communityId) {
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("Community"));
 
-        List<CommunityMember> members = communityMemberRepository.findByCommunityIdOrderByRoleAsc(communityId, Pageable.ofSize(initMemberSize));
+        List<CommunityMember> members = communityMemberRepository
+                .findByCommunityIdOrderByRoleAsc(communityId, Pageable.ofSize(initMemberSize));
         community.setMembers(members);
-
         return community;
     }
 
     @Override
     @Transactional
     public Community createCommunity(CommunityCreateDTO communityCreateDTO) {
-        Long creatorId = currentUser.getProfileId();
+        Community community = communityRepository.save(
+                communityMapper.communityCreateDTOToCommunity(communityCreateDTO));
+        saveCreator(community);
+        return community;
+    }
 
-        Profile creatorProfile = profileRepository.findById(creatorId)
+    private void saveCreator(Community newCommunity) {
+        Profile creatorProfile = profileRepository.findById(currentUser.getProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
-
-        Community community = communityMapper.communityCreateDTOToCommunity(communityCreateDTO);
-        community = communityRepository.save(community);
 
         CommunityMember creator = CommunityMember.builder()
                 .profile(creatorProfile)
-                .community(community)
+                .community(newCommunity)
                 .role(CommunityMember.Role.OWNER)
                 .build();
 
-        creator = communityMemberRepository.save(creator);
-
-        community.setMembers(List.of(creator));
-
-        return community;
+        newCommunity.setMembers(List.of(communityMemberRepository.save(creator)));
     }
 
     @Override
@@ -99,8 +99,7 @@ public class CommunityServiceImpl implements CommunityService {
                 .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
                 .orElseThrow(() -> new NotFoundException("Member"));
 
-        if (updater.getRole() == CommunityMember.Role.USER)
-            throw new NotAllowedException();
+        if (updater.getRole() == CommunityMember.Role.USER) throw new NotAllowedException();
 
         community.setTitle(communityUpdateDTO.getTitle());
         community.setDescription(communityUpdateDTO.getDescription());
@@ -116,8 +115,7 @@ public class CommunityServiceImpl implements CommunityService {
                     .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
                     .orElseThrow(() -> new NotFoundException("Member"));
 
-            if (deleter.getRole() != CommunityMember.Role.OWNER)
-                throw new NotAllowedException();
+            if (deleter.getRole() != CommunityMember.Role.OWNER) throw new NotAllowedException();
         }
 
         cacheUtils.invalidateCacheListIfConditionMet(popularCacheName, popularCommunityCacheKey,
