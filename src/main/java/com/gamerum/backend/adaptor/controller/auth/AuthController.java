@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.controller;
+package com.gamerum.backend.adaptor.controller.auth;
 
 import com.gamerum.backend.adaptor.dto.auth.LoginRequestDTO;
 import com.gamerum.backend.adaptor.dto.auth.RegisterRequestDTO;

@@ -1,12 +1,9 @@
-package com.gamerum.backend.adaptor.controller;
-import com.gamerum.backend.adaptor.dto.community.post.comment.CommentGetDTO;
-import com.gamerum.backend.adaptor.dto.community.post.comment.CommentUpdateDTO;
+package com.gamerum.backend.adaptor.controller.community;
 import com.gamerum.backend.adaptor.dto.community.post.comment.response.CommentResponseCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.comment.response.CommentResponseGetDTO;
 import com.gamerum.backend.adaptor.dto.community.post.comment.response.CommentResponseUpdateDTO;
 import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
-import com.gamerum.backend.adaptor.mapper.community.CommentMapper;
 import com.gamerum.backend.adaptor.mapper.community.CommentResponseMapper;
 import com.gamerum.backend.usecase.service.community.post.CommentResponseService;
 import org.springframework.beans.factory.annotation.Autowired;

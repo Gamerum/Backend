@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.controller;
+package com.gamerum.backend.adaptor.controller.user;
 
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.dto.user.profile.ProfileGetDTO;
@@ -6,7 +6,6 @@ import com.gamerum.backend.adaptor.dto.user.profile.ProfileUpdateDTO;
 import com.gamerum.backend.adaptor.mapper.profile.ProfileMapper;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
-import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

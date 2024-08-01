@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.controller;
+package com.gamerum.backend.adaptor.controller.chat;
 
 import com.gamerum.backend.adaptor.dto.chat.ChatCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.ChatGetDTO;
@@ -16,7 +16,6 @@ import com.gamerum.backend.adaptor.mapper.chat.MessageMapper;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import com.gamerum.backend.usecase.service.chat.MessageService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -27,13 +26,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/chats")
 public class ChatController {
+    private final ChatService chatService;
+    private final ChatParticipantService chatParticipantService;
+    private final MessageService messageService;
 
-    @Autowired
-    private ChatService chatService;
-    @Autowired
-    private ChatParticipantService chatParticipantService;
-    @Autowired
-    private MessageService messageService;
+    public ChatController(ChatService chatService, ChatParticipantService chatParticipantService, MessageService messageService) {
+        this.chatService = chatService;
+        this.chatParticipantService = chatParticipantService;
+        this.messageService = messageService;
+    }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/{chatId}")
