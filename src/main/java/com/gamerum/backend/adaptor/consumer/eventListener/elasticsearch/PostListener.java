@@ -33,6 +33,7 @@ public class PostListener {
                 .id(post.getId().toString())
                 .text(post.getText())
                 .title(post.getTitle())
+                .tag(post.getTag())
                 .community(community)
                 .profile(profile)
                 .clickCount(0L)

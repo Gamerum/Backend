@@ -5,6 +5,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import com.gamerum.backend.adaptor.dto.search.CommunitySearchFilter;
 import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
+import com.gamerum.backend.adaptor.dto.search.PostSearchFilter;
 import com.gamerum.backend.adaptor.dto.search.SearchFilter;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
@@ -128,7 +129,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public List<PostDocument> searchPost(SearchFilter filter) throws IOException {
+    public List<PostDocument> searchPost(PostSearchFilter filter) throws IOException {
         BoolQuery.Builder boolQueryBuilder = QueryBuilders.bool();
 
         if (filter.getKeyword() != null && !filter.getKeyword().isEmpty()) {
@@ -140,11 +141,29 @@ public class SearchServiceImpl implements SearchService {
             boolQueryBuilder.must(wildcardQuery);
         }
 
+        if (filter.getCommunityId() != null && filter.getCommunityId().equals("0")) {
+            Query termQuery = QueryBuilders.term()
+                    .field("community.id")
+                    .value(filter.getCommunityId())
+                    .build()._toQuery();
+            boolQueryBuilder.must(termQuery);
+
+            if (filter.getTag() != null && filter.getTag().isBlank()) {
+                Query tagQuery = QueryBuilders.term()
+                        .field("tag")
+                        .value(filter.getTag())
+                        .build()._toQuery();
+                boolQueryBuilder.must(tagQuery);
+            }
+        }
+
         BoolQuery boolQuery = boolQueryBuilder.build();
 
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index("post")
                 .query(q -> q.bool(boolQuery))
+                .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
+                .sort(s -> s.field(f -> f.field("clickCount").order(SortOrder.Desc)))
                 .sort(s -> s.field(f -> f.field("_score").order(SortOrder.Desc)))
                 .from(filter.getPage() * filter.getSize())
                 .size(filter.getSize())
