@@ -67,7 +67,7 @@ public class ProfileController {
     @GetMapping("/{profileId}/posts")
     public ResponseEntity<ResponseData<List<PostDocument>>> getProfilePosts(
             @PathVariable Long profileId,
-            @RequestParam int page) throws IOException {
+            @RequestParam(defaultValue = "0") Integer page) throws IOException {
         return new ResponseEntity<>(
                 new ResponseData<>(
                         true,

@@ -52,13 +52,12 @@ public class ChatParticipantController {
     @GetMapping
     public ResponseEntity<ResponseData<List<ChatParticipantGetDTO>>> getChatParticipants(
             @PathVariable Long chatId,
-            @RequestParam(required = false) int page,
-            @RequestParam int size) {
+            @RequestParam(defaultValue = "0") Integer page) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Participants received.",
                 ChatParticipantMapper.INSTANCE.chatParticipantsToChatParticipantGetDTOs(
-                        chatParticipantService.getChatParticipants(chatId, page, size))),
+                        chatParticipantService.getChatParticipants(chatId, page))),
                 HttpStatus.OK);
     }
 

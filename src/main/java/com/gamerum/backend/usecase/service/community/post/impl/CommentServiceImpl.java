@@ -14,6 +14,7 @@ import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.community.post.CommentService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,9 @@ import java.util.List;
 
 @Service
 public class CommentServiceImpl implements CommentService {
+    @Value("${page.comment.size}")
+    private int commentPageSize;
+
     private final CommentRepository commentRepository;
     private final CommunityMemberRepository communityMemberRepository;
     private final PostRepository postRepository;
@@ -53,8 +57,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> getPostComments(Long postId, int page, int size) {
-        return commentRepository.findByPostId(postId, PageRequest.of(page, size));
+    public List<Comment> getPostComments(Long postId, int page) {
+        return commentRepository.findByPostId(postId, PageRequest.of(page, commentPageSize));
     }
 
     @Override

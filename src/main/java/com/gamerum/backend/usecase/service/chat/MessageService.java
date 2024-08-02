@@ -9,6 +9,6 @@ import java.util.List;
 public interface MessageService {
     Message createMessage(Long chatId, MessageCreateDTO messageCreateDTO);
     void deleteByIdMessage(Long chatId, Long messageId);
-    List<Message> getAllMessages(Long chatId, int page, int size);
+    List<Message> getAllMessages(Long chatId, int page);
     Message updateMessage(Long chatId, MessageUpdateDTO messageUpdateDTO);
 }

@@ -15,6 +15,7 @@ import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.community.CommunityMemberService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,10 @@ import java.util.List;
 
 @Service
 public class CommunityMemberServiceImpl implements CommunityMemberService {
+
+    @Value("${page.community_member.size}")
+    private int memberPageSize;
+
     private final CommunityMemberRepository communityMemberRepository;
     private final CommunityRepository communityRepository;
     private final ProfileRepository profileRepository;
@@ -61,8 +66,8 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
     }
 
     @Override
-    public List<CommunityMember> getCommunityMembers(Long communityId, int page, int size) {
-        return communityMemberRepository.findByCommunityIdOrderByRoleAsc(communityId, PageRequest.of(page, size));
+    public List<CommunityMember> getCommunityMembers(Long communityId, int page) {
+        return communityMemberRepository.findByCommunityIdOrderByRoleAsc(communityId, PageRequest.of(page, memberPageSize));
     }
 
     @Override

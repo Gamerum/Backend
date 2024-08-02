@@ -13,9 +13,8 @@ import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.chat.MessageService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +22,9 @@ import java.util.Objects;
 
 @Service
 public class MessageServiceImpl implements MessageService {
+    @Value("${page.message.size}")
+    private int messagePageSize;
+
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
     private final ProfileRepository profileRepository;
@@ -54,7 +56,7 @@ public class MessageServiceImpl implements MessageService {
                         .profile(profile)
                         .text(messageCreateDTO.getText())
                         .isSent(messageCreateDTO.isSent())
-                .build());
+                        .build());
     }
 
     @Override
@@ -77,12 +79,12 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> getAllMessages(Long chatId, int page, int size) {
+    public List<Message> getAllMessages(Long chatId, int page) {
         if (!currentUser.hasRole(UserRole.ROLE_ADMIN) &&
                 !chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
             throw new NotAllowedException();
 
-        return messageRepository.findByChatId(chatId, PageRequest.of(page, size));
+        return messageRepository.findByChatId(chatId, PageRequest.of(page, messagePageSize));
     }
 
     @Override

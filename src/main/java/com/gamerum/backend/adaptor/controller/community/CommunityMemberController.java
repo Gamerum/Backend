@@ -51,13 +51,12 @@ public class CommunityMemberController {
     @GetMapping
     public ResponseEntity<ResponseData<List<CommunityMemberGetDTO>>> getAllCommunityMembers(
             @PathVariable Long communityId,
-            @RequestParam(required = false) int page,
-            @RequestParam int size) {
+            @RequestParam(defaultValue = "0") Integer page) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Members received.",
                 CommunityMemberMapper.INSTANCE.communityMembersToCommunityMemberGetDTOs(
-                        communityMemberService.getCommunityMembers(communityId, page, size))),
+                        communityMemberService.getCommunityMembers(communityId, page))),
                 HttpStatus.OK);
     }
 

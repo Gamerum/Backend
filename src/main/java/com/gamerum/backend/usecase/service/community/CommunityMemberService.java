@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CommunityMemberService {
     CommunityMember createCommunityMember(Long communityId, CommunityMemberCreateDTO communityMemberCreateDTO);
-    List<CommunityMember> getCommunityMembers(Long communityId, int page, int size);
+    List<CommunityMember> getCommunityMembers(Long communityId, int page);
     CommunityMember updateCommunityMember(CommunityMemberUpdateDTO communityMemberUpdateDTO);
     void deleteCommunityMember(Long communityId, Long profileId);
 }

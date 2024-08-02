@@ -38,14 +38,13 @@ public class CommentController {
     @GetMapping()
     public ResponseEntity<ResponseData<List<CommentGetDTO>>> getComments(
             @PathVariable Long postId,
-            @RequestParam(required = false) int page,
-            @RequestParam int size
+            @RequestParam(defaultValue = "0") Integer page
     ) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Comments received.",
                 CommentMapper.INSTANCE.commentsToCommentGetDTOs(
-                        commentService.getPostComments(postId, page, size))),
+                        commentService.getPostComments(postId, page))),
                 HttpStatus.CREATED);
     }
 
