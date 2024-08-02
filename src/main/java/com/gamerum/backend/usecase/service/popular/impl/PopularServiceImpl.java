@@ -94,6 +94,8 @@ public class PopularServiceImpl implements PopularService {
     }
 
     @Override
+    @Cacheable(key = "'${cache.config.data.popular.keys.game}'",
+            unless = "#result == null || #result.size() == 0")
     public List<GameDocument> getPopularGames() throws IOException {
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index("game")
