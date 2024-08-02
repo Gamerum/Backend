@@ -8,6 +8,7 @@ import com.gamerum.backend.usecase.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.CredentialException;
@@ -21,6 +22,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/{userId}/change_email")
     public ResponseEntity<ResponseData<String>> changeEmail(
             @PathVariable Long userId,
@@ -32,6 +34,7 @@ public class UserController {
                 HttpStatus.OK);
     }
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/{userId}/change_password")
     public ResponseEntity<Response> changePassword(
             @PathVariable Long userId,
