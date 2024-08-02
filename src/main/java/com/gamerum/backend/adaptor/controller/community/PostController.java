@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.controller;
+package com.gamerum.backend.adaptor.controller.community;
 
 import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostGetDTO;
@@ -7,7 +7,6 @@ import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.community.PostMapper;
 import com.gamerum.backend.usecase.service.community.post.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -16,12 +15,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/communities/{communityId}/posts")
 public class PostController {
+    private final PostService postService;
+    private final PostMapper postMapper;
 
-    @Autowired
-    private PostService postService;
-
-    @Autowired
-    private PostMapper postMapper;
+    public PostController(PostService postService, PostMapper postMapper) {
+        this.postService = postService;
+        this.postMapper = postMapper;
+    }
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PostMapping
@@ -49,7 +49,7 @@ public class PostController {
 
     @DeleteMapping
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    public ResponseEntity<Response> deletePostById(
+    public ResponseEntity<Response> deletePost(
             @RequestParam Long postId) {
         postService.deletePostById(postId);
         return new ResponseEntity<>(new Response(
@@ -59,7 +59,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ResponseData<PostGetDTO>> getPostById(
+    public ResponseEntity<ResponseData<PostGetDTO>> getPost(
             @PathVariable Long postId) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,

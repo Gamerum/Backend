@@ -15,44 +15,46 @@ import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ChatServiceImpl implements ChatService {
-
     @Value("${page.chat.init_participant_size}")
     private int initParticipantSize;
 
     @Value("${page.chat.init_message_size}")
     private int initMessagesSize;
 
-    @Autowired
-    private ChatRepository chatRepository;
-    @Autowired
-    private ProfileRepository profileRepository;
-    @Autowired
-    private ChatParticipantRepository chatParticipantRepository;
-    @Autowired
-    private MessageRepository messageRepository;
-    @Autowired
-    private CurrentUser currentUser;
+    @Value("${page.chat.size}")
+    private int chatPageSize;
+
+    private final ChatRepository chatRepository;
+    private final ProfileRepository profileRepository;
+    private final ChatParticipantRepository chatParticipantRepository;
+    private final MessageRepository messageRepository;
+    private final CurrentUser currentUser;
+
+    public ChatServiceImpl(ChatRepository chatRepository, ProfileRepository profileRepository, ChatParticipantRepository chatParticipantRepository, MessageRepository messageRepository, CurrentUser currentUser) {
+        this.chatRepository = chatRepository;
+        this.profileRepository = profileRepository;
+        this.chatParticipantRepository = chatParticipantRepository;
+        this.messageRepository = messageRepository;
+        this.currentUser = currentUser;
+    }
 
     @Override
-    @Transactional(readOnly = true)
-    public Chat getByChatId(long chatId) {
+    public Chat getByChatId(Long chatId) {
         boolean isAdmin = currentUser.hasRole(UserRole.ROLE_ADMIN);
         boolean isMemberOfTheChat = chatParticipantRepository
                 .existsByChatIdAndProfileId(chatId, currentUser.getProfileId());
 
-        if (!isAdmin && !isMemberOfTheChat)
-            throw new NotAllowedException();
+        if (!isAdmin && !isMemberOfTheChat) throw new NotAllowedException();
 
         Chat chat =  chatRepository.findById(chatId)
                 .orElseThrow(() -> new NotFoundException("Chat not found"));
@@ -64,71 +66,66 @@ public class ChatServiceImpl implements ChatService {
 
         chat.setParticipants(participants);
         chat.setMessages(messages);
-
         return chat;
     }
 
     @Override
     @Transactional
-    public Chat createChat(ChatCreateDTO chat) {
-        Profile creator = profileRepository.findById(currentUser.getProfileId())
+    public Chat createChat(ChatCreateDTO chatCreateDTO) {
+        Chat newChat = chatRepository.save(new Chat());
+        saveCreator(newChat);
+        saveParticipants(chatCreateDTO.getParticipantProfileIds(), newChat);
+        return newChat;
+    }
+
+    private void saveCreator(Chat newChat) {
+        Profile creatorProfile = profileRepository.findById(currentUser.getProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
 
-        Chat newChat = chatRepository.save(new Chat());
-
-        //Set Chat Admin
-        ChatParticipant admin = chatParticipantRepository.save(
+        ChatParticipant creator = chatParticipantRepository.save(
                 ChatParticipant.builder()
-                        .profile(creator)
+                        .profile(creatorProfile)
                         .chat(newChat)
-                        .isAdmin(true)
+                        .isMod(true)
                         .build());
 
-        newChat.getParticipants().add(admin);
+        newChat.setParticipants(List.of(creator));
+    }
 
-        //Set Chat Participants
-        if (chat.getParticipantProfileIds() != null) {
-            List<ChatParticipant> chatParticipants = chat.getParticipantProfileIds().stream()
-                    .map(id -> profileRepository.findById(id).orElseThrow(() ->
-                            new NotFoundException("Profile")))
+    private void saveParticipants(List<Long> participantProfileIds, Chat newChat) {
+        if (participantProfileIds != null && !participantProfileIds.isEmpty()) {
+            Iterable<Profile> profiles = profileRepository
+                    .findAllById(participantProfileIds);
+
+            List<ChatParticipant> chatParticipants = StreamSupport.stream(profiles.spliterator(), false)
                     .map(profile -> ChatParticipant.builder()
                             .profile(profile)
                             .chat(newChat)
-                            .isAdmin(false)
+                            .isMod(false)
                             .build())
                     .toList();
 
             List<ChatParticipant> participants = chatParticipantRepository.saveAll(chatParticipants);
             newChat.getParticipants().addAll(participants);
         }
-
-        return newChat;
     }
 
     @Override
     public void deleteChat(Long chatId) {
-        if (currentUser.hasRole(UserRole.ROLE_ADMIN)) {
-            chatRepository.deleteById(chatId);
-            return;
+        if (!currentUser.hasRole(UserRole.ROLE_ADMIN)) {
+            ChatParticipant deleter = chatParticipantRepository
+                    .findByChatIdAndProfileId(chatId, currentUser.getProfileId())
+                    .orElseThrow(NotParticipatedException::new);
+
+            if (!deleter.isMod()) throw new NotAllowedException();
         }
-
-        ChatParticipant deleter = chatParticipantRepository
-                .findByChatIdAndProfileId(chatId, currentUser.getProfileId())
-                .orElseThrow(NotParticipatedException::new);
-
-        if (!deleter.isAdmin())
-            throw new NotAllowedException();
-
         chatRepository.deleteById(chatId);
     }
 
     @Override
-    public List<Chat> getChats(int page, int size, long profileId) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        if (profileId > 0 && currentUser.hasRole(UserRole.ROLE_ADMIN))
-            return chatParticipantRepository.findChatsByProfileId(profileId, pageable);
-
-        return chatParticipantRepository.findChatsByProfileId(currentUser.getProfileId(), pageable);
+    public List<Chat> getChats(int page, long profileId) {
+        if (profileId != 0 && currentUser.hasRole(UserRole.ROLE_ADMIN))
+            return chatParticipantRepository.findChatsByProfileId(profileId, PageRequest.of(page, chatPageSize));
+        return chatParticipantRepository.findChatsByProfileId(currentUser.getProfileId(), PageRequest.of(page, chatPageSize));
     }
 }

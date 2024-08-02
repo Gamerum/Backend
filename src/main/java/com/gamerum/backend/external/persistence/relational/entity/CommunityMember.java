@@ -1,6 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
-import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.CommunityMemberCountSyncListener;
+import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.CommunityMemberListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "CommunityMembers")
-@EntityListeners(CommunityMemberCountSyncListener.class)
+@EntityListeners(CommunityMemberListener.class)
 public class CommunityMember extends Auditable{
     public enum Role {
         OWNER,

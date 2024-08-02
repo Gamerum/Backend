@@ -10,13 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface CommunityMemberRepository extends JpaRepository<CommunityMember, Long> {
-    List<CommunityMember> findByCommunityId(Long profileID, Pageable pageable);
-
     Optional<CommunityMember> findByProfileIdAndCommunityId(Long profileID, Long communityID);
-
     boolean existsByProfileIdAndCommunityId(Long profileID, Long communityID);
-
     List<CommunityMember> findByCommunityIdOrderByRoleAsc(Long communityID, Pageable pageable);
-
-    long countByCommunityId(Long communityID);
 }

@@ -1,6 +1,7 @@
 package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import jakarta.persistence.PostPersist;
@@ -10,10 +11,10 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class CommunityMemberCountSyncListener{
+public class CommunityMemberListener {
     private final ElasticsearchRepository elasticsearchRepository;
 
-    public CommunityMemberCountSyncListener(ElasticsearchRepository elasticsearchRepository) {
+    public CommunityMemberListener(ElasticsearchRepository elasticsearchRepository) {
         this.elasticsearchRepository = elasticsearchRepository;
     }
 
@@ -23,6 +24,11 @@ public class CommunityMemberCountSyncListener{
                 .getById("community", member.getCommunity().getId().toString(), CommunityDocument.class);
         communityDocument.setMemberCount(communityDocument.getMemberCount() + 1);
         elasticsearchRepository.save(communityDocument);
+
+        ProfileDocument profileDocument = elasticsearchRepository.getById(
+                "profile", member.getProfile().getId().toString(), ProfileDocument.class);
+        profileDocument.getCommunityIds().add(member.getCommunity().getId().toString());
+        elasticsearchRepository.save(profileDocument);
     }
 
     @PostRemove
@@ -31,7 +37,10 @@ public class CommunityMemberCountSyncListener{
                 .getById("community", member.getCommunity().getId().toString(), CommunityDocument.class);
         communityDocument.setMemberCount(communityDocument.getMemberCount() - 1);
         elasticsearchRepository.save(communityDocument);
+
+        ProfileDocument profileDocument = elasticsearchRepository.getById(
+                "profile", member.getProfile().getId().toString(), ProfileDocument.class);
+        profileDocument.getCommunityIds().remove(member.getCommunity().getId().toString());
+        elasticsearchRepository.save(profileDocument);
     }
-
-
 }

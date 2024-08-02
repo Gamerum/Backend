@@ -2,6 +2,7 @@ package com.gamerum.backend.adaptor.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /*
 * This dto is not used for change the user's email directly.
@@ -10,8 +11,8 @@ import lombok.Getter;
 */
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class ChangeEmailDTO {
-    private Long userId;
     private String newEmail;
 }

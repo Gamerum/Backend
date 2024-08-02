@@ -4,7 +4,7 @@ public class IGDBDefaultQueries {
     public static String getGamesQuery(int page, int size, String lastSyncDateTime) {
 
         return IGDBQueryBuilder.builder()
-                .fields("id, name, alternative_names.name, genres.id")
+                .fields("id, name, alternative_names.name, genres.id, total_rating, total_rating_count")
                 .limit(size)
                 .offset(page * size)
                 .where("parent_game = null " +

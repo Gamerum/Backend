@@ -1,6 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
-import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.ProfileSyncListener;
+import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.ProfileListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +19,7 @@ import java.util.List;
                 @UniqueConstraint(columnNames = "user_id")
         }
 )
-@EntityListeners(ProfileSyncListener.class)
+@EntityListeners(ProfileListener.class)
 public class Profile extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,26 +33,26 @@ public class Profile extends Auditable {
     private User user;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<CommunityMember> joinedCommunities;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Post> posts;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Comment> comments;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ChatParticipant> participatedChats;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Message> messages;
 
     @Transient
-    @OneToMany(mappedBy = "profile", orphanRemoval = true)
-    private List<CommentResponse> commentResponses;
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Reply> commentRespons;
 }
