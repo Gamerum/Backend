@@ -49,7 +49,7 @@ public class PostController {
 
     @DeleteMapping
     @Secured({"ROLE_USER","ROLE_ADMIN"})
-    public ResponseEntity<Response> deletePostById(
+    public ResponseEntity<Response> deletePost(
             @RequestParam Long postId) {
         postService.deletePostById(postId);
         return new ResponseEntity<>(new Response(
@@ -59,7 +59,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ResponseData<PostGetDTO>> getPostById(
+    public ResponseEntity<ResponseData<PostGetDTO>> getPost(
             @PathVariable Long postId) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
