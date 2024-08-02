@@ -27,6 +27,11 @@ public class CurrentUser {
         return authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser");
     }
 
+    public Long getUserId() {
+        if (TOKEN == null) throw new NotAllowedException();
+        return jwtUtil.getUserIdFromToken(TOKEN);
+    }
+
     public Long getProfileId(){
         if (TOKEN == null) throw new NotAllowedException();
         return jwtUtil.getClaimFromToken(TOKEN, claims -> claims.get("profileId", Long.class));

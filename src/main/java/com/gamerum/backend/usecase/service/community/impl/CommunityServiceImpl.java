@@ -4,12 +4,12 @@ import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
+import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
-import com.gamerum.backend.external.persistence.relational.repository.PostRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
@@ -18,7 +18,6 @@ import com.gamerum.backend.usecase.service.community.CommunityService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,64 +26,68 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@CacheConfig(cacheNames = "${cache.config.data.community.cache_name}")
 public class CommunityServiceImpl implements CommunityService {
-    private final String popularCommunitiesCacheKey = "'popularCommunities'";
+    @Value("${cache.config.data.popular.cache_name}")
+    private String popularCacheName;
 
-    @Value("${cache.config.data.community.cache_name}")
-    private String cacheName;
+    @Value("${cache.config.data.popular.keys.community}")
+    private String popularCommunityCacheKey;
 
     @Value("${page.community.init_member_size}")
     private int initMemberSize;
 
-    @Autowired
-    private CommunityRepository communityRepository;
-    @Autowired
-    private CommunityMemberRepository communityMemberRepository;
-    @Autowired
-    private ProfileRepository profileRepository;
-    @Autowired
-    private PostRepository postRepository;
-    @Autowired
-    private CommunityMapper communityMapper;
-    @Autowired
-    private CurrentUser currentUser;
-    @Autowired
-    private CacheUtils cacheUtils;
+    private final CommunityRepository communityRepository;
+    private final CommunityMemberRepository communityMemberRepository;
+    private final ProfileRepository profileRepository;
+    private final CommunityMapper communityMapper;
+    private final CurrentUser currentUser;
+    private final CacheUtils cacheUtils;
+
+    public CommunityServiceImpl(CommunityRepository communityRepository,
+                                CommunityMemberRepository communityMemberRepository,
+                                ProfileRepository profileRepository,
+                                CommunityMapper communityMapper,
+                                CurrentUser currentUser,
+                                CacheUtils cacheUtils) {
+        this.communityRepository = communityRepository;
+        this.communityMemberRepository = communityMemberRepository;
+        this.profileRepository = profileRepository;
+        this.communityMapper = communityMapper;
+        this.currentUser = currentUser;
+        this.cacheUtils = cacheUtils;
+    }
 
     @Override
     public Community getCommunity(Long communityId) {
-       Community community = communityRepository.findById(communityId)
-               .orElseThrow(() -> new NotFoundException("Community"));
+        Community community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException("Community"));
 
-       List<CommunityMember> members = communityMemberRepository.findByCommunityIdOrderByRoleAsc(communityId, Pageable.ofSize(initMemberSize));
-       community.setMembers(members);
-
-       return community;
+        List<CommunityMember> members = communityMemberRepository
+                .findByCommunityIdOrderByRoleAsc(communityId, Pageable.ofSize(initMemberSize));
+        community.setMembers(members);
+        return community;
     }
 
     @Override
     @Transactional
     public Community createCommunity(CommunityCreateDTO communityCreateDTO) {
-        Long creatorId = currentUser.getProfileId();
+        Community community = communityRepository.save(
+                communityMapper.communityCreateDTOToCommunity(communityCreateDTO));
+        saveCreator(community);
+        return community;
+    }
 
-        Profile creatorProfile = profileRepository.findById(creatorId)
+    private void saveCreator(Community newCommunity) {
+        Profile creatorProfile = profileRepository.findById(currentUser.getProfileId())
                 .orElseThrow(() -> new NotFoundException("Profile"));
-
-        Community community = communityMapper.communityCreateDTOToCommunity(communityCreateDTO);
-        community = communityRepository.save(community);
 
         CommunityMember creator = CommunityMember.builder()
                 .profile(creatorProfile)
-                .community(community)
+                .community(newCommunity)
                 .role(CommunityMember.Role.OWNER)
                 .build();
 
-        creator = communityMemberRepository.save(creator);
-
-        community.setMembers(List.of(creator));
-
-        return community;
+        newCommunity.setMembers(List.of(communityMemberRepository.save(creator)));
     }
 
     @Override
@@ -96,8 +99,7 @@ public class CommunityServiceImpl implements CommunityService {
                 .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
                 .orElseThrow(() -> new NotFoundException("Member"));
 
-        if (updater.getRole() == CommunityMember.Role.USER)
-            throw new NotAllowedException();
+        if (updater.getRole() == CommunityMember.Role.USER) throw new NotAllowedException();
 
         community.setTitle(communityUpdateDTO.getTitle());
         community.setDescription(communityUpdateDTO.getDescription());
@@ -108,27 +110,17 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Override
     public void deleteCommunity(Long communityId) {
-        if (currentUser.hasRole(UserRole.ROLE_ADMIN)) {
-            cacheUtils.invalidateCacheListIfConditionMet(cacheName, popularCommunitiesCacheKey,
-                    Community.class, cachedCommunities ->
-                            cachedCommunities.stream().anyMatch(community -> Objects.equals(community.getId(), communityId))
-            );
+        if (!currentUser.hasRole(UserRole.ROLE_ADMIN)) {
+            CommunityMember deleter = communityMemberRepository
+                    .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
+                    .orElseThrow(() -> new NotFoundException("Member"));
 
-            communityRepository.deleteById(communityId);
-            return;
+            if (deleter.getRole() != CommunityMember.Role.OWNER) throw new NotAllowedException();
         }
 
-        CommunityMember deleter = communityMemberRepository
-                .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
-                .orElseThrow(() -> new NotFoundException("Member"));
-
-        if (deleter.getRole() != CommunityMember.Role.OWNER)
-            throw new NotAllowedException();
-
-        cacheUtils.invalidateCacheListIfConditionMet(cacheName, popularCommunitiesCacheKey,
-                Community.class, cachedCommunities ->
-                        cachedCommunities.stream().anyMatch(community -> Objects.equals(community.getId(), communityId))
-        );
+        cacheUtils.invalidateCacheListIfConditionMet(popularCacheName, popularCommunityCacheKey,
+                CommunityDocument.class, cachedCommunities ->cachedCommunities.stream()
+                        .anyMatch(community -> Objects.equals(community.getId(), communityId.toString())));
 
         communityRepository.deleteById(communityId);
     }

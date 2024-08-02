@@ -2,6 +2,7 @@ package com.gamerum.backend.external.persistence.elasticsearch.repository;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.Result;
+import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import co.elastic.clients.elasticsearch.core.search.Hit;
@@ -11,6 +12,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentB
 import com.gamerum.backend.usecase.exception.GlobalExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.convert.Bucket;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -68,8 +70,8 @@ public class ElasticsearchRepository {
     }
 
     public <T extends DocumentBase> List<T> search(SearchRequest searchRequest, Class<T> documentClass) throws IOException {
-        SearchResponse<T> searchResponse = elasticsearchClient.search(searchRequest, documentClass);
         logger.info("Searched for " + documentClass.getSimpleName());
+        SearchResponse<T> searchResponse = elasticsearchClient.search(searchRequest, documentClass);
         return searchResponse.hits().hits().stream()
                 .map(Hit::source)
                 .toList();

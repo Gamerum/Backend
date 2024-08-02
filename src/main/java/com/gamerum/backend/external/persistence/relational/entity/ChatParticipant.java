@@ -24,6 +24,6 @@ public class ChatParticipant extends Auditable {
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;
 
-    @Column(name = "is_admin")
-    private boolean isAdmin;
+    @Column(name = "is_mod")
+    private boolean isMod;
 }

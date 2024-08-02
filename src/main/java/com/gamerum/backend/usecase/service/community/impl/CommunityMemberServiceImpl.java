@@ -1,6 +1,7 @@
 package com.gamerum.backend.usecase.service.community.impl;
 
 import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberCreateDTO;
+import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberUpdateDTO;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
@@ -14,32 +15,36 @@ import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.community.CommunityMemberService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class CommunityMemberServiceImpl implements CommunityMemberService {
 
-    @Autowired
-    private CommunityMemberRepository communityMemberRepository;
+    @Value("${page.community_member.size}")
+    private int memberPageSize;
 
-    @Autowired
-    private CommunityRepository communityRepository;
+    private final CommunityMemberRepository communityMemberRepository;
+    private final CommunityRepository communityRepository;
+    private final ProfileRepository profileRepository;
+    private final CurrentUser currentUser;
 
-    @Autowired
-    private ProfileRepository profileRepository;
-
-    @Autowired
-    private CurrentUser currentUser;
+    public CommunityMemberServiceImpl(CommunityMemberRepository communityMemberRepository,
+                                      CommunityRepository communityRepository,
+                                      ProfileRepository profileRepository,
+                                      CurrentUser currentUser) {
+        this.communityMemberRepository = communityMemberRepository;
+        this.communityRepository = communityRepository;
+        this.profileRepository = profileRepository;
+        this.currentUser = currentUser;
+    }
 
     @Override
     public CommunityMember createCommunityMember(Long communityId, CommunityMemberCreateDTO communityMemberCreateDTO) {
-        if (!Objects.equals(communityMemberCreateDTO.getProfileId(), currentUser.getProfileId()))
+        if (!communityMemberCreateDTO.getProfileId().equals(currentUser.getProfileId()))
             throw new NotAllowedException();
 
         Community community = communityRepository.findById(communityId)
@@ -61,9 +66,20 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
     }
 
     @Override
-    public List<CommunityMember> getCommunityMembers(Long communityId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return communityMemberRepository.findByCommunityId(communityId, pageable);
+    public List<CommunityMember> getCommunityMembers(Long communityId, int page) {
+        return communityMemberRepository.findByCommunityIdOrderByRoleAsc(communityId, PageRequest.of(page, memberPageSize));
+    }
+
+    @Override
+    public CommunityMember updateCommunityMember(CommunityMemberUpdateDTO communityMemberUpdateDTO) {
+        CommunityMember communityMember = communityMemberRepository.findById(communityMemberUpdateDTO.getId())
+                .orElseThrow(() -> new NotFoundException("Member"));
+
+        if (!communityMember.getProfile().getId().equals(currentUser.getProfileId()))
+            throw new NotAllowedException();
+
+        communityMember.setRole(communityMemberUpdateDTO.getRole());
+        return communityMemberRepository.save(communityMember);
     }
 
     @Override
@@ -75,19 +91,13 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
         boolean isAdmin = currentUser.hasRole(UserRole.ROLE_ADMIN);
         boolean isSelf = deletingMember.getProfile().getId().equals(currentUser.getProfileId());
 
+        if (!isAdmin && !isSelf) {
+            CommunityMember deleter = communityMemberRepository
+                    .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
+                    .orElseThrow(NotParticipatedException::new);
 
-        if (isAdmin || isSelf) {
-            communityMemberRepository.delete(deletingMember);
-            return;
+            if (deleter.getRole() == CommunityMember.Role.USER) throw new NotAllowedException();
         }
-
-        CommunityMember deleter = communityMemberRepository
-                .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
-                .orElseThrow(NotParticipatedException::new);
-
-        if (deleter.getRole() == CommunityMember.Role.USER)
-            throw new NotAllowedException();
-
-        communityMemberRepository.deleteById(profileId);
+        communityMemberRepository.delete(deletingMember);
     }
 }

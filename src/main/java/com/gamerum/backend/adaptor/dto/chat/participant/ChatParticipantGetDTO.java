@@ -8,5 +8,5 @@ import lombok.Getter;
 public class ChatParticipantGetDTO {
     private Long id;
     private String nickname;
-    private boolean isAdmin;
+    private boolean isMod;
 }

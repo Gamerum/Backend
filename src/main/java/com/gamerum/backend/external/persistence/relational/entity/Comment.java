@@ -21,8 +21,8 @@ public class Comment extends Auditable {
     private String text;
 
     @Transient
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<CommentResponse> responses;
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Reply> responses;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
