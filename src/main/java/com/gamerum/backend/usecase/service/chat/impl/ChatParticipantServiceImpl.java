@@ -15,6 +15,7 @@ import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,9 @@ import java.util.List;
 
 @Service
 public class ChatParticipantServiceImpl implements ChatParticipantService {
+    @Value("${page.chat_participant.size}")
+    private int chatParticipantPageSize;
+
     private final ChatParticipantRepository chatParticipantRepository;
     private final ChatRepository chatRepository;
     private final ProfileRepository profileRepository;
@@ -78,11 +82,11 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     @Override
-    public List<ChatParticipant> getChatParticipants(Long chatId, int page, int size) {
+    public List<ChatParticipant> getChatParticipants(Long chatId, int page) {
         if (!currentUser.hasRole(UserRole.ROLE_ADMIN) &&
                 !chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
             throw new NotParticipatedException();
-        return chatParticipantRepository.findByChatId(chatId, PageRequest.of(page, size));
+        return chatParticipantRepository.findByChatId(chatId, PageRequest.of(page, chatParticipantPageSize));
     }
 
     @Override

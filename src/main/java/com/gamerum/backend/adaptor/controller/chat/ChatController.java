@@ -55,13 +55,12 @@ public class ChatController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping
     public ResponseEntity<ResponseData<List<ChatGetDTO>>> getChats(
-            @RequestParam int size,
-            @RequestParam(required = false) int page,
-            @RequestParam(required = false) Long profileId) {
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "0") Long profileId) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Chats received.",
-                ChatMapper.INSTANCE.chatsToChatGetDTOs(chatService.getChats(page, size, profileId))),
+                ChatMapper.INSTANCE.chatsToChatGetDTOs(chatService.getChats(page, profileId))),
                 HttpStatus.OK);
     }
 }

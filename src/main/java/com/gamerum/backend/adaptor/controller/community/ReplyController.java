@@ -39,14 +39,13 @@ public class ReplyController {
     @GetMapping()
     public ResponseEntity<ResponseData<List<ReplyGetDTO>>> getReplies(
             @PathVariable Long commentId,
-            @RequestParam(required = false) int page,
-            @RequestParam int size
+            @RequestParam(defaultValue = "0") Integer page
     ) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Reply received.",
                 ReplyMapper.INSTANCE.repliesToReplyGetDTOs(
-                        replyService.getReplies(commentId, page, size))),
+                        replyService.getReplies(commentId, page))),
                 HttpStatus.CREATED);
     }
 

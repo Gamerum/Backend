@@ -52,13 +52,12 @@ public class MessageController {
     @GetMapping
     public ResponseEntity<ResponseData<List<MessageGetDTO>>> getAllMessages(
             @PathVariable Long chatId,
-            @RequestParam(required = false) int page,
-            @RequestParam int size) {
+            @RequestParam(defaultValue = "0") Integer page) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Messages received.",
                 MessageMapper.INSTANCE.messagesToMessageGetDTOs(
-                        messageService.getAllMessages(chatId, page, size))),
+                        messageService.getAllMessages(chatId, page))),
                 HttpStatus.OK);
     }
 

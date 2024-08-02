@@ -31,7 +31,7 @@ public class PopularController {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<ResponseData<List<PostDocument>>> getPopularPosts(@RequestParam int page) throws IOException {
+    public ResponseEntity<ResponseData<List<PostDocument>>> getPopularPosts(@RequestParam(defaultValue = "0") Integer page) throws IOException {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Popular posts sent.",
@@ -39,10 +39,10 @@ public class PopularController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/communities/{communityId}/pots")
+    @GetMapping("/communities/{communityId}/posts")
     public ResponseEntity<ResponseData<List<PostDocument>>> getCommunityPopularPosts(
             @PathVariable String communityId,
-            @RequestParam int page) throws IOException {
+            @RequestParam(defaultValue = "0") Integer page) throws IOException {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Popular posts sent.",

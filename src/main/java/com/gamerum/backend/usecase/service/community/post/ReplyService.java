@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReplyService {
     Reply createReply(Long commentId, ReplyCreateDTO replyCreateDTO);
-    List<Reply> getReplies(Long commentId, int page, int size);
+    List<Reply> getReplies(Long commentId, int page);
     Reply updateReply(ReplyUpdateDTO replyUpdateDTO);
     void deleteReply(Long replyId);
 }

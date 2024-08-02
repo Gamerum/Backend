@@ -14,6 +14,7 @@ import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.NotParticipatedException;
 import com.gamerum.backend.usecase.service.community.post.ReplyService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,9 @@ import java.util.List;
 
 @Service
 public class ReplyServiceImpl implements ReplyService {
+    @Value("${page.reply.size}")
+    private int replyPageSize;
+
     private final ReplyRepository replyRepository;
     private final CommentRepository commentRepository;
     private final CommunityMemberRepository communityMemberRepository;
@@ -53,8 +57,8 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
-    public List<Reply> getReplies(Long commentId, int page, int size) {
-        return replyRepository.findByCommentId(commentId, PageRequest.of(page, size));
+    public List<Reply> getReplies(Long commentId, int page) {
+        return replyRepository.findByCommentId(commentId, PageRequest.of(page, replyPageSize));
     }
 
     @Override

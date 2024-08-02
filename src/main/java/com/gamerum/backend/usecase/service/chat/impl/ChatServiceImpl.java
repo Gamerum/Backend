@@ -31,6 +31,9 @@ public class ChatServiceImpl implements ChatService {
     @Value("${page.chat.init_message_size}")
     private int initMessagesSize;
 
+    @Value("${page.chat.size}")
+    private int chatPageSize;
+
     private final ChatRepository chatRepository;
     private final ProfileRepository profileRepository;
     private final ChatParticipantRepository chatParticipantRepository;
@@ -120,9 +123,9 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<Chat> getChats(int page, int size, Long profileId) {
-        if (profileId != null && currentUser.hasRole(UserRole.ROLE_ADMIN))
-            return chatParticipantRepository.findChatsByProfileId(profileId, PageRequest.of(page, size));
-        return chatParticipantRepository.findChatsByProfileId(currentUser.getProfileId(), PageRequest.of(page, size));
+    public List<Chat> getChats(int page, long profileId) {
+        if (profileId != 0 && currentUser.hasRole(UserRole.ROLE_ADMIN))
+            return chatParticipantRepository.findChatsByProfileId(profileId, PageRequest.of(page, chatPageSize));
+        return chatParticipantRepository.findChatsByProfileId(currentUser.getProfileId(), PageRequest.of(page, chatPageSize));
     }
 }
