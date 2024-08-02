@@ -24,12 +24,10 @@ import java.util.List;
 @RequestMapping("/api/communities")
 public class CommunityController {
     private final CommunityService communityService;
-    private final CommunityMemberService communityMemberService;
     private final CommunityMapper communityMapper;
 
-    public CommunityController(CommunityService communityService, CommunityMemberService communityMemberService, CommunityMapper communityMapper) {
+    public CommunityController(CommunityService communityService,CommunityMapper communityMapper) {
         this.communityService = communityService;
-        this.communityMemberService = communityMemberService;
         this.communityMapper = communityMapper;
     }
 

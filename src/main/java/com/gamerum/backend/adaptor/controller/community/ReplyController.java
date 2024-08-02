@@ -25,7 +25,7 @@ public class ReplyController {
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<ResponseData<ReplyGetDTO>> createCommentResponse(
+    public ResponseEntity<ResponseData<ReplyGetDTO>> createReply(
             @PathVariable Long commentId,
             @RequestBody ReplyCreateDTO replyCreateDTO) {
         return new ResponseEntity<>(new ResponseData<>(
@@ -37,7 +37,7 @@ public class ReplyController {
     }
 
     @GetMapping()
-    public ResponseEntity<ResponseData<List<ReplyGetDTO>>> getCommentResponses(
+    public ResponseEntity<ResponseData<List<ReplyGetDTO>>> getReplies(
             @PathVariable Long commentId,
             @RequestParam(required = false) int page,
             @RequestParam int size
@@ -52,7 +52,7 @@ public class ReplyController {
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PutMapping
-    public ResponseEntity<ResponseData<ReplyGetDTO>> updateCommentResponse(
+    public ResponseEntity<ResponseData<ReplyGetDTO>> updateReply(
             @RequestBody ReplyUpdateDTO replyUpdateDTO) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
@@ -64,7 +64,7 @@ public class ReplyController {
 
     @Secured({"ROLE_USER","ROLE_ADMIN"})
     @DeleteMapping
-    public ResponseEntity<Response> deleteCommentResponse(@RequestParam Long commentId) {
+    public ResponseEntity<Response> deleteReply(@RequestParam Long commentId) {
         replyService.deleteReply(commentId);
         return new ResponseEntity<>(new Response(
                 true,

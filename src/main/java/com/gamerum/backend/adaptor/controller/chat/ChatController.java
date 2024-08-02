@@ -24,7 +24,7 @@ public class ChatController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/{chatId}")
-    public ResponseEntity<ResponseData<ChatGetDTO>> getChatById(
+    public ResponseEntity<ResponseData<ChatGetDTO>> getChat(
             @PathVariable Long chatId) {
         return new ResponseEntity<>(new ResponseData<>(
                 true,
