@@ -3,14 +3,10 @@ package com.gamerum.backend.adaptor.controller.community;
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
-import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberCreateDTO;
-import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberGetDTO;
-import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberUpdateDTO;
+import com.gamerum.backend.adaptor.dto.community.post.CommunityUpdateTagsDTO;
 import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
-import com.gamerum.backend.adaptor.mapper.community.CommunityMemberMapper;
-import com.gamerum.backend.usecase.service.community.CommunityMemberService;
 import com.gamerum.backend.usecase.service.community.CommunityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,5 +70,17 @@ public class CommunityController {
                 true,
                 "Community deleted."),
                 HttpStatus.NO_CONTENT);
+    }
+
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @PutMapping("/{communityId}/tags")
+    public ResponseEntity<ResponseData<List<String>>> updateCommunityTags(
+            @PathVariable Long communityId,
+            @RequestBody CommunityUpdateTagsDTO communityUpdateTagsDTO) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Community updated",
+                communityService.updateTagsToCommunity(communityId, communityUpdateTagsDTO)),
+                HttpStatus.OK);
     }
 }
