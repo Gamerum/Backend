@@ -2,20 +2,10 @@ package com.gamerum.backend.adaptor.controller.chat;
 
 import com.gamerum.backend.adaptor.dto.chat.ChatCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.ChatGetDTO;
-import com.gamerum.backend.adaptor.dto.chat.message.MessageCreateDTO;
-import com.gamerum.backend.adaptor.dto.chat.message.MessageGetDTO;
-import com.gamerum.backend.adaptor.dto.chat.message.MessageUpdateDTO;
-import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantCreateDTO;
-import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantGetDTO;
-import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantUpdateDTO;
 import com.gamerum.backend.adaptor.dto.response.Response;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.chat.ChatMapper;
-import com.gamerum.backend.adaptor.mapper.chat.ChatParticipantMapper;
-import com.gamerum.backend.adaptor.mapper.chat.MessageMapper;
-import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.chat.ChatService;
-import com.gamerum.backend.usecase.service.chat.MessageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -27,13 +17,9 @@ import java.util.List;
 @RequestMapping("/api/chats")
 public class ChatController {
     private final ChatService chatService;
-    private final ChatParticipantService chatParticipantService;
-    private final MessageService messageService;
 
-    public ChatController(ChatService chatService, ChatParticipantService chatParticipantService, MessageService messageService) {
+    public ChatController(ChatService chatService) {
         this.chatService = chatService;
-        this.chatParticipantService = chatParticipantService;
-        this.messageService = messageService;
     }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
@@ -76,111 +62,6 @@ public class ChatController {
                 true,
                 "Chats received.",
                 ChatMapper.INSTANCE.chatsToChatGetDTOs(chatService.getChats(page, size, profileId))),
-                HttpStatus.OK);
-    }
-
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @PostMapping("/{chatId}/participants")
-    public ResponseEntity<ResponseData<ChatParticipantGetDTO>> addChatParticipant(
-            @PathVariable Long chatId,
-            @RequestBody ChatParticipantCreateDTO chatParticipantCreateDTO) {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Participant added.",
-                ChatParticipantMapper.INSTANCE.chatParticipantToChatParticipantGetDTO(
-                        chatParticipantService.createChatParticipant(chatId, chatParticipantCreateDTO))),
-                HttpStatus.CREATED);
-    }
-
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @DeleteMapping("/{chatId}/participants")
-    public ResponseEntity<Response> deleteChatParticipant(
-            @PathVariable Long chatId,
-            @RequestParam Long chatParticipantId) {
-        chatParticipantService.deleteByIdChatParticipant(chatId, chatParticipantId);
-        return new ResponseEntity<>(new Response(
-                true,
-                "Participant removed."),
-                HttpStatus.NO_CONTENT);
-    }
-
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @GetMapping("/{chatId}/participants")
-    public ResponseEntity<ResponseData<List<ChatParticipantGetDTO>>> getChatParticipants(
-            @PathVariable Long chatId,
-            @RequestParam(required = false) int page,
-            @RequestParam int size) {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Participants received.",
-                ChatParticipantMapper.INSTANCE.chatParticipantsToChatParticipantGetDTOs(
-                        chatParticipantService.getChatParticipants(chatId, page, size))),
-                HttpStatus.OK);
-    }
-
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @PutMapping("/{chatId}/participants")
-    public ResponseEntity<ResponseData<ChatParticipantGetDTO>> updateChatParticipant(
-            @PathVariable Long chatId,
-            @RequestBody ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Participant updated",
-                ChatParticipantMapper.INSTANCE.chatParticipantToChatParticipantGetDTO(
-                        chatParticipantService.updateChatParticipant(chatId, chatParticipantUpdateDTO))),
-                HttpStatus.OK
-        );
-    }
-
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @PostMapping("/{chatId}/messages")
-    public ResponseEntity<ResponseData<MessageGetDTO>> addMessage(
-            @PathVariable Long chatId,
-            @RequestBody MessageCreateDTO messageCreateDTO) {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Message saved.",
-                MessageMapper.INSTANCE.messageToMessageGetDTO(
-                        messageService.createMessage(chatId, messageCreateDTO))),
-                HttpStatus.CREATED);
-    }
-
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @DeleteMapping("/{chatId}/messages")
-    public ResponseEntity<Response> deleteMessage(
-            @PathVariable Long chatId,
-            @RequestParam Long messageId) {
-        messageService.deleteByIdMessage(chatId, messageId);
-        return new ResponseEntity<>(new Response(
-                true,
-                "Message deleted."),
-                HttpStatus.NO_CONTENT);
-    }
-
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @GetMapping("/{chatId}/messages")
-    public ResponseEntity<ResponseData<List<MessageGetDTO>>> getAllMessages(
-            @PathVariable Long chatId,
-            @RequestParam(required = false) int page,
-            @RequestParam int size) {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Messages received.",
-                MessageMapper.INSTANCE.messagesToMessageGetDTOs(
-                        messageService.getAllMessages(chatId, page, size))),
-                HttpStatus.OK);
-    }
-
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @PutMapping("/{chatId}/messages")
-    public ResponseEntity<ResponseData<MessageGetDTO>> updateMessage(
-            @PathVariable Long chatId,
-            @RequestBody MessageUpdateDTO messageUpdateDTO) {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Message updated.",
-                MessageMapper.INSTANCE.messageToMessageGetDTO(
-                        messageService.updateMessage(chatId, messageUpdateDTO))),
                 HttpStatus.OK);
     }
 }
