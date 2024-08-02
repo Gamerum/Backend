@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @Component
-public class ProfileSyncListener {
+public class ProfileListener {
 
     private final ElasticsearchRepository elasticsearchRepository;
 
-    public ProfileSyncListener(ElasticsearchRepository elasticsearchRepository) {
+    public ProfileListener(ElasticsearchRepository elasticsearchRepository) {
         this.elasticsearchRepository = elasticsearchRepository;
     }
 

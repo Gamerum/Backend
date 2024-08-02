@@ -3,7 +3,6 @@ package com.gamerum.backend.external.persistence.elasticsearch.document;
 import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import jakarta.persistence.Id;
 import lombok.*;
-import lombok.extern.jackson.Jacksonized;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.List;

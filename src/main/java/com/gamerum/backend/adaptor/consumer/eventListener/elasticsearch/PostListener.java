@@ -5,7 +5,6 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocum
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
-import com.gamerum.backend.external.persistence.relational.repository.PostRepository;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
@@ -15,10 +14,10 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class PostSyncListener {
+public class PostListener {
     private final ElasticsearchRepository elasticsearchRepository;
 
-    public PostSyncListener(ElasticsearchRepository elasticsearchRepository) {
+    public PostListener(ElasticsearchRepository elasticsearchRepository) {
         this.elasticsearchRepository = elasticsearchRepository;
     }
 
