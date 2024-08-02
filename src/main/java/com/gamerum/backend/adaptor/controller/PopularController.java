@@ -2,6 +2,7 @@ package com.gamerum.backend.adaptor.controller;
 
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.usecase.service.popular.PopularService;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,15 @@ public class PopularController {
                 true,
                 "Popular posts sent.",
                 popularService.getCommunityPopularPosts(communityId, page)),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/games")
+    public ResponseEntity<ResponseData<List<GameDocument>>> getPopularGames() throws IOException {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Games sent.",
+                popularService.getPopularGames()),
                 HttpStatus.OK);
     }
 }

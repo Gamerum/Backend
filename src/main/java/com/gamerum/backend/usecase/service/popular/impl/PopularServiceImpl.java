@@ -5,6 +5,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.usecase.service.popular.PopularService;
@@ -27,6 +28,9 @@ public class PopularServiceImpl implements PopularService {
 
     @Value("${page.community.post_size}")
     private int communityPostSize;
+
+    @Value("${page.game.popular_size}")
+    private int gamePopularSize;
 
     private final ElasticsearchRepository repository;
 
@@ -70,10 +74,10 @@ public class PopularServiceImpl implements PopularService {
             unless = "#result == null || #result.size() == 0 || #page > 2 ")
     public List<PostDocument> getCommunityPopularPosts(String communityId, int page) throws IOException {
         BoolQuery boolQuery = QueryBuilders.bool().must(
-                QueryBuilders.term()
-                .field("community.id")
-                .value(communityId)
-                .build()._toQuery())
+                        QueryBuilders.term()
+                                .field("community.id")
+                                .value(communityId)
+                                .build()._toQuery())
                 .build();
 
         SearchRequest searchRequest = new SearchRequest.Builder()
@@ -87,5 +91,16 @@ public class PopularServiceImpl implements PopularService {
 
 
         return repository.search(searchRequest, PostDocument.class);
+    }
+
+    @Override
+    public List<GameDocument> getPopularGames() throws IOException {
+        SearchRequest searchRequest = new SearchRequest.Builder()
+                .index("game")
+                .sort(s -> s.field(f -> f.field("popularity").order(SortOrder.Desc)))
+                .size(gamePopularSize)
+                .build();
+
+        return repository.search(searchRequest, GameDocument.class);
     }
 }

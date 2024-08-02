@@ -56,6 +56,8 @@ public class CommunitySyncListener{
                 .getById("community", community.getId().toString(), CommunityDocument.class);
         communityDocument.setClickCount(communityDocument.getClickCount() + 1);
         elasticsearchRepository.save(communityDocument);
+
+
     }
 }
 
