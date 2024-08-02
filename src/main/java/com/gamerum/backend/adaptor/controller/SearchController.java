@@ -3,6 +3,7 @@ package com.gamerum.backend.adaptor.controller;
 import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.dto.search.CommunitySearchFilter;
 import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
+import com.gamerum.backend.adaptor.dto.search.PostSearchFilter;
 import com.gamerum.backend.adaptor.dto.search.SearchFilter;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
@@ -57,7 +58,7 @@ public class SearchController {
 
     @GetMapping("/posts")
     public ResponseEntity<ResponseData<List<PostDocument>>> searchPosts(
-            @RequestBody SearchFilter filter) throws IOException{
+            @RequestBody PostSearchFilter filter) throws IOException{
         return new ResponseEntity<>(new ResponseData<>(
                 true,
                 "Posts received",
