@@ -14,10 +14,10 @@ import java.io.IOException;
 
 
 @Component
-public class CommunitySyncListener{
+public class CommunityListener {
     private final ElasticsearchRepository elasticsearchRepository;
 
-    public CommunitySyncListener(ElasticsearchRepository elasticsearchRepository) {
+    public CommunityListener(ElasticsearchRepository elasticsearchRepository) {
         this.elasticsearchRepository = elasticsearchRepository;
     }
 

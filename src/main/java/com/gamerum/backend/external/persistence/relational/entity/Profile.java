@@ -1,6 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
-import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.ProfileSyncListener;
+import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.ProfileListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +19,7 @@ import java.util.List;
                 @UniqueConstraint(columnNames = "user_id")
         }
 )
-@EntityListeners(ProfileSyncListener.class)
+@EntityListeners(ProfileListener.class)
 public class Profile extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

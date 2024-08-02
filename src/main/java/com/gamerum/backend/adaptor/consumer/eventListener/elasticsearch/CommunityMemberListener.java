@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class CommunityMemberSyncListener {
+public class CommunityMemberListener {
     private final ElasticsearchRepository elasticsearchRepository;
 
-    public CommunityMemberSyncListener(ElasticsearchRepository elasticsearchRepository) {
+    public CommunityMemberListener(ElasticsearchRepository elasticsearchRepository) {
         this.elasticsearchRepository = elasticsearchRepository;
     }
 
