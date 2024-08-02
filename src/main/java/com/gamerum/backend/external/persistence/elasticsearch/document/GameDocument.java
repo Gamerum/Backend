@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.jackson.Jacksonized;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -26,14 +25,16 @@ public class GameDocument extends DocumentBase{
     private String name;
     private List<String> alternativeNames;
     private List<Integer> genreIds;
-
+    private Double popularity;
 
     // Factory method for JSON deserialization
     @JsonCreator
     public static GameDocument fromJson(@JsonProperty("id") String id,
                                         @JsonProperty("name") String name,
                                         @JsonProperty("alternative_names") List<AlternativeName> alternativeNameEntities,
-                                        @JsonProperty("genres") List<GenreEntity> genreEntities) {
+                                        @JsonProperty("genres") List<GenreEntity> genreEntities,
+                                        @JsonProperty("total_rating") Double totalRating,
+                                        @JsonProperty("total_rating_count") Integer totalRatingCount) {
 
         List<String> alternativeNames = alternativeNameEntities == null ? null : alternativeNameEntities.stream()
                 .map(AlternativeName::getName)
@@ -43,7 +44,11 @@ public class GameDocument extends DocumentBase{
                 .map(GenreEntity::getId)
                 .collect(Collectors.toList());
 
-        return new GameDocument(id, name, alternativeNames, genreIds);
+        double popularity = 0.0;
+        if (totalRating != null && totalRatingCount != null)
+            popularity = totalRating * totalRatingCount;
+
+        return new GameDocument(id, name, alternativeNames, genreIds, popularity);
     }
 
     @Override
