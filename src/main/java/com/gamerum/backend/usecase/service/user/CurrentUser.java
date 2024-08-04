@@ -2,6 +2,7 @@ package com.gamerum.backend.usecase.service.user;
 
 import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
+import com.gamerum.backend.usecase.exception.ForbiddenException;
 import com.gamerum.backend.usecase.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
