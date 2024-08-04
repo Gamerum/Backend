@@ -4,6 +4,6 @@ import org.springframework.http.HttpStatus;
 
 public class ParticipationException extends ErrorException{
     public ParticipationException(boolean isParticipated) {
-        super(ErrorCode.ALREADY_PARTICIPATED_EXCEPTION, HttpStatus.CONFLICT, isParticipated ? "Profile already participated!" : "Profile is not participated!");
+        super(ErrorCode.PARTICIPATED_EXCEPTION, HttpStatus.CONFLICT, isParticipated ? "Profile already participated!" : "Profile is not participated!");
     }
 }

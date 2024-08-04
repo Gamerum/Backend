@@ -8,6 +8,7 @@ import com.gamerum.backend.usecase.service.community.CommunityMemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,13 +24,13 @@ public class CommunityMemberController {
 
     @PostMapping
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public ResponseEntity<CommunityMemberGetDTO> createCommunityMember(@PathVariable Long communityId, @RequestBody CommunityMemberCreateDTO communityMemberCreateDTO) {
+    public ResponseEntity<CommunityMemberGetDTO> createCommunityMember(@PathVariable Long communityId, @Validated @RequestBody CommunityMemberCreateDTO communityMemberCreateDTO) {
         return new ResponseEntity<>(CommunityMemberMapper.INSTANCE.communityMemberToCommunityMemberGetDTO(communityMemberService.createCommunityMember(communityId, communityMemberCreateDTO)), HttpStatus.CREATED);
     }
 
     @PutMapping
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public ResponseEntity<CommunityMemberGetDTO> updateCommunityMember(@RequestBody CommunityMemberUpdateDTO communityMemberUpdateDTO) {
+    public ResponseEntity<CommunityMemberGetDTO> updateCommunityMember(@Validated @RequestBody CommunityMemberUpdateDTO communityMemberUpdateDTO) {
         return new ResponseEntity<>(CommunityMemberMapper.INSTANCE.communityMemberToCommunityMemberGetDTO(communityMemberService.updateCommunityMember(communityMemberUpdateDTO)), HttpStatus.OK);
     }
 

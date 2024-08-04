@@ -8,6 +8,7 @@ import com.gamerum.backend.usecase.service.community.post.ReplyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class ReplyController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<ReplyGetDTO> createReply(@PathVariable Long commentId, @RequestBody ReplyCreateDTO replyCreateDTO) {
+    public ResponseEntity<ReplyGetDTO> createReply(@PathVariable Long commentId, @Validated @RequestBody ReplyCreateDTO replyCreateDTO) {
         return new ResponseEntity<>(ReplyMapper.INSTANCE.replyToReplyGetDTO(replyService.createReply(commentId, replyCreateDTO)), HttpStatus.CREATED);
     }
 
@@ -34,7 +35,7 @@ public class ReplyController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping
-    public ResponseEntity<ReplyGetDTO> updateReply(@RequestBody ReplyUpdateDTO replyUpdateDTO) {
+    public ResponseEntity<ReplyGetDTO> updateReply(@Validated @RequestBody ReplyUpdateDTO replyUpdateDTO) {
         return new ResponseEntity<>(ReplyMapper.INSTANCE.replyToReplyGetDTO(replyService.updateReply(replyUpdateDTO)), HttpStatus.OK);
     }
 

@@ -133,13 +133,13 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public List<String> updateTagsToCommunity(Long communityId, CommunityUpdateTagsDTO communityUpdateTagsDTO) {
         Community community = communityRepository.findById(communityId)
-                .orElseThrow(() -> new NotFoundException("Community"));
+                .orElseThrow(() -> new NotFoundException(Community.class));
 
         CommunityMember adder = communityMemberRepository
                 .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
-                .orElseThrow(() -> new NotFoundException("Member"));
+                .orElseThrow(() -> new NotFoundException(CommunityMember.class));
 
-        if (adder.getRole() == CommunityMember.Role.USER) throw new NotAllowedException();
+        if (adder.getRole() == CommunityMember.Role.USER) throw new UnauthorizedException();
 
         String newTagsString = communityUpdateTagsDTO.isRemove() ?
                 communityTagService.removeTags(community, communityUpdateTagsDTO.getTags()) :

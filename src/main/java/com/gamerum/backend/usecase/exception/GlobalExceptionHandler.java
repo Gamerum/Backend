@@ -2,8 +2,11 @@ package com.gamerum.backend.usecase.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -11,6 +14,9 @@ import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -44,6 +50,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleNotFoundException(ErrorException ex) {
         logger.error("\n\nGlobalException: {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new ErrorResponse(ex.getErrorCode()), ex.getHttpStatus());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+        List<String> errorCode = ex.getBindingResult().getAllErrors().stream()
+                .map(e -> ((FieldError) e).getField() + ":" + e.getDefaultMessage()).toList();
+        logger.error("\n\nValidationException: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(new ErrorResponse(errorCode), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

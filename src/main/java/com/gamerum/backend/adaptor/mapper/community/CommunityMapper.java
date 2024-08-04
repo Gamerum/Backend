@@ -28,6 +28,7 @@ public abstract class CommunityMapper {
 
     @Mapping(source = "posts", target = "firstPagePopularPosts")
     @Mapping(source = "members", target = "firstPageMembers")
+    @Mapping(source = "tags", target = "tags", ignore = true)
     public abstract CommunityGetDTO communityToCommunityGetDTO(Community community) throws IOException;
 
     public abstract Community communityCreateDTOToCommunity(CommunityCreateDTO communityCreateDTO);
