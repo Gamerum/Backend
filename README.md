@@ -1550,3 +1550,165 @@ When an error occurs, the client will receive a response containing the appropri
   }
 ]
 ```
+
+## Search
+
+### Search Games
+
+**Endpoint**: `POST /api/search/games`
+
+**Description**: Search for games based on name, alternative names, and genre IDs.
+
+**Request Body**:
+```json
+{
+  "keyword": "string (search keyword for game names and alternative names)",
+  "page": "integer (page number for pagination)",
+  "size": "integer (number of results per page)",
+  "genreIds": [
+    "integer (list of genre IDs to filter games)"
+  ]
+}
+```
+
+**Response**:
+- `200 OK` with a JSON array of game documents.
+```json
+[
+  {
+    "id": "string",
+    "name": "string",
+    "alternativeNames": [
+      "string"
+    ],
+    "genreIds": [
+      "integer"
+    ],
+    "popularity": "number"
+  }
+]
+```
+
+### Search Communities
+
+**Endpoint**: `POST /api/search/communities`
+
+**Description**: Search for communities based on title and associated game ID.
+
+**Request Body**:
+```json
+{
+  "keyword": "string (search keyword for community titles)",
+  "page": "integer (page number for pagination)",
+  "size": "integer (number of results per page)",
+  "gameId": "string (optional game ID to filter communities)"
+}
+```
+
+**Response**:
+- `200 OK` with a JSON array of community documents.
+```json
+[
+  {
+    "id": "string",
+    "title": "string",
+    "description": "string",
+    "memberCount": "number",
+    "clickCount": "number",
+    "game": {
+      "id": "string",
+      "name": "string",
+      "alternativeNames": [
+        "string"
+      ],
+      "genreIds": [
+        "integer"
+      ],
+      "popularity": "number"
+    }
+  }
+]
+```
+
+### Search Profiles
+
+**Endpoint**: `POST /api/search/profiles`
+
+**Description**: Search for user profiles based on nickname.
+
+**Request Body**:
+```json
+{
+  "keyword": "string (search keyword for profile nicknames)",
+  "page": "integer (page number for pagination)",
+  "size": "integer (number of results per page)"
+}
+```
+
+**Response**:
+- `200 OK` with a JSON array of profile documents.
+```json
+[
+  {
+    "id": "string",
+    "nickname": "string",
+    "communityIds": [
+      "string"
+    ]
+  }
+]
+```
+
+### Search Posts
+
+**Endpoint**: `POST /api/search/posts`
+
+**Description**: Search for posts based on title, community ID, and tag.
+
+**Request Body**:
+```json
+{
+  "keyword": "string (search keyword for post titles)",
+  "page": "integer (page number for pagination)",
+  "size": "integer (number of results per page)",
+  "communityId": "string (optional community ID to filter posts)",
+  "tag": "string (optional tag to filter posts)"
+}
+```
+
+**Response**:
+- `200 OK` with a JSON array of post documents.
+```json
+[
+  {
+    "id": "string",
+    "title": "string",
+    "text": "string",
+    "tag": "string",
+    "clickCount": "number",
+    "profile": {
+      "id": "string",
+      "nickname": "string"
+    },
+    "community": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "memberCount": "number",
+      "clickCount": "number",
+      "game": {
+        "id": "string",
+        "name": "string",
+        "alternativeNames": [
+          "string"
+        ],
+        "genreIds": [
+          "integer"
+        ],
+        "popularity": "number"
+      }
+    },
+    "createdDate": "string (ISO 8601 format)"
+  }
+]
+```
