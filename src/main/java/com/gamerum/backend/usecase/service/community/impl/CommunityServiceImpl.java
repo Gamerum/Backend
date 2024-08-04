@@ -13,8 +13,8 @@ import com.gamerum.backend.external.persistence.relational.repository.CommunityM
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.security.user.UserRole;
-import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
+import com.gamerum.backend.usecase.exception.UnauthorizedException;
 import com.gamerum.backend.usecase.service.community.CommunityService;
 import com.gamerum.backend.usecase.service.community.CommunityTagService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
@@ -65,7 +65,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public Community getCommunity(Long communityId) {
         Community community = communityRepository.findById(communityId)
-                .orElseThrow(() -> new NotFoundException("Community"));
+                .orElseThrow(() -> new NotFoundException(Community.class));
 
         List<CommunityMember> members = communityMemberRepository
                 .findByCommunityIdOrderByRoleAsc(communityId, Pageable.ofSize(initMemberSize));
@@ -85,7 +85,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     private void saveCreator(Community newCommunity) {
         Profile creatorProfile = profileRepository.findById(currentUser.getProfileId())
-                .orElseThrow(() -> new NotFoundException("Profile"));
+                .orElseThrow(() -> new NotFoundException(Profile.class));
 
         CommunityMember creator = CommunityMember.builder()
                 .profile(creatorProfile)
@@ -99,13 +99,13 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO) {
         Community community = communityRepository.findById(communityId)
-                .orElseThrow(() -> new NotFoundException("Community"));
+                .orElseThrow(() -> new NotFoundException(Community.class));
 
         CommunityMember updater = communityMemberRepository
                 .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
-                .orElseThrow(() -> new NotFoundException("Member"));
+                .orElseThrow(() -> new NotFoundException(CommunityMember.class));
 
-        if (updater.getRole() == CommunityMember.Role.USER) throw new NotAllowedException();
+        if (updater.getRole() == CommunityMember.Role.USER) throw new UnauthorizedException();
 
         community.setTitle(communityUpdateDTO.getTitle());
         community.setDescription(communityUpdateDTO.getDescription());
@@ -118,9 +118,9 @@ public class CommunityServiceImpl implements CommunityService {
         if (!currentUser.hasRole(UserRole.ROLE_ADMIN)) {
             CommunityMember deleter = communityMemberRepository
                     .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
-                    .orElseThrow(() -> new NotFoundException("Member"));
+                    .orElseThrow(() -> new NotFoundException(CommunityMember.class));
 
-            if (deleter.getRole() != CommunityMember.Role.OWNER) throw new NotAllowedException();
+            if (deleter.getRole() != CommunityMember.Role.OWNER) throw new UnauthorizedException();
         }
 
         cacheUtils.invalidateCacheListIfConditionMet(popularCacheName, popularCommunityCacheKey,

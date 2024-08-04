@@ -10,9 +10,9 @@ import com.gamerum.backend.external.persistence.relational.repository.ChatReposi
 import com.gamerum.backend.external.persistence.relational.repository.MessageRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.security.user.UserRole;
-import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
-import com.gamerum.backend.usecase.exception.NotParticipatedException;
+import com.gamerum.backend.usecase.exception.ParticipationException;
+import com.gamerum.backend.usecase.exception.UnauthorizedException;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,10 +54,10 @@ public class ChatServiceImpl implements ChatService {
         boolean isMemberOfTheChat = chatParticipantRepository
                 .existsByChatIdAndProfileId(chatId, currentUser.getProfileId());
 
-        if (!isAdmin && !isMemberOfTheChat) throw new NotAllowedException();
+        if (!isAdmin && !isMemberOfTheChat) throw new UnauthorizedException();
 
         Chat chat =  chatRepository.findById(chatId)
-                .orElseThrow(() -> new NotFoundException("Chat not found"));
+                .orElseThrow(() -> new NotFoundException(Chat.class));
 
         List<ChatParticipant> participants = chatParticipantRepository
                 .findByChatId(chatId, PageRequest.of(0, initParticipantSize));
@@ -80,7 +80,7 @@ public class ChatServiceImpl implements ChatService {
 
     private void saveCreator(Chat newChat) {
         Profile creatorProfile = profileRepository.findById(currentUser.getProfileId())
-                .orElseThrow(() -> new NotFoundException("Profile"));
+                .orElseThrow(() -> new NotFoundException(Profile.class));
 
         ChatParticipant creator = chatParticipantRepository.save(
                 ChatParticipant.builder()
@@ -115,9 +115,9 @@ public class ChatServiceImpl implements ChatService {
         if (!currentUser.hasRole(UserRole.ROLE_ADMIN)) {
             ChatParticipant deleter = chatParticipantRepository
                     .findByChatIdAndProfileId(chatId, currentUser.getProfileId())
-                    .orElseThrow(NotParticipatedException::new);
+                    .orElseThrow(() -> new ParticipationException(false));
 
-            if (!deleter.isMod()) throw new NotAllowedException();
+            if (!deleter.isMod()) throw new UnauthorizedException();
         }
         chatRepository.deleteById(chatId);
     }

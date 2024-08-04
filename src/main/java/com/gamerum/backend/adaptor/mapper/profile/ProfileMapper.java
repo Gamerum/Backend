@@ -9,6 +9,7 @@ import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +21,8 @@ public abstract class ProfileMapper {
 
     @Autowired
     protected ProfileService profileService;
-
+    @Mapping(source = "joinedCommunities", target = "firstPageCommunities")
+    @Mapping(source = "posts", target = "firstPagePosts")
     public abstract ProfileGetDTO profileToProfileGetDTO(Profile profile) throws IOException;
 
     @AfterMapping
@@ -28,7 +30,7 @@ public abstract class ProfileMapper {
         List<CommunityDocument> communities = profileService.getCommunities(profile.getId(), 0);
         List<PostDocument> posts = profileService.getPosts(profile.getId(), 0);
 
-        profileGetDTO.setCommunities(communities);
-        profileGetDTO.setPosts(posts);
+        profileGetDTO.setFirstPageCommunities(communities);
+        profileGetDTO.setFirstPagePosts(posts);
     }
 }

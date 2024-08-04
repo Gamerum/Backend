@@ -3,8 +3,6 @@ package com.gamerum.backend.adaptor.controller.community;
 import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostGetDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostUpdateDTO;
-import com.gamerum.backend.adaptor.dto.response.Response;
-import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.mapper.community.PostMapper;
 import com.gamerum.backend.usecase.service.community.post.PostService;
 import org.springframework.http.HttpStatus;
@@ -23,49 +21,28 @@ public class PostController {
         this.postMapper = postMapper;
     }
 
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<ResponseData<PostGetDTO>> createPost(
-            @PathVariable Long communityId,
-            @RequestBody PostCreateDTO postCreateDTO) {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Post created.",
-                postMapper.postToPostGetDTO(postService.createPost(communityId, postCreateDTO))),
-                HttpStatus.CREATED);
+    public ResponseEntity<PostGetDTO> createPost(@PathVariable Long communityId, @RequestBody PostCreateDTO postCreateDTO) {
+        return new ResponseEntity<>(postMapper.postToPostGetDTO(postService.createPost(communityId, postCreateDTO)), HttpStatus.CREATED);
     }
 
     @PutMapping
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
-    public ResponseEntity<ResponseData<PostGetDTO>> updatePost(
-            @RequestParam Long postId,
-            @RequestBody PostUpdateDTO postUpdateDTO) {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Post updated.",
-                postMapper.postToPostGetDTO(postService.updatePost(postId, postUpdateDTO))),
-                HttpStatus.OK);
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    public ResponseEntity<PostGetDTO> updatePost(@RequestParam Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
+        return new ResponseEntity<>(postMapper.postToPostGetDTO(postService.updatePost(postId, postUpdateDTO)), HttpStatus.OK);
     }
 
     @DeleteMapping
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
-    public ResponseEntity<Response> deletePost(
-            @RequestParam Long postId) {
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    public ResponseEntity deletePost(@RequestParam Long postId) {
         postService.deletePostById(postId);
-        return new ResponseEntity<>(new Response(
-                true,
-                "Post deleted."),
-                HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ResponseData<PostGetDTO>> getPost(
-            @PathVariable Long postId) {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Post received.",
-                postMapper.postToPostGetDTO(postService.getPostById(postId))),
-                HttpStatus.OK);
+    public ResponseEntity<PostGetDTO> getPost(@PathVariable Long postId) {
+        return new ResponseEntity<>(postMapper.postToPostGetDTO(postService.getPostById(postId)), HttpStatus.OK);
     }
 }
 
