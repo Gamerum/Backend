@@ -54,6 +54,12 @@ Gamerum is a Reddit-like application that lets people create communities specifi
         - [Get Replies](#get-replies)
         - [Update Reply](#update-reply)
         - [Delete Reply](#delete-reply)
+    - [Profiles](#profiles)
+        - [Get Profile](#get-profile)
+        - [Update Profile](#update-profile)
+        - [Get Profile Communities](#get-profile-communities)
+        - [Get Profile Posts](#get-profile-posts)
+    
     
 
 
@@ -760,12 +766,12 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Request Parameters**:
 - `communityId` (path parameter): The ID of the community.
+- `profileId` (query parameter): The ID of the member's profile.
 
 **Request Body**:
 ```json
 {
-  "id": "number",
-  "role": "string"
+  "role": "number"
 }
 ```
 
@@ -814,9 +820,9 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Body**:
 ```json
 {
-  "title": "string",
+  "title": "string (6-30 characters)",
   "tag": "string",
-  "text": "string"
+  "text": "string (1-255 characters)"
 }
 ```
 
@@ -861,8 +867,8 @@ When an error occurs, the client will receive a response containing the appropri
   "text": "string",
   "writerId": "string",
   "writerNickname": "string",
-  "createdDate": "date",
-  "lastModifiedDate": "date",
+  "createdDate": "string (ISO 8601 format)",
+  "lastModifiedDate": "string (ISO 8601 format)",
   "communityId": "number",
   "communityName": "string",
   "firstPageComments": [
@@ -871,8 +877,8 @@ When an error occurs, the client will receive a response containing the appropri
       "text": "string",
       "writerId": "number",
       "writerNickname": "string",
-      "createdDate": "date",
-      "lastModifiedDate": "date"
+      "createdDate": "string (ISO 8601 format)",
+      "lastModifiedDate": "string (ISO 8601 format)"
     }
   ]
 }
@@ -891,9 +897,9 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Body**:
 ```json
 {
-  "title": "string",
+  "title": "string (6-30 characters)",
   "tag": "string",
-  "text": "string"
+  "text": "string (1-255 characters)"
 }
 ```
 
@@ -907,8 +913,8 @@ When an error occurs, the client will receive a response containing the appropri
   "text": "string",
   "writerId": "string",
   "writerNickname": "string",
-  "createdDate": "date",
-  "lastModifiedDate": "date",
+  "createdDate": "string (ISO 8601 format)",
+  "lastModifiedDate": "string (ISO 8601 format)",
   "communityId": "number",
   "communityName": "string",
   "firstPageComments": [
@@ -917,8 +923,8 @@ When an error occurs, the client will receive a response containing the appropri
       "text": "string",
       "writerId": "number",
       "writerNickname": "string",
-      "createdDate": "date",
-      "lastModifiedDate": "date"
+      "createdDate": "string (ISO 8601 format)",
+      "lastModifiedDate": "string (ISO 8601 format)"
     }
   ]
 }
@@ -957,7 +963,7 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Body**:
 ```json
 {
-  "text": "string"
+  "text": "string (1-255 characters)"
 }
 ```
 
@@ -969,8 +975,8 @@ When an error occurs, the client will receive a response containing the appropri
   "text": "string",
   "writerId": "number",
   "writerNickname": "string",
-  "createdDate": "date",
-  "lastModifiedDate": "date"
+  "createdDate": "string (ISO 8601 format)",
+  "lastModifiedDate": "string (ISO 8601 format)"
 }
 ```
 - `400 Bad Request` if the request body is invalid.
@@ -997,8 +1003,8 @@ When an error occurs, the client will receive a response containing the appropri
     "text": "string",
     "writerId": "number",
     "writerNickname": "string",
-    "createdDate": "date",
-    "lastModifiedDate": "date"
+    "createdDate": "string (ISO 8601 format)",
+    "lastModifiedDate": "string (ISO 8601 format)"
   }
 ]
 ```
@@ -1016,8 +1022,7 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Body**:
 ```json
 {
-  "id": "number",
-  "text": "string"
+  "text": "string (1-255 characters)"
 }
 ```
 **Response**:
@@ -1028,8 +1033,8 @@ When an error occurs, the client will receive a response containing the appropri
   "text": "string",
   "writerId": "number",
   "writerNickname": "string",
-  "createdDate": "date",
-  "lastModifiedDate": "date"
+  "createdDate": "string (ISO 8601 format)",
+  "lastModifiedDate": "string (ISO 8601 format)"
 }
 ```
 - `400 Bad Request` if the request body is invalid.
@@ -1066,7 +1071,7 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Body**:
 ```json
 {
-  "text": "string"
+  "text": "string (1-255 characters)"
 }
 ```
 
@@ -1079,8 +1084,8 @@ When an error occurs, the client will receive a response containing the appropri
   "commentId": "number",
   "writerId": "number",
   "writerNickname": "string",
-  "createdDate": "date",
-  "lastModifiedDate": "date"
+  "createdDate": "string (ISO 8601 format)",
+  "lastModifiedDate": "string (ISO 8601 format)"
 }
 ```
 - `400 Bad Request` if the request body is invalid.
@@ -1108,8 +1113,8 @@ When an error occurs, the client will receive a response containing the appropri
     "commentId": "number",
     "writerId": "number",
     "writerNickname": "string",
-    "createdDate": "date",
-    "lastModifiedDate": "date"
+    "createdDate": "string (ISO 8601 format)",
+    "lastModifiedDate": "string (ISO 8601 format)"
   }
 ]
 ```
@@ -1127,7 +1132,7 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Body**:
 ```json
 {
-  "text": "string"
+  "text": "string (1-255 characters)"
 }
 ```
 
@@ -1140,8 +1145,8 @@ When an error occurs, the client will receive a response containing the appropri
   "commentId": "number",
   "writerId": "number",
   "writerNickname": "string",
-  "createdDate": "date",
-  "lastModifiedDate": "date"
+  "createdDate": "string (ISO 8601 format)",
+  "lastModifiedDate": "string (ISO 8601 format)"
 }
 ```
 - `400 Bad Request` if the request body is invalid.
@@ -1149,7 +1154,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `403 Forbidden` if the user does not have permission to update the reply.
 - `404 Not Found` if the reply does not exist.
 
-#### Delete Reply
+### Delete Reply
 
 **Endpoint**: `DELETE /api/comments/{commentId}/reply`
 
@@ -1164,3 +1169,176 @@ When an error occurs, the client will receive a response containing the appropri
 - `403 Forbidden` if the user does not have permission to delete the reply.
 - `404 Not Found` if the reply does not exist.
 
+## Profiles
+
+### Get Profile
+
+**Endpoint**: `GET /api/profiles/{profileId}`
+
+**Description**: Retrieve profile details by ID.
+
+**Request Parameters**:
+- `profileId` (path parameter): The ID of the profile to be retrieved.
+
+**Response**:
+- `200 OK` with a JSON object representing the profile.
+```json
+{
+  "id": "number",
+  "nickname": "string",
+  "firstPageCommunities": [
+    {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "memberCount": "number",
+      "clickCount": "number",
+      "game": {
+        "id": "string",
+        "name": "string"
+      }
+    }
+  ],
+  "firstPagePosts": [
+    {
+      "id": "string",
+      "title": "string",
+      "text": "string",
+      "tag": "string",
+      "clickCount": "number",
+      "profile": {
+        "id": "string",
+        "nickname": "string"
+      },
+      "community": {
+        "id": "string",
+        "title": "string"
+      },
+      "createdDate": "string (ISO 8601 format)"
+    }
+  ]
+}
+```
+- `404 Not Found` if the comment does not exist.
+
+### Update Profile
+
+**Endpoint**: `PUT /api/profiles/{profileId}`
+
+**Description**: Update the profile.
+
+**Request Parameters**:
+- `profileId` (path parameter): The ID of the profile to be updated.
+
+**Request Body**:
+```json
+{
+  "nickname": "string (6-30 characters)"
+}
+```
+**Response**:
+- `200 OK` with a JSON object representing the updated profile.
+```json
+{
+  "id": "number",
+  "nickname": "string",
+  "firstPageCommunities": [
+    {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "memberCount": "number",
+      "clickCount": "number",
+      "game": {
+        "id": "string",
+        "name": "string"
+      }
+    }
+  ],
+  "firstPagePosts": [
+    {
+      "id": "string",
+      "title": "string",
+      "text": "string",
+      "tag": "string",
+      "clickCount": "number",
+      "profile": {
+        "id": "string",
+        "nickname": "string"
+      },
+      "community": {
+        "id": "string",
+        "title": "string"
+      },
+      "createdDate": "string (ISO 8601 format)"
+    }
+  ]
+}
+```
+- `400 Bad Request` if the request body is invalid.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
+- `403 Forbidden` if the user does not have permission to update the profile.
+- `404 Not Found` if the profile does not exist.
+
+### Get Profile Communities
+
+**Endpoint**: `GET /api/profiles/{profileId}/communities`
+
+**Description**: Retrieve a list of communities associated with the profile.
+
+**Request Parameters**:
+- `profileId` (path parameter): The ID of the profile.
+- `page` (query parameter, optional): The page number for pagination. The default is `0`.
+
+**Response**:
+- `200 OK` with a JSON array of community documents.
+```json
+[
+  {
+    "id": "string",
+    "title": "string",
+    "description": "string",
+    "memberCount": "number",
+    "clickCount": "number",
+    "game": {
+      "id": "string",
+      "name": "string"
+    }
+  }
+]
+```
+- `404 Not Found` if the profile does not exist.
+
+### Get Profile Posts
+
+**Endpoint**: `GET /api/profiles/{profileId}/posts`
+
+**Description**: Retrieve a list of posts created by the profile.
+
+**Request Parameters**:
+- `profileId` (path parameter): The ID of the profile.
+- `page` (query parameter, optional): The page number for pagination. The default is `0`.
+
+**Response**:
+- `200 OK` with a JSON array of post documents.
+```json
+[
+  {
+    "id": "string",
+    "title": "string",
+    "text": "string",
+    "tag": "string",
+    "clickCount": "number",
+    "profile": {
+      "id": "string",
+      "nickname": "string"
+    },
+    "community": {
+      "id": "string",
+      "title": "string"
+    },
+    "createdDate": "date"
+  }
+]
+```
+- `404 Not Found` if the profile does not exist.

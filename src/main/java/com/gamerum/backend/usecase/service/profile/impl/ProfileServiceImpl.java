@@ -92,8 +92,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile updateProfile(ProfileUpdateDTO profileUpdateDTO) {
-        Profile profile = profileRepository.findById(profileUpdateDTO.getId()).
+    public Profile updateProfile(Long profileId, ProfileUpdateDTO profileUpdateDTO) {
+        Profile profile = profileRepository.findById(profileId).
                 orElseThrow(() -> new NotFoundException(Profile.class));
 
         if (!currentUser.getProfileId().equals(profile.getId()))

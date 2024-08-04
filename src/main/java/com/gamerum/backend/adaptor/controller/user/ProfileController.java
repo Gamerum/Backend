@@ -26,7 +26,6 @@ public class ProfileController {
         this.profileMapper = profileMapper;
     }
 
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/{profileId}")
     public ResponseEntity<ProfileGetDTO> getProfileById(@PathVariable Long profileId) throws IOException {
         return new ResponseEntity<>(profileMapper.profileToProfileGetDTO(profileService.getProfileById(profileId)), HttpStatus.OK);
@@ -34,13 +33,13 @@ public class ProfileController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/{profileId}")
-    public ResponseEntity<ProfileGetDTO> updateProfile(@Validated @RequestBody ProfileUpdateDTO profileUpdateDTO) throws IOException {
-        return new ResponseEntity<>(profileMapper.profileToProfileGetDTO(profileService.updateProfile(profileUpdateDTO)), HttpStatus.OK);
+    public ResponseEntity<ProfileGetDTO> updateProfile(@PathVariable Long profileId, @Validated @RequestBody ProfileUpdateDTO profileUpdateDTO) throws IOException {
+        return new ResponseEntity<>(profileMapper.profileToProfileGetDTO(profileService.updateProfile(profileId, profileUpdateDTO)), HttpStatus.OK);
     }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/{profileId}/communities")
-    public ResponseEntity<List<CommunityDocument>> getProfileCommunities(@PathVariable Long profileId, @RequestParam int page) throws IOException {
+    public ResponseEntity<List<CommunityDocument>> getProfileCommunities(@PathVariable Long profileId, @RequestParam(defaultValue = "0") Integer page) throws IOException {
         return new ResponseEntity<>(profileService.getCommunities(profileId, page), HttpStatus.OK);
     }
 
@@ -49,5 +48,4 @@ public class ProfileController {
     public ResponseEntity<List<PostDocument>> getProfilePosts(@PathVariable Long profileId, @RequestParam(defaultValue = "0") Integer page) throws IOException {
         return new ResponseEntity<>(profileService.getPosts(profileId, page), HttpStatus.OK);
     }
-
 }
