@@ -62,8 +62,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment updateComment(CommentUpdateDTO commentUpdateDTO) {
-        Comment comment = commentRepository.findById(commentUpdateDTO.getId()).
+    public Comment updateComment(Long commentId, CommentUpdateDTO commentUpdateDTO) {
+        Comment comment = commentRepository.findById(commentId).
                 orElseThrow(() -> new NotFoundException(Comment.class));
 
         if (!comment.getProfile().getId().equals(currentUser.getProfileId()))

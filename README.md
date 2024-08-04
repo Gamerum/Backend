@@ -176,7 +176,7 @@ When an error occurs, the client will receive a response containing the appropri
 }
 ```
 - `400 Bad Request` if the request body is invalid or contains errors.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `404 Not Found` if the requester has no profile.
 
 ### Get Chat
@@ -212,7 +212,7 @@ When an error occurs, the client will receive a response containing the appropri
   ]
 }
 ```
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if not a participant of the chat
 - `404 Not Found` if the chat does not exist.
 
@@ -265,7 +265,7 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Response**:
 - `204 No Content` if the chat is successfully deleted.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if has no right to delete the chat.
 - `404 Not Found` if the chat does not exist.
 
@@ -297,7 +297,7 @@ When an error occurs, the client will receive a response containing the appropri
 }
 ```
 - `400 Bad Request` if the request body is invalid or contains errors.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to add participants.
 - `404 Not Found` if the chat or profile does not exist.
 
@@ -351,7 +351,7 @@ When an error occurs, the client will receive a response containing the appropri
 }
 ```
 - `400 Bad Request` if the request body is invalid or contains errors.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the participant.
 - `404 Not Found` if the chat or participant does not exist.
 
@@ -367,7 +367,7 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Response**:
 - `204 No Content` if the participant is successfully removed.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to remove the participant.
 - `404 Not Found` if the chat or participant does not exist.
 
@@ -402,7 +402,7 @@ When an error occurs, the client will receive a response containing the appropri
 }
 ```
 - `400 Bad Request` if the request body is invalid or contains errors.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to add messages.
 - `404 Not Found` if the chat does not exist.
 
@@ -429,7 +429,7 @@ When an error occurs, the client will receive a response containing the appropri
   }
 ]
 ```
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to view the messages.
 - `404 Not Found` if the chat does not exist.
 
@@ -462,7 +462,7 @@ When an error occurs, the client will receive a response containing the appropri
 }
 ```
 - `400 Bad Request` if the request body is invalid or contains errors.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the message.
 - `404 Not Found` if the chat or message does not exist.
 
@@ -478,7 +478,7 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Response**:
 - `204 No Content` if the message is successfully deleted.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to delete the message.
 - `404 Not Found` if the chat or message does not exist.
 
@@ -525,7 +525,7 @@ When an error occurs, the client will receive a response containing the appropri
 }
 ```
 - `400 Bad Request` if the request body is invalid.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to create a community.
 
 ### Get Community
@@ -641,7 +641,7 @@ When an error occurs, the client will receive a response containing the appropri
 }
 ```
 - `400 Bad Request` if the request body is invalid.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the community.
 - `404 Not Found` if the community does not exist.
 
@@ -656,7 +656,7 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Response**:
 - `204 No Content` if the community is successfully deleted.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to delete the community.
 - `404 Not Found` if the community does not exist.
 
@@ -680,7 +680,7 @@ When an error occurs, the client will receive a response containing the appropri
 ["string"]
 ```
 - `400 Bad Reques` if the request body is invalid.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the community does not exist.
 - `404 Not Found` if the user does not have permission to update the community tags.
 
@@ -712,7 +712,7 @@ When an error occurs, the client will receive a response containing the appropri
 }
 ```
 - `400 Bad Request` if the request body is invalid.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to add a member to the community.
 - `404 Not Found` if the community or profile does not exist.
 
@@ -766,7 +766,7 @@ When an error occurs, the client will receive a response containing the appropri
 }
 ```
 - `400 Bad Request` if the request body is invalid.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the member's role.
 - `404 Not Found` if the community member does not exist.
 
@@ -783,7 +783,7 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Response**:
 - `204 No Content` if the member is successfully removed.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to delete the member.
 - `404 Not Found` if the community or member does not exist.
 
@@ -825,7 +825,7 @@ When an error occurs, the client will receive a response containing the appropri
 }
 ```
 - `400 Bad Request` if the request body is invalid.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to create a post in the community.
 - `404 Not Found` if the community does not exist.
 
@@ -911,7 +911,7 @@ When an error occurs, the client will receive a response containing the appropri
 }
 ```
 - `400 Bad Request` if the request body is invalid.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the post.
 - `404 Not Found`  if the post does not exist.
 
@@ -926,6 +926,116 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Response**:
 - `204 No Content` if the post is successfully deleted.
-- `401 Unauthorized` if not logged in yet or could not send the JWT token.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to delete the post.
 - `404 Not Found` if the post does not exist.
+
+## Comments
+
+### Add Comment
+
+**Endpoint**: `POST /api/posts/{postId}/comments`
+
+**Description**: Create a new comment on a specific post.
+
+**Request Parameters**:
+- `postId` (path parameter): The ID of the post to which the comment will be added.
+
+**Request Body**:
+```json
+{
+  "text": "string"
+}
+```
+
+**Response**:
+- `201 Created` with a JSON object representing the created comment.
+```json
+{
+  "id": "number",
+  "text": "string",
+  "writerId": "number",
+  "writerNickname": "string",
+  "createdDate": "date",
+  "lastModifiedDate": "date"
+}
+```
+- `400 Bad Request` if the request body is invalid.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
+- `403 Forbidden` if the user does not have permission to comment.
+- `404 Not Found` if the post does not exist or the user is not part of the community.
+
+### Get Comments
+
+**Endpoint**: `GET /api/posts/{postId}/comments`
+
+**Description**: Retrieve a list of comments for a specific post.
+
+**Request Parameters**:
+- `postId` (path parameter): The ID of the post.
+- `page` (query parameter, optional): The page number for pagination. The default is `0`.
+
+**Response**:
+- `200 OK` with a JSON array of comments.
+```json
+[
+  {
+    "id": "number",
+    "text": "string",
+    "writerId": "number",
+    "writerNickname": "string",
+    "createdDate": "date",
+    "lastModifiedDate": "date"
+  }
+]
+```
+- `404 Not Found` if the post does not exist.
+
+### Update Comment
+
+**Endpoint**: `PUT /api/posts/{postId}/comments`
+
+**Description**: Update an existing comment.
+
+**Request Parameters**:
+- `commentId` (query parameter): The ID of the comment to be updated.
+
+**Request Body**:
+```json
+{
+  "id": "number",
+  "text": "string"
+}
+```
+**Response**:
+- `200 OK` with a JSON object representing the updated comment.
+```json
+{
+  "id": "number",
+  "text": "string",
+  "writerId": "number",
+  "writerNickname": "string",
+  "createdDate": "date",
+  "lastModifiedDate": "date"
+}
+```
+- `400 Bad Request` if the request body is invalid.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
+- `403 Forbidden` if the user does not have permission to update the comment.
+- `404 Not Found` if the comment does not exist.
+
+### Delete Comment
+
+**Endpoint**: `DELETE /api/posts/{postId}/comments`
+
+**Description**: Delete an existing comment.
+
+**Request Parameters**:
+- `commentId` (query parameter): The ID of the comment to be deleted.
+
+**Response**:
+- `204 No Content` if the comment is successfully deleted.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
+- `403 Forbidden` if the user does not have permission to delete the comment.
+- `404 Not Found` if the comment does not exist.
+

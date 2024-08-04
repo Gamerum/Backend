@@ -9,6 +9,6 @@ import java.util.List;
 public interface CommentService {
     Comment createComment(Long postId, CommentCreateDTO commentCreateDTO);
     List<Comment> getPostComments(Long postId, int page);
-    Comment updateComment(CommentUpdateDTO commentUpdateDTO);
+    Comment updateComment(Long commentId, CommentUpdateDTO commentUpdateDTO);
     void deleteComment(Long commentId);
 }
