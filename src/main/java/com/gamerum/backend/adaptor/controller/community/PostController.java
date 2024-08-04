@@ -8,6 +8,7 @@ import com.gamerum.backend.usecase.service.community.post.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,13 +24,13 @@ public class PostController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<PostGetDTO> createPost(@PathVariable Long communityId, @RequestBody PostCreateDTO postCreateDTO) {
+    public ResponseEntity<PostGetDTO> createPost(@PathVariable Long communityId, @Validated @RequestBody PostCreateDTO postCreateDTO) {
         return new ResponseEntity<>(postMapper.postToPostGetDTO(postService.createPost(communityId, postCreateDTO)), HttpStatus.CREATED);
     }
 
     @PutMapping
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public ResponseEntity<PostGetDTO> updatePost(@RequestParam Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
+    public ResponseEntity<PostGetDTO> updatePost(@RequestParam Long postId, @Validated @RequestBody PostUpdateDTO postUpdateDTO) {
         return new ResponseEntity<>(postMapper.postToPostGetDTO(postService.updatePost(postId, postUpdateDTO)), HttpStatus.OK);
     }
 

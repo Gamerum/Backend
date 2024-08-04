@@ -8,6 +8,7 @@ import com.gamerum.backend.usecase.service.chat.MessageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class MessageController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<MessageGetDTO> addMessage(@PathVariable Long chatId, @RequestBody MessageCreateDTO messageCreateDTO) {
+    public ResponseEntity<MessageGetDTO> addMessage(@PathVariable Long chatId, @Validated @RequestBody MessageCreateDTO messageCreateDTO) {
         return new ResponseEntity<>(MessageMapper.INSTANCE.messageToMessageGetDTO(messageService.createMessage(chatId, messageCreateDTO)), HttpStatus.CREATED);
     }
 
@@ -42,7 +43,7 @@ public class MessageController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping
-    public ResponseEntity<MessageGetDTO> updateMessage(@PathVariable Long chatId, @RequestBody MessageUpdateDTO messageUpdateDTO) {
+    public ResponseEntity<MessageGetDTO> updateMessage(@PathVariable Long chatId, @Validated @RequestBody MessageUpdateDTO messageUpdateDTO) {
         return new ResponseEntity<>(MessageMapper.INSTANCE.messageToMessageGetDTO(messageService.updateMessage(chatId, messageUpdateDTO)), HttpStatus.OK);
     }
 }

@@ -5,6 +5,7 @@ import com.gamerum.backend.adaptor.dto.auth.RegisterRequestDTO;
 import com.gamerum.backend.usecase.service.auth.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -19,13 +20,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody RegisterRequestDTO request) {
+    public ResponseEntity register(@Validated @RequestBody RegisterRequestDTO request) {
         authService.register(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequestDTO request) {
+    public ResponseEntity<Map<String, String>> login(@Validated @RequestBody LoginRequestDTO request) {
         return new ResponseEntity<>(authService.login(request), HttpStatus.OK);
     }
 }

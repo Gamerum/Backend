@@ -41,7 +41,7 @@ public class SearchController {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<List<PostDocument>> searchPosts(@RequestBody SearchFilter filter) throws IOException {
+    public ResponseEntity<List<PostDocument>> searchPosts(@RequestBody PostSearchFilter filter) throws IOException {
         return new ResponseEntity<>(searchService.searchPost(filter), HttpStatus.OK);
     }
 }

@@ -9,6 +9,7 @@ import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class ChatParticipantController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<ChatParticipantGetDTO> addChatParticipant(@PathVariable Long chatId, @RequestBody ChatParticipantCreateDTO chatParticipantCreateDTO) {
+    public ResponseEntity<ChatParticipantGetDTO> addChatParticipant(@PathVariable Long chatId, @Validated @RequestBody ChatParticipantCreateDTO chatParticipantCreateDTO) {
         return new ResponseEntity<>(ChatParticipantMapper.INSTANCE.chatParticipantToChatParticipantGetDTO(chatParticipantService.createChatParticipant(chatId, chatParticipantCreateDTO)), HttpStatus.CREATED);
     }
 
@@ -43,7 +44,7 @@ public class ChatParticipantController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping
-    public ResponseEntity<ChatParticipantGetDTO> updateChatParticipant(@PathVariable Long chatId, @RequestBody ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
+    public ResponseEntity<ChatParticipantGetDTO> updateChatParticipant(@PathVariable Long chatId, @Validated @RequestBody ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
         return new ResponseEntity<>(ChatParticipantMapper.INSTANCE.chatParticipantToChatParticipantGetDTO(chatParticipantService.updateChatParticipant(chatId, chatParticipantUpdateDTO)), HttpStatus.OK);
     }
 }
