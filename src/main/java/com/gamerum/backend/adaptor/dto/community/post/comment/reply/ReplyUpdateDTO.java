@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReplyUpdateDTO {
-    @NotNull(message = ErrorCode.NOT_NULL)
-    private Long id;
-
     @Size(min = 1, max = 255, message = ErrorCode.SIZE_EXCEPTION_1_255)
     private String text;
 }

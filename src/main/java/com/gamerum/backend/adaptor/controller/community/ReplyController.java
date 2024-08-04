@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/comments/{commentId}/reply")
+@RequestMapping("/api/comments/{commentId}/replies")
 public class ReplyController {
     private final ReplyService replyService;
 
@@ -35,8 +35,8 @@ public class ReplyController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping
-    public ResponseEntity<ReplyGetDTO> updateReply(@Validated @RequestBody ReplyUpdateDTO replyUpdateDTO) {
-        return new ResponseEntity<>(ReplyMapper.INSTANCE.replyToReplyGetDTO(replyService.updateReply(replyUpdateDTO)), HttpStatus.OK);
+    public ResponseEntity<ReplyGetDTO> updateReply(@RequestParam Long replyId, @Validated @RequestBody ReplyUpdateDTO replyUpdateDTO) {
+        return new ResponseEntity<>(ReplyMapper.INSTANCE.replyToReplyGetDTO(replyService.updateReply(replyId, replyUpdateDTO)), HttpStatus.OK);
     }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})

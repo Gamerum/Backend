@@ -44,6 +44,16 @@ Gamerum is a Reddit-like application that lets people create communities specifi
         - [Get Post](#get-post)
         - [Update Post](#update-post)
         - [Delete Post](#delete-post)
+    - [Comments](#comments)
+        - [Add Comment](#add-comment)
+        - [Get Comments](#get-comments)
+        - [Update Comment](#update-comment)
+        - [Delete Comment](#delete-comment)
+    - [Replies](#replies)
+        - [Add Reply](#add-reply)
+        - [Get Replies](#get-replies)
+        - [Update Reply](#update-reply)
+        - [Delete Reply](#delete-reply)
     
 
 
@@ -72,11 +82,12 @@ Gamerum uses a global exception handler to manage and respond to errors in a con
 | ERR-5      | General Exception                 |
 | ERR-6      | Unauthorized Exception            |
 | ERR-7      | Forbidden Exception               |
-| ERR-8      | Participated Exception            |
-| ERR-9      | Incorrect Password Pattern        |
-| ERR-10     | Field Not Blank                   |
-| ERR-11     | Field Not Null                    |
-| ERR-12     | Incorrect Email Pattern           |
+| ERR-8      | Already Participated Exception    |
+| ERR-9      | Not Participated Exception        |
+| ERR-10     | Incorrect Password Pattern        |
+| ERR-11     | Field Not Blank                   |
+| ERR-12     | Field Not Null                    |
+| ERR-13     | Incorrect Email Pattern           |
 | ERR-6-30   | Size Exception (6-30 characters)  |
 | ERR-1-255  | Size Exception (1-255 characters) |
 
@@ -300,6 +311,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to add participants.
 - `404 Not Found` if the chat or profile does not exist.
+- `409 Conflict` if the user is already a participant of the chat.
 
 ### Get Chat Participants
 
@@ -715,6 +727,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to add a member to the community.
 - `404 Not Found` if the community or profile does not exist.
+- `409 Conflict` if the user is already a member of the community.
 
 ### Get Community Members
 
@@ -1038,4 +1051,116 @@ When an error occurs, the client will receive a response containing the appropri
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to delete the comment.
 - `404 Not Found` if the comment does not exist.
+
+## Replies
+
+### Add Reply
+
+**Endpoint**: `POST /api/comments/{commentId}/reply`
+
+**Description**: Create a new reply to a specific comment.
+
+**Request Parameters**:
+- `commentId` (path parameter): The ID of the comment to which the reply will be added.
+
+**Request Body**:
+```json
+{
+  "text": "string"
+}
+```
+
+**Response**:
+- `201 Created` with a JSON object representing the created reply.
+```json
+{
+  "id": "number",
+  "text": "string",
+  "commentId": "number",
+  "writerId": "number",
+  "writerNickname": "string",
+  "createdDate": "date",
+  "lastModifiedDate": "date"
+}
+```
+- `400 Bad Request` if the request body is invalid.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
+- `403 Forbidden` if the user does not have permission to reply.
+- `404 Not Found` if the comment does not exist.
+
+### Get Replies
+
+**Endpoint**: `GET /api/comments/{commentId}/reply`
+
+**Description**: Retrieve a list of replies for a specific comment.
+
+**Request Parameters**:
+- `commentId` (path parameter): The ID of the comment.
+- `page` (query parameter, optional): The page number for pagination (default is 0).
+
+**Response**:
+- `200 OK` with a JSON array of replies.
+```json
+[
+  {
+    "id": "number",
+    "text": "string",
+    "commentId": "number",
+    "writerId": "number",
+    "writerNickname": "string",
+    "createdDate": "date",
+    "lastModifiedDate": "date"
+  }
+]
+```
+- `404 Not Found` if the comment does not exist.
+
+### Update Reply
+
+**Endpoint**: `PUT /api/comments/{commentId}/reply`
+
+**Description**: Update an existing reply.
+
+**Request Parameters**:
+- `replyId` (query parameter): The ID of the reply.
+
+**Request Body**:
+```json
+{
+  "text": "string"
+}
+```
+
+**Response**:
+- `200 OK` with a JSON object representing the updated reply.
+```json
+{
+  "id": "number",
+  "text": "string",
+  "commentId": "number",
+  "writerId": "number",
+  "writerNickname": "string",
+  "createdDate": "date",
+  "lastModifiedDate": "date"
+}
+```
+- `400 Bad Request` if the request body is invalid.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
+- `403 Forbidden` if the user does not have permission to update the reply.
+- `404 Not Found` if the reply does not exist.
+
+#### Delete Reply
+
+**Endpoint**: `DELETE /api/comments/{commentId}/reply`
+
+**Description**: Delete an existing reply.
+
+**Request Parameters**:
+- `replyId` (query parameter): The ID of the reply to be deleted.
+
+**Response**:
+- `204 No Content` if the reply is successfully deleted.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
+- `403 Forbidden` if the user does not have permission to delete the reply.
+- `404 Not Found` if the reply does not exist.
 

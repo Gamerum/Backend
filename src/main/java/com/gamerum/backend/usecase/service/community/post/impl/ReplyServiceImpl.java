@@ -62,9 +62,9 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
-    public Reply updateReply(ReplyUpdateDTO replyUpdateDTO) {
+    public Reply updateReply(Long replyId, ReplyUpdateDTO replyUpdateDTO) {
         Reply reply = replyRepository
-                .findById(replyUpdateDTO.getId())
+                .findById(replyId)
                 .orElseThrow(() -> new NotFoundException(Reply.class));
 
         if (!reply.getProfile().getId().equals(currentUser.getProfileId()))
