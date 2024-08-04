@@ -2,6 +2,7 @@ package com.gamerum.backend.usecase.service.search;
 
 import com.gamerum.backend.adaptor.dto.search.CommunitySearchFilter;
 import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
+import com.gamerum.backend.adaptor.dto.search.PostSearchFilter;
 import com.gamerum.backend.adaptor.dto.search.SearchFilter;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
@@ -16,5 +17,5 @@ public interface SearchService {
     List<GameDocument> searchGame(GameSearchFilter filter) throws IOException;
     List<CommunityDocument> searchCommunity(CommunitySearchFilter filter) throws IOException;
     List<ProfileDocument> searchProfile(SearchFilter filter) throws IOException;
-    List<PostDocument> searchPost(SearchFilter filter)throws IOException;
+    List<PostDocument> searchPost(PostSearchFilter filter)throws IOException;
 }
