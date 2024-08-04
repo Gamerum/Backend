@@ -34,6 +34,12 @@ Gamerum is a Reddit-like application that lets people create communities specifi
         - [Update Community](#update-community)
         - [Delete Community](#delete-community)
         - [Update Community Tags](#update-community-tags)
+    - [Community Members](#community-member)
+        - [Add Community Member](#add-community-member)
+        - [Get Community Member](#get-community-members)
+        - [Update Community Member](#update-community-member)
+        - [Delete Community Member](#delete-community-member)
+    
 
 
 ## Error Handling
@@ -659,3 +665,105 @@ When an error occurs, the client will receive a response containing the appropri
 - `400 Bad Reques` if the request body is invalid.
 - `403 Forbidden` if the community does not exist.
 - `404 Not Found` if the user does not have permission to update the community tags.
+
+## Community Member
+
+### Add Community Member
+
+**Endpoint**: `POST /api/communities/{communityId}/members`
+
+**Description**: Add a new member to a community.
+
+**Request Parameters**:
+- `communityId` (path parameter): The ID of the community to add the member to.
+
+**Request Body**:
+```json
+{
+  "profileId": "number"
+}
+```
+
+**Response**:
+- `201 Created` with a JSON object representing the created community member.
+```json
+{
+  "id": "number",
+  "nickname": "string",
+  "role": "string"
+}
+```
+- `400 Bad Request` if the request body is invalid.
+- `403 Forbidden` if the user does not have permission to add a member to the community.
+- `404 Not Found` if the community or profile does not exist.
+
+### Get Community Members
+
+**Endpoint**: `GET /api/communities/{communityId}/members`
+
+**Description**: Retrieve a list of members for a specific community.
+
+**Request Parameters**:
+- `communityId` (path parameter): The ID of the community.
+- `page` (query parameter): The page number for pagination.
+
+**Response**:
+- `200 OK` with a JSON array of community member objects.
+```json
+[
+  {
+    "id": "number",
+    "nickname": "string",
+    "role": "string"
+  }
+]
+```
+- `404 Not Found` if the community does not exist.
+
+### Update Community Member
+
+**Endpoint**: `PUT /api/communities/{communityId}/members`
+
+**Description**: Update the role of a community member.
+
+**Request Parameters**:
+- `communityId` (path parameter): The ID of the community.
+
+**Request Body**:
+```json
+{
+  "id": "number",
+  "role": "string"
+}
+```
+
+**Response**:
+- `200 OK` with a JSON object representing the updated community member.
+```json
+{
+  "id": "number",
+  "nickname": "string",
+  "role": "string"
+}
+```
+- `400 Bad Request` if the request body is invalid.
+- `403 Forbidden` if the user does not have permission to update the member's role.
+- `404 Not Found` if the community member does not exist.
+
+
+### Delete Community Member
+
+**Endpoint**: `DELETE /api/communities/{communityId}/members`
+
+**Description**: Remove a member from a community.
+
+**Request Parameters**:
+- `communityId` (path parameter): The ID of the community.
+- `profileId` (query parameter): The ID of the profile to remove.
+
+**Response**:
+- `204 No Content` if the member is successfully removed.
+- `403 Forbidden` if the user does not have permission to delete the member.
+- `404 Not Found` if the community or member does not exist.
+
+
