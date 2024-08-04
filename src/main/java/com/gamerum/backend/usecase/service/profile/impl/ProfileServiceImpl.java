@@ -12,8 +12,8 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDo
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
-import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
+import com.gamerum.backend.usecase.exception.UnauthorizedException;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +43,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Profile getProfileById(Long profileId) {
-        return profileRepository.findById(profileId).orElseThrow(() -> new NotFoundException("Profile"));
+        return profileRepository.findById(profileId).orElseThrow(() -> new NotFoundException(Profile.class));
     }
 
     public List<CommunityDocument> getCommunities(Long profileId, int page) throws IOException {
@@ -94,10 +94,10 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Profile updateProfile(ProfileUpdateDTO profileUpdateDTO) {
         Profile profile = profileRepository.findById(profileUpdateDTO.getId()).
-                orElseThrow(() -> new NotFoundException("Profile"));
+                orElseThrow(() -> new NotFoundException(Profile.class));
 
         if (!currentUser.getProfileId().equals(profile.getId()))
-            throw new NotAllowedException();
+            throw new UnauthorizedException();
 
         profile.setNickname(profileUpdateDTO.getNickname());
         return profileRepository.save(profile);

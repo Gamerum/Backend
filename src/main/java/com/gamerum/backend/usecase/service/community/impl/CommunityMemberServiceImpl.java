@@ -9,16 +9,16 @@ import com.gamerum.backend.external.persistence.relational.repository.CommunityM
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.security.user.UserRole;
-import com.gamerum.backend.usecase.exception.AlreadyParticipatedException;
-import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
-import com.gamerum.backend.usecase.exception.NotParticipatedException;
+import com.gamerum.backend.usecase.exception.ParticipationException;
+import com.gamerum.backend.usecase.exception.UnauthorizedException;
 import com.gamerum.backend.usecase.service.community.CommunityMemberService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Member;
 import java.util.List;
 
 @Service
@@ -45,16 +45,16 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
     @Override
     public CommunityMember createCommunityMember(Long communityId, CommunityMemberCreateDTO communityMemberCreateDTO) {
         if (!communityMemberCreateDTO.getProfileId().equals(currentUser.getProfileId()))
-            throw new NotAllowedException();
+            throw new UnauthorizedException();
 
         Community community = communityRepository.findById(communityId)
-                .orElseThrow(() -> new NotFoundException("Community"));
+                .orElseThrow(() -> new NotFoundException(Community.class));
 
         Profile newMemberProfile = profileRepository.findById(communityMemberCreateDTO.getProfileId())
-                .orElseThrow(() -> new NotFoundException("Profile"));
+                .orElseThrow(() -> new NotFoundException(Profile.class));
 
         if (communityMemberRepository.existsByProfileIdAndCommunityId(newMemberProfile.getId(), community.getId()))
-            throw new AlreadyParticipatedException(newMemberProfile.getNickname());
+            throw new ParticipationException(true);
 
         CommunityMember newMember = CommunityMember.builder()
                 .profile(newMemberProfile)
@@ -73,10 +73,10 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
     @Override
     public CommunityMember updateCommunityMember(CommunityMemberUpdateDTO communityMemberUpdateDTO) {
         CommunityMember communityMember = communityMemberRepository.findById(communityMemberUpdateDTO.getId())
-                .orElseThrow(() -> new NotFoundException("Member"));
+                .orElseThrow(() -> new NotFoundException(CommunityMember.class));
 
         if (!communityMember.getProfile().getId().equals(currentUser.getProfileId()))
-            throw new NotAllowedException();
+            throw new UnauthorizedException();
 
         communityMember.setRole(communityMemberUpdateDTO.getRole());
         return communityMemberRepository.save(communityMember);
@@ -86,7 +86,7 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
     public void deleteCommunityMember(Long communityId, Long profileId) {
         CommunityMember deletingMember = communityMemberRepository
                 .findByProfileIdAndCommunityId(profileId, communityId)
-                .orElseThrow(NotParticipatedException::new);
+                .orElseThrow(() -> new ParticipationException(false));
 
         boolean isAdmin = currentUser.hasRole(UserRole.ROLE_ADMIN);
         boolean isSelf = deletingMember.getProfile().getId().equals(currentUser.getProfileId());
@@ -94,9 +94,9 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
         if (!isAdmin && !isSelf) {
             CommunityMember deleter = communityMemberRepository
                     .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
-                    .orElseThrow(NotParticipatedException::new);
+                    .orElseThrow(() -> new ParticipationException(false));
 
-            if (deleter.getRole() == CommunityMember.Role.USER) throw new NotAllowedException();
+            if (deleter.getRole() == CommunityMember.Role.USER) throw new UnauthorizedException();
         }
         communityMemberRepository.delete(deletingMember);
     }
