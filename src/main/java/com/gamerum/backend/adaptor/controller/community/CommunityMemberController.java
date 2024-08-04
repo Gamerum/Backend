@@ -30,8 +30,8 @@ public class CommunityMemberController {
 
     @PutMapping
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public ResponseEntity<CommunityMemberGetDTO> updateCommunityMember(@Validated @RequestBody CommunityMemberUpdateDTO communityMemberUpdateDTO) {
-        return new ResponseEntity<>(CommunityMemberMapper.INSTANCE.communityMemberToCommunityMemberGetDTO(communityMemberService.updateCommunityMember(communityMemberUpdateDTO)), HttpStatus.OK);
+    public ResponseEntity<CommunityMemberGetDTO> updateCommunityMember(@PathVariable Long communityId, @RequestParam Long profileId, @Validated @RequestBody CommunityMemberUpdateDTO communityMemberUpdateDTO) {
+        return new ResponseEntity<>(CommunityMemberMapper.INSTANCE.communityMemberToCommunityMemberGetDTO(communityMemberService.updateCommunityMember(communityId, profileId, communityMemberUpdateDTO)), HttpStatus.OK);
     }
 
     @GetMapping

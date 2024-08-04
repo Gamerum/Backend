@@ -9,6 +9,6 @@ import java.util.List;
 public interface CommunityMemberService {
     CommunityMember createCommunityMember(Long communityId, CommunityMemberCreateDTO communityMemberCreateDTO);
     List<CommunityMember> getCommunityMembers(Long communityId, int page);
-    CommunityMember updateCommunityMember(CommunityMemberUpdateDTO communityMemberUpdateDTO);
+    CommunityMember updateCommunityMember(Long communityId, Long profileId, CommunityMemberUpdateDTO communityMemberUpdateDTO);
     void deleteCommunityMember(Long communityId, Long profileId);
 }
