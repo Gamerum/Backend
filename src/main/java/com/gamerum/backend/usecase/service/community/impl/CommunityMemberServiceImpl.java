@@ -11,14 +11,13 @@ import com.gamerum.backend.external.persistence.relational.repository.ProfileRep
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.ParticipationException;
-import com.gamerum.backend.usecase.exception.UnauthorizedException;
+import com.gamerum.backend.usecase.exception.ForbiddenException;
 import com.gamerum.backend.usecase.service.community.CommunityMemberService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Member;
 import java.util.List;
 
 @Service
@@ -45,7 +44,7 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
     @Override
     public CommunityMember createCommunityMember(Long communityId, CommunityMemberCreateDTO communityMemberCreateDTO) {
         if (!communityMemberCreateDTO.getProfileId().equals(currentUser.getProfileId()))
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException(Community.class));
@@ -76,7 +75,7 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
                 .orElseThrow(() -> new NotFoundException(CommunityMember.class));
 
         if (!communityMember.getProfile().getId().equals(currentUser.getProfileId()))
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         communityMember.setRole(communityMemberUpdateDTO.getRole());
         return communityMemberRepository.save(communityMember);
@@ -96,7 +95,7 @@ public class CommunityMemberServiceImpl implements CommunityMemberService {
                     .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
                     .orElseThrow(() -> new ParticipationException(false));
 
-            if (deleter.getRole() == CommunityMember.Role.USER) throw new UnauthorizedException();
+            if (deleter.getRole() == CommunityMember.Role.USER) throw new ForbiddenException();
         }
         communityMemberRepository.delete(deletingMember);
     }

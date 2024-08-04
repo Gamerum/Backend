@@ -14,7 +14,7 @@ import com.gamerum.backend.external.persistence.relational.repository.CommunityR
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotFoundException;
-import com.gamerum.backend.usecase.exception.UnauthorizedException;
+import com.gamerum.backend.usecase.exception.ForbiddenException;
 import com.gamerum.backend.usecase.service.community.CommunityService;
 import com.gamerum.backend.usecase.service.community.CommunityTagService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
@@ -105,7 +105,7 @@ public class CommunityServiceImpl implements CommunityService {
                 .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
                 .orElseThrow(() -> new NotFoundException(CommunityMember.class));
 
-        if (updater.getRole() == CommunityMember.Role.USER) throw new UnauthorizedException();
+        if (updater.getRole() == CommunityMember.Role.USER) throw new ForbiddenException();
 
         community.setTitle(communityUpdateDTO.getTitle());
         community.setDescription(communityUpdateDTO.getDescription());
@@ -120,7 +120,7 @@ public class CommunityServiceImpl implements CommunityService {
                     .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
                     .orElseThrow(() -> new NotFoundException(CommunityMember.class));
 
-            if (deleter.getRole() != CommunityMember.Role.OWNER) throw new UnauthorizedException();
+            if (deleter.getRole() != CommunityMember.Role.OWNER) throw new ForbiddenException();
         }
 
         cacheUtils.invalidateCacheListIfConditionMet(popularCacheName, popularCommunityCacheKey,
@@ -139,7 +139,7 @@ public class CommunityServiceImpl implements CommunityService {
                 .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
                 .orElseThrow(() -> new NotFoundException(CommunityMember.class));
 
-        if (adder.getRole() == CommunityMember.Role.USER) throw new UnauthorizedException();
+        if (adder.getRole() == CommunityMember.Role.USER) throw new ForbiddenException();
 
         String newTagsString = communityUpdateTagsDTO.isRemove() ?
                 communityTagService.removeTags(community, communityUpdateTagsDTO.getTags()) :

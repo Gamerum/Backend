@@ -5,7 +5,7 @@ import com.gamerum.backend.adaptor.dto.user.ChangePasswordDTO;
 import com.gamerum.backend.external.persistence.relational.entity.User;
 import com.gamerum.backend.external.persistence.relational.repository.UserRepository;
 import com.gamerum.backend.usecase.exception.NotFoundException;
-import com.gamerum.backend.usecase.exception.UnauthorizedException;
+import com.gamerum.backend.usecase.exception.ForbiddenException;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import com.gamerum.backend.usecase.service.user.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String changeEmail(ChangeEmailDTO changeEmailDTO, Long userId) {
-        if (!currentUser.getUserId().equals(userId)) throw new UnauthorizedException();
+        if (!currentUser.getUserId().equals(userId)) throw new ForbiddenException();
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(User.class));
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(ChangePasswordDTO changePasswordDTO, Long userId) throws CredentialException {
-        if (!currentUser.getUserId().equals(userId)) throw new UnauthorizedException();
+        if (!currentUser.getUserId().equals(userId)) throw new ForbiddenException();
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(User.class));

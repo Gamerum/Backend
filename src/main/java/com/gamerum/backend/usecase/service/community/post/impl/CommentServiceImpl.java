@@ -11,7 +11,7 @@ import com.gamerum.backend.external.persistence.relational.repository.PostReposi
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.ParticipationException;
-import com.gamerum.backend.usecase.exception.UnauthorizedException;
+import com.gamerum.backend.usecase.exception.ForbiddenException;
 import com.gamerum.backend.usecase.service.community.post.CommentService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,7 +67,7 @@ public class CommentServiceImpl implements CommentService {
                 orElseThrow(() -> new NotFoundException(Comment.class));
 
         if (!comment.getProfile().getId().equals(currentUser.getProfileId()))
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         comment.setText(commentUpdateDTO.getText());
         return commentRepository.save(comment);
@@ -88,7 +88,7 @@ public class CommentServiceImpl implements CommentService {
                     findByProfileIdAndCommunityId(profileId, comment.getPost().getCommunity().getId()).
                     orElseThrow(() -> new ParticipationException(false));
 
-            if (communityMember.getRole().equals(CommunityMember.Role.USER)) throw new UnauthorizedException();
+            if (communityMember.getRole().equals(CommunityMember.Role.USER)) throw new ForbiddenException();
         }
         commentRepository.delete(comment);
     }

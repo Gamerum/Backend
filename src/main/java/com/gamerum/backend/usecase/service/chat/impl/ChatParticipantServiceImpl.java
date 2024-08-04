@@ -48,7 +48,7 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
                 .orElseThrow(() -> new NotFoundException(Profile.class));
 
         if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         if (chatParticipantRepository.existsByChatIdAndProfileId(chatId, profile.getId()))
             throw new ParticipationException(true);
@@ -71,7 +71,7 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
                     .orElseThrow(() -> new ParticipationException(false));
 
             if (!deleter.isMod() && !deleter.getProfile().getId().equals(deleterProfileId))
-                throw new UnauthorizedException();
+                throw new ForbiddenException();
         }
         chatParticipantRepository.deleteById(chatParticipantId);
         if (chatParticipantRepository.countByChatId(chatId) == 0)
@@ -92,7 +92,7 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
                 .findByChatIdAndProfileId(chatId, currentUser.getProfileId())
                 .orElseThrow(() -> new ParticipationException(false));
 
-        if (!updater.isMod()) throw new UnauthorizedException();
+        if (!updater.isMod()) throw new ForbiddenException();
 
         ChatParticipant participant = chatParticipantRepository
                 .findById(chatParticipantUpdateDTO.getId())
