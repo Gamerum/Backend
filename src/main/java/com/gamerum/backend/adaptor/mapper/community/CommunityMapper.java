@@ -14,6 +14,7 @@ import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Mapper(uses = {CommunityMemberMapper.class, PostMapper.class}, componentModel = "spring")
@@ -26,6 +27,7 @@ public abstract class CommunityMapper {
     private PopularService popularService;
 
     @Mapping(source = "posts", target = "popularPosts")
+    @Mapping(source = "tags", target = "tags", ignore = true)
     public abstract CommunityGetDTO communityToCommunityGetDTO(Community community) throws IOException;
 
     public abstract Community communityCreateDTOToCommunity(CommunityCreateDTO communityCreateDTO);
@@ -40,5 +42,8 @@ public abstract class CommunityMapper {
 
         List<PostDocument> popularPosts = popularService.getCommunityPopularPosts(community.getId().toString(), 0);
         communityGetDTO.setPopularPosts(popularPosts);
+
+        List<String> tags = Arrays.stream(community.getTags().split(",")).toList();
+        communityGetDTO.setTags(tags);
     }
 }

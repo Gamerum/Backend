@@ -2,6 +2,7 @@ package com.gamerum.backend.usecase.service.community.impl;
 
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
+import com.gamerum.backend.adaptor.dto.community.post.CommunityUpdateTagsDTO;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
@@ -15,13 +16,14 @@ import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.service.community.CommunityService;
+import com.gamerum.backend.usecase.service.community.CommunityTagService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,19 +44,22 @@ public class CommunityServiceImpl implements CommunityService {
     private final CommunityMapper communityMapper;
     private final CurrentUser currentUser;
     private final CacheUtils cacheUtils;
+    private final CommunityTagService communityTagService;
 
     public CommunityServiceImpl(CommunityRepository communityRepository,
                                 CommunityMemberRepository communityMemberRepository,
                                 ProfileRepository profileRepository,
                                 CommunityMapper communityMapper,
                                 CurrentUser currentUser,
-                                CacheUtils cacheUtils) {
+                                CacheUtils cacheUtils,
+                                CommunityTagService communityTagService) {
         this.communityRepository = communityRepository;
         this.communityMemberRepository = communityMemberRepository;
         this.profileRepository = profileRepository;
         this.communityMapper = communityMapper;
         this.currentUser = currentUser;
         this.cacheUtils = cacheUtils;
+        this.communityTagService = communityTagService;
     }
 
     @Override
@@ -71,8 +76,9 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     @Transactional
     public Community createCommunity(CommunityCreateDTO communityCreateDTO) {
-        Community community = communityRepository.save(
-                communityMapper.communityCreateDTOToCommunity(communityCreateDTO));
+        Community community = communityMapper.communityCreateDTOToCommunity(communityCreateDTO);
+        community.setTags("Popular");
+        community = communityRepository.save(community);
         saveCreator(community);
         return community;
     }
@@ -103,7 +109,6 @@ public class CommunityServiceImpl implements CommunityService {
 
         community.setTitle(communityUpdateDTO.getTitle());
         community.setDescription(communityUpdateDTO.getDescription());
-        community.setTags(communityUpdateDTO.getTags());
 
         return communityRepository.save(community);
     }
@@ -119,9 +124,32 @@ public class CommunityServiceImpl implements CommunityService {
         }
 
         cacheUtils.invalidateCacheListIfConditionMet(popularCacheName, popularCommunityCacheKey,
-                CommunityDocument.class, cachedCommunities ->cachedCommunities.stream()
+                CommunityDocument.class, cachedCommunities -> cachedCommunities.stream()
                         .anyMatch(community -> Objects.equals(community.getId(), communityId.toString())));
 
         communityRepository.deleteById(communityId);
+    }
+
+    @Override
+    public List<String> updateTagsToCommunity(Long communityId, CommunityUpdateTagsDTO communityUpdateTagsDTO) {
+        Community community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException("Community"));
+
+        CommunityMember adder = communityMemberRepository
+                .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
+                .orElseThrow(() -> new NotFoundException("Member"));
+
+        if (adder.getRole() == CommunityMember.Role.USER) throw new NotAllowedException();
+
+        String newTagsString = communityUpdateTagsDTO.isRemove() ?
+                communityTagService.removeTags(community, communityUpdateTagsDTO.getTags()) :
+                communityTagService.addTags(community, communityUpdateTagsDTO.getTags());
+
+        if (newTagsString != null) {
+            community.setTags(newTagsString);
+            community = communityRepository.save(community);
+        }
+
+        return Arrays.stream(community.getTags().split(",")).toList();
     }
 }
