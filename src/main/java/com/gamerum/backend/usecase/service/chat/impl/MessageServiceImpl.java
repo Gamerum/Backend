@@ -95,7 +95,7 @@ public class MessageServiceImpl implements MessageService {
         if (!Objects.equals(message.getProfile().getId(), currentUser.getProfileId()))
             throw new UnauthorizedException();
 
-        message.setText(messageUpdateDTO.getMessage());
+        message.setText(messageUpdateDTO.getText());
         return messageRepository.save(message);
     }
 }

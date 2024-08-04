@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class CommentController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<CommentGetDTO> createComment(@PathVariable Long postId, @RequestBody CommentCreateDTO commentCreateDTO) {
+    public ResponseEntity<CommentGetDTO> createComment(@PathVariable Long postId, @Validated @RequestBody CommentCreateDTO commentCreateDTO) {
         return new ResponseEntity<>(CommentMapper.INSTANCE.commentToCommentGetDTO(commentService.createComment(postId, commentCreateDTO)), HttpStatus.CREATED);
     }
 
@@ -33,7 +34,7 @@ public class CommentController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping
-    public ResponseEntity<CommentGetDTO> updateComment(@RequestBody CommentUpdateDTO commentUpdateDTO) {
+    public ResponseEntity<CommentGetDTO> updateComment(@Validated @RequestBody CommentUpdateDTO commentUpdateDTO) {
         return new ResponseEntity<>(CommentMapper.INSTANCE.commentToCommentGetDTO(commentService.updateComment(commentUpdateDTO)), HttpStatus.OK);
     }
 

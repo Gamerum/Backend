@@ -7,6 +7,7 @@ import com.gamerum.backend.usecase.service.chat.ChatService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class ChatController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<ChatGetDTO> createChat(@RequestBody ChatCreateDTO chatCreateDTO) {
+    public ResponseEntity<ChatGetDTO> createChat(@Validated @RequestBody ChatCreateDTO chatCreateDTO) {
         return new ResponseEntity<>(ChatMapper.INSTANCE.chatToChatGetDTO(chatService.createChat(chatCreateDTO)), HttpStatus.CREATED);
     }
 

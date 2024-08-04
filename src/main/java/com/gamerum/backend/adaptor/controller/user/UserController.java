@@ -6,6 +6,7 @@ import com.gamerum.backend.usecase.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.CredentialException;
@@ -21,13 +22,13 @@ public class UserController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/{userId}/change_email")
-    public ResponseEntity<String> changeEmail(@PathVariable Long userId, @RequestBody ChangeEmailDTO changeEmailDTO) {
+    public ResponseEntity<String> changeEmail(@PathVariable Long userId, @Validated @RequestBody ChangeEmailDTO changeEmailDTO) {
         return new ResponseEntity<>(userService.changeEmail(changeEmailDTO, userId), HttpStatus.OK);
     }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/{userId}/change_password")
-    public ResponseEntity changePassword(@PathVariable Long userId, @RequestBody ChangePasswordDTO changePasswordDTO) throws CredentialException {
+    public ResponseEntity changePassword(@PathVariable Long userId, @Validated @RequestBody ChangePasswordDTO changePasswordDTO) throws CredentialException {
         userService.changePassword(changePasswordDTO, userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

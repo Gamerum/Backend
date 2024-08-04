@@ -9,6 +9,7 @@ import com.gamerum.backend.usecase.service.profile.ProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class ProfileController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/{profileId}")
-    public ResponseEntity<ProfileGetDTO> updateProfile(@RequestBody ProfileUpdateDTO profileUpdateDTO) throws IOException {
+    public ResponseEntity<ProfileGetDTO> updateProfile(@Validated @RequestBody ProfileUpdateDTO profileUpdateDTO) throws IOException {
         return new ResponseEntity<>(profileMapper.profileToProfileGetDTO(profileService.updateProfile(profileUpdateDTO)), HttpStatus.OK);
     }
 
