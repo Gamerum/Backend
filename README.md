@@ -59,7 +59,11 @@ Gamerum is a Reddit-like application that lets people create communities specifi
         - [Update Profile](#update-profile)
         - [Get Profile Communities](#get-profile-communities)
         - [Get Profile Posts](#get-profile-posts)
-    
+    - [Popular](#popular)
+        - [Get Popular Communities](#get-popular-communities)
+        - [Get Popular Posts](#get-popular-posts)
+        - [Get Community Popular Posts](#get-community-popular-posts)
+        - [Get Popular Games](#get-popular-games)
     
 
 
@@ -1337,8 +1341,209 @@ When an error occurs, the client will receive a response containing the appropri
       "id": "string",
       "title": "string"
     },
-    "createdDate": "date"
+    "createdDate": "string (ISO 8601 format)"
   }
 ]
 ```
 - `404 Not Found` if the profile does not exist.
+
+## User
+
+### Change Email
+
+**Endpoint**: `PUT /api/user/{userId}/change_email`
+
+**Description**: Change the email address of a user.
+
+**Request Parameters**:
+- `userId` (path parameter): The ID of the user whose email is to be changed.
+
+**Request Body**:
+```json
+{
+  "newEmail": "string (valid email address)"
+}
+```
+
+**Response**:
+- `200 OK` with a JSON string representing the new email.
+```json
+  "newEmail@example.com"
+```
+- `400 Bad Request` if the request body is invalid.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
+- `403 Forbidden` if the user does not have permission to change the email.
+- `404 Not Found`  if the user does not exist.
+
+### Change Password
+
+**Endpoint**: `PUT /api/user/{userId}/change_password`
+
+**Description**: Change the password of a user.
+
+**Request Parameters**:
+- `userId` (path parameter): The ID of the user whose password is to be changed.
+
+**Request Body**:
+```json
+{
+  "currentPassword": "string (8-30 characters, alphanumeric and @$!%?&)",
+  "newPassword": "string (8-30 characters, alphanumeric and @$!%?&)"
+}
+```
+
+**Response**:
+- `200 OK` if the password is successfully changed.
+- `400 Bad Request`  if the request body is invalid.
+- `401 Unauthorized` if not logged in or could not send the JWT token.
+- `403 Forbidden` if the user does not have permission to change the password.
+- `404 Not Found`  if the user does not exist.
+
+## Popular
+
+### Get Popular Communities
+
+**Endpoint**: `GET /api/popular/communities`
+
+**Description**: Retrieve a list of the most popular communities based on click count.
+
+**Response**:
+- `200 OK` with a JSON array of popular communities.
+```json
+[
+  {
+    "id": "string",
+    "title": "string",
+    "description": "string",
+    "memberCount": "number",
+    "clickCount": "number",
+    "game": {
+      "id": "string",
+      "name": "string",
+      "alternativeNames": [
+        "string"
+      ],
+      "genreIds": [
+        "number"
+      ],
+      "popularity": "number"
+    }
+  }
+]
+```
+
+### Get Popular Posts
+
+**Endpoint**: `GET /api/popular/posts`
+
+**Description**: Retrieve a list of the most popular posts based on click count and creation date.
+
+**Request Parameters**:
+- `page` (query parameter, optional): The page number for pagination. The default is `0`.
+
+**Response**:
+- `200 OK`  with a JSON array of popular posts.
+```json
+[
+  {
+    "id": "string",
+    "title": "string",
+    "text": "string",
+    "tag": "string",
+    "clickCount": "number",
+    "profile": {
+      "id": "string",
+      "nickname": "string"
+    },
+    "community": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "memberCount": "number",
+      "clickCount": "number",
+      "game": {
+        "id": "string",
+        "name": "string",
+        "alternativeNames": [
+          "string"
+        ],
+        "genreIds": [
+          "number"
+        ],
+        "popularity": "number"
+      }
+    },
+    "createdDate": "string (ISO 8601 format)"
+  }
+]
+```
+
+### Get Community Popular Posts
+
+**Endpoint**: `GET /api/popular/communities/{communityId}/posts`
+
+**Description**: Retrieve a list of the most popular posts within a specific community based on click count and creation date.
+
+**Request Parameters**:
+- `communityId` (path parameter): The ID of the community.
+- `page` (query parameter, optional): The page number for pagination. The default is `0`.
+
+**Response**:
+- `200 OK` with a JSON array of popular posts within the specified community.
+```json
+[
+  {
+    "id": "string",
+    "title": "string",
+    "text": "string",
+    "tag": "string",
+    "clickCount": "number",
+    "profile": {
+      "id": "string",
+      "nickname": "string"
+    },
+    "community": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "memberCount": "number",
+      "clickCount": "number",
+      "game": {
+        "id": "string",
+        "name": "string",
+        "alternativeNames": [
+          "string"
+        ],
+        "genreIds": [
+          "number"
+        ],
+        "popularity": "number"
+      }
+    },
+    "createdDate": "string (ISO 8601 format)"
+  }
+]
+```
+### Get Popular Games
+
+**Endpoint**: `GET /api/popular/games`
+
+**Description**: Retrieve a list of the most popular games based on popularity.
+
+**Response**:
+- `200 OK` with a JSON array of popular games.
+```json
+[
+  {
+    "id": "string",
+    "name": "string",
+    "alternativeNames": [
+      "string"
+    ],
+    "genreIds": [
+      "number"
+    ],
+    "popularity": "number"
+  }
+]
+```
