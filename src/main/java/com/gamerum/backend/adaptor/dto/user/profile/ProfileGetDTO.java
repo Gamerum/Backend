@@ -14,7 +14,7 @@ public class ProfileGetDTO {
     private Long id;
     private String nickname;
     @Setter
-    private List<CommunityDocument> communities;
+    private List<CommunityDocument> firstPageCommunities;
     @Setter
-    private List<PostDocument> posts;
+    private List<PostDocument>  firstPagePosts;
 }

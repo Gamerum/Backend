@@ -3,6 +3,7 @@ package com.gamerum.backend.adaptor.mapper.chat;
 import com.gamerum.backend.adaptor.dto.chat.ChatGetDTO;
 import com.gamerum.backend.external.persistence.relational.entity.Chat;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
 public interface ChatMapper {
     ChatMapper INSTANCE = Mappers.getMapper(ChatMapper.class);
 
+    @Mapping(source = "participants", target = "firstPageParticipants")
+    @Mapping(source = "messages", target = "firstPageMessages")
     ChatGetDTO chatToChatGetDTO(Chat chat);
 
     List<ChatGetDTO> chatsToChatGetDTOs(List<Chat> chats);
