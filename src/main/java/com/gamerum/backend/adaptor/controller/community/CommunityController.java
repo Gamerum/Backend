@@ -46,4 +46,16 @@ public class CommunityController {
         communityService.deleteCommunity(communityId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @PutMapping("/{communityId}/tags")
+    public ResponseEntity<ResponseData<List<String>>> updateCommunityTags(
+            @PathVariable Long communityId,
+            @RequestBody CommunityUpdateTagsDTO communityUpdateTagsDTO) {
+        return new ResponseEntity<>(new ResponseData<>(
+                true,
+                "Community updated",
+                communityService.updateTagsToCommunity(communityId, communityUpdateTagsDTO)),
+                HttpStatus.OK);
+    }
 }
