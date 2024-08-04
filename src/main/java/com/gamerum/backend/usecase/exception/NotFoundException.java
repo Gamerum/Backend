@@ -1,7 +1,11 @@
 package com.gamerum.backend.usecase.exception;
 
-public class NotFoundException extends RuntimeException {
-    public NotFoundException(String entityName){
-        super("Oops, no " + entityName + " here!");
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+@Getter
+public class NotFoundException extends ErrorException{
+    public <T> NotFoundException(Class<T> tClass) {
+        super(ErrorCode.NOT_FOUND_EXCEPTION, HttpStatus.NOT_FOUND, tClass.getSimpleName() + " not found!");
     }
 }

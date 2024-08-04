@@ -9,10 +9,7 @@ import com.gamerum.backend.external.persistence.relational.repository.ChatPartic
 import com.gamerum.backend.external.persistence.relational.repository.ChatRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.security.user.UserRole;
-import com.gamerum.backend.usecase.exception.AlreadyParticipatedException;
-import com.gamerum.backend.usecase.exception.NotAllowedException;
-import com.gamerum.backend.usecase.exception.NotFoundException;
-import com.gamerum.backend.usecase.exception.NotParticipatedException;
+import com.gamerum.backend.usecase.exception.*;
 import com.gamerum.backend.usecase.service.chat.ChatParticipantService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,16 +42,16 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     @Override
     public ChatParticipant createChatParticipant(Long chatId, ChatParticipantCreateDTO chatParticipantCreateDTO) {
         Chat chat = chatRepository.findById(chatId)
-                .orElseThrow(() -> new NotFoundException("Chat"));
+                .orElseThrow(() -> new NotFoundException(Chat.class));
 
         Profile profile = profileRepository.findById(chatParticipantCreateDTO.getProfileId())
-                .orElseThrow(() -> new NotFoundException("Profile"));
+                .orElseThrow(() -> new NotFoundException(Profile.class));
 
         if (!chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
-            throw new NotAllowedException();
+            throw new UnauthorizedException();
 
         if (chatParticipantRepository.existsByChatIdAndProfileId(chatId, profile.getId()))
-            throw new AlreadyParticipatedException(profile.getNickname());
+            throw new ParticipationException(true);
 
         return chatParticipantRepository.save(ChatParticipant.builder()
                 .profile(profile)
@@ -71,10 +68,10 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
 
             ChatParticipant deleter = chatParticipantRepository
                     .findByChatIdAndProfileId(chatId, deleterProfileId)
-                    .orElseThrow(NotParticipatedException::new);
+                    .orElseThrow(() -> new ParticipationException(false));
 
             if (!deleter.isMod() && !deleter.getProfile().getId().equals(deleterProfileId))
-                throw new NotAllowedException();
+                throw new UnauthorizedException();
         }
         chatParticipantRepository.deleteById(chatParticipantId);
         if (chatParticipantRepository.countByChatId(chatId) == 0)
@@ -85,7 +82,7 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     public List<ChatParticipant> getChatParticipants(Long chatId, int page) {
         if (!currentUser.hasRole(UserRole.ROLE_ADMIN) &&
                 !chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
-            throw new NotParticipatedException();
+            throw new ParticipationException(false);
         return chatParticipantRepository.findByChatId(chatId, PageRequest.of(page, chatParticipantPageSize));
     }
 
@@ -93,13 +90,13 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     public ChatParticipant updateChatParticipant(Long chatId, ChatParticipantUpdateDTO chatParticipantUpdateDTO) {
         ChatParticipant updater = chatParticipantRepository
                 .findByChatIdAndProfileId(chatId, currentUser.getProfileId())
-                .orElseThrow(NotParticipatedException::new);
+                .orElseThrow(() -> new ParticipationException(false));
 
-        if (!updater.isMod()) throw new NotAllowedException();
+        if (!updater.isMod()) throw new UnauthorizedException();
 
         ChatParticipant participant = chatParticipantRepository
                 .findById(chatParticipantUpdateDTO.getId())
-                .orElseThrow(NotParticipatedException::new);
+                .orElseThrow(() -> new ParticipationException(false));
 
         participant.setMod(chatParticipantUpdateDTO.isMod());
         return chatParticipantRepository.save(participant);

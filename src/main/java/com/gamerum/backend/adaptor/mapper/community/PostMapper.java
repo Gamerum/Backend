@@ -7,8 +7,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import java.util.List;
-
 @Mapper(uses = CommentMapper.class, componentModel = "spring")
 public interface PostMapper {
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
@@ -17,6 +15,7 @@ public interface PostMapper {
     @Mapping(source = "profile.nickname", target = "writerNickname")
     @Mapping(source = "community.id", target = "communityId")
     @Mapping(source = "community.title", target = "communityName")
+    @Mapping(source = "comments", target = "firstPageComments")
     PostGetDTO postToPostGetDTO(Post post);
 
 

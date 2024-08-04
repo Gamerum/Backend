@@ -8,9 +8,9 @@ import com.gamerum.backend.external.persistence.relational.repository.ChatReposi
 import com.gamerum.backend.external.persistence.relational.repository.MessageRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.security.user.UserRole;
-import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
-import com.gamerum.backend.usecase.exception.NotParticipatedException;
+import com.gamerum.backend.usecase.exception.ParticipationException;
+import com.gamerum.backend.usecase.exception.UnauthorizedException;
 import com.gamerum.backend.usecase.service.chat.MessageService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,13 +42,13 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Message createMessage(Long chatId, MessageCreateDTO messageCreateDTO) {
         Chat chat = chatRepository.findById(chatId)
-                .orElseThrow(() -> new NotFoundException("Chat"));
+                .orElseThrow(() -> new NotFoundException(Chat.class));
 
         Profile profile = profileRepository.findById(currentUser.getProfileId())
-                .orElseThrow(() -> new NotFoundException("Profile"));
+                .orElseThrow(() -> new NotFoundException(Profile.class));
 
         if (chatParticipantRepository.existsByChatIdAndProfileId(chatId, profile.getId()))
-            throw new NotParticipatedException();
+            throw new ParticipationException(false);
 
         return messageRepository.save(
                 Message.builder()
@@ -62,7 +62,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteByIdMessage(Long chatId, Long messageId) {
         Message message = messageRepository.findByIdAndChatId(messageId, chatId)
-                .orElseThrow(() -> new NotFoundException("Message"));
+                .orElseThrow(() -> new NotFoundException(Message.class));
 
         if (!currentUser.hasRole(UserRole.ROLE_ADMIN)) {
             Long deleterProfileId = currentUser.getProfileId();
@@ -70,9 +70,9 @@ public class MessageServiceImpl implements MessageService {
             if (!message.getProfile().getId().equals(deleterProfileId)) {
                 ChatParticipant deleter = chatParticipantRepository
                         .findByChatIdAndProfileId(chatId, deleterProfileId)
-                        .orElseThrow(NotParticipatedException::new);
+                        .orElseThrow(() -> new ParticipationException(false));
 
-                if (!deleter.isMod()) throw new NotAllowedException();
+                if (!deleter.isMod()) throw new UnauthorizedException();
             }
         }
         messageRepository.delete(message);
@@ -82,7 +82,7 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> getAllMessages(Long chatId, int page) {
         if (!currentUser.hasRole(UserRole.ROLE_ADMIN) &&
                 !chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
-            throw new NotAllowedException();
+            throw new UnauthorizedException();
 
         return messageRepository.findByChatId(chatId, PageRequest.of(page, messagePageSize));
     }
@@ -90,10 +90,10 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Message updateMessage(Long chatId, MessageUpdateDTO messageUpdateDTO) {
         Message message = messageRepository.findByIdAndChatId(messageUpdateDTO.getId(), chatId)
-                .orElseThrow(() -> new NotFoundException("Message"));
+                .orElseThrow(() -> new NotFoundException(Message.class));
 
         if (!Objects.equals(message.getProfile().getId(), currentUser.getProfileId()))
-            throw new NotAllowedException();
+            throw new UnauthorizedException();
 
         message.setText(messageUpdateDTO.getMessage());
         return messageRepository.save(message);

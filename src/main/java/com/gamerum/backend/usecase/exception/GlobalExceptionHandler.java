@@ -1,6 +1,5 @@
 package com.gamerum.backend.usecase.exception;
 
-import com.gamerum.backend.adaptor.dto.response.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -20,66 +19,36 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SocketTimeoutException.class)
     public ResponseEntity<ErrorResponse> handleSocketTimeoutException(Exception ex) {
         logger.error("\n\nSocketTimeoutException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(
-                new ErrorResponse("Request timed out.", ex.getMessage()),
-                HttpStatus.GATEWAY_TIMEOUT);
+        return new ResponseEntity<>(new ErrorResponse(ErrorCode.SOCKET_TIMEOUT_EXCEPTION), HttpStatus.GATEWAY_TIMEOUT);
     }
 
     @ExceptionHandler(UnknownHostException.class)
     public ResponseEntity<ErrorResponse> handleUnknownHostException(Exception ex) {
         logger.error("\n\nUnknownHostException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(
-                new ErrorResponse("Unknown host.", ex.getMessage()),
-                HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(new ErrorResponse(ErrorCode.UNKNOWN_HOST), HttpStatus.BAD_GATEWAY);
     }
 
     @ExceptionHandler(SSLException.class)
     public ResponseEntity<ErrorResponse> handleSSLException(Exception ex) {
         logger.error("\n\nSSLException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(
-                new ErrorResponse("SSL/TLS error.", ex.getMessage()),
-                HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(new ErrorResponse(ErrorCode.SSL_EXCEPTION), HttpStatus.BAD_GATEWAY);
     }
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<ErrorResponse> handleIOException(Exception ex) {
         logger.error("\n\nIOException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(
-                new ErrorResponse("IO exception.", ex.getMessage()),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ErrorResponse(ErrorCode.IO_EXCEPTION), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(Exception ex) {
-        logger.error("\n\nNotFoundException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(
-                new ErrorResponse("NotFound exception", ex.getMessage()),
-                HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler({
-            NotParticipatedException.class,
-            AlreadyParticipatedException.class})
-    public ResponseEntity<ErrorResponse> handleParticipationException(Exception ex) {
-        logger.error("\n\nParticipationException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(
-                new ErrorResponse("ParticipationException", ex.getMessage()),
-                HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(NotAllowedException.class)
-    public ResponseEntity<ErrorResponse> handleNotAllowedException(Exception ex) {
-        logger.error("\n\nNotAllowedException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(
-                new ErrorResponse("NotAllowedException", ex.getMessage()),
-                HttpStatus.UNAUTHORIZED);
+    @ExceptionHandler(ErrorException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(ErrorException ex) {
+        logger.error("\n\nGlobalException: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(new ErrorResponse(ex.getErrorCode()), ex.getHttpStatus());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         logger.error("\n\nException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(
-                new ErrorResponse("An error occurred.", ex.getMessage()),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ErrorResponse(ErrorCode.EXCEPTION), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

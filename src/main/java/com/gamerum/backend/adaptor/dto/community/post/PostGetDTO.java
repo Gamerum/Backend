@@ -20,5 +20,5 @@ public class PostGetDTO {
     private Date lastModifiedDate;
     private Long communityId;
     private String communityName;
-    private List<CommentGetDTO> comments;
+    private List<CommentGetDTO> firstPageComments;
 }
