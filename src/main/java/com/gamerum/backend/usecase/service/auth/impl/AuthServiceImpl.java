@@ -1,9 +1,7 @@
 package com.gamerum.backend.usecase.service.auth.impl;
 
 import com.gamerum.backend.adaptor.dto.auth.LoginRequestDTO;
-import com.gamerum.backend.adaptor.dto.response.auth.LoginResponse;
 import com.gamerum.backend.adaptor.dto.auth.RegisterRequestDTO;
-import com.gamerum.backend.adaptor.dto.response.auth.RegisterResponse;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.entity.User;
 import com.gamerum.backend.external.persistence.relational.repository.UserRepository;
@@ -15,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public RegisterResponse register(RegisterRequestDTO request) {
+    public void register(RegisterRequestDTO request) {
         User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
@@ -49,12 +49,10 @@ public class AuthServiceImpl implements AuthService {
 
         user.setProfile(profile);
         userRepository.save(user);
-
-        return new RegisterResponse(true, "Registration successful!");
     }
 
     @Override
-    public LoginResponse login(LoginRequestDTO request) {
+    public Map<String, String> login(LoginRequestDTO request) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
@@ -62,6 +60,6 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
         String token = jwtUtil.generateToken(auth);
-        return new LoginResponse(true,"Login successful","Bearer", token);
+        return Map.of("token_type", "Bearer", "token", token);
     }
 }

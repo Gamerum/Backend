@@ -1,6 +1,5 @@
 package com.gamerum.backend.adaptor.controller;
 
-import com.gamerum.backend.adaptor.dto.response.ResponseData;
 import com.gamerum.backend.adaptor.dto.search.CommunitySearchFilter;
 import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
 import com.gamerum.backend.adaptor.dto.search.SearchFilter;
@@ -26,42 +25,22 @@ public class SearchController {
     }
 
     @PostMapping("/games")
-    public ResponseEntity<ResponseData<List<GameDocument>>> searchGamesWithName(
-            @RequestBody GameSearchFilter filter) throws IOException {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Games received",
-                searchService.searchGame(filter)),
-                HttpStatus.OK);
+    public ResponseEntity<List<GameDocument>> searchGamesWithName(@RequestBody GameSearchFilter filter) throws IOException {
+        return new ResponseEntity<>(searchService.searchGame(filter), HttpStatus.OK);
     }
 
-   @PostMapping("/communities")
-    public ResponseEntity<ResponseData<List<CommunityDocument>>> searchCommunities(
-            @RequestBody CommunitySearchFilter filter) throws IOException {
-       return new ResponseEntity<>(new ResponseData<>(
-               true,
-               "Communities received",
-               searchService.searchCommunity(filter)),
-               HttpStatus.OK);
-   }
+    @PostMapping("/communities")
+    public ResponseEntity<List<CommunityDocument>> searchCommunities(@RequestBody CommunitySearchFilter filter) throws IOException {
+        return new ResponseEntity<>(searchService.searchCommunity(filter), HttpStatus.OK);
+    }
 
     @PostMapping("/profiles")
-    public ResponseEntity<ResponseData<List<ProfileDocument>>> searchProfiles(
-            @RequestBody SearchFilter filter) throws IOException {
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Profiles received",
-                searchService.searchProfile(filter)),
-                HttpStatus.OK);
+    public ResponseEntity<List<ProfileDocument>> searchProfiles(@RequestBody SearchFilter filter) throws IOException {
+        return new ResponseEntity<>(searchService.searchProfile(filter), HttpStatus.OK);
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<ResponseData<List<PostDocument>>> searchPosts(
-            @RequestBody SearchFilter filter) throws IOException{
-        return new ResponseEntity<>(new ResponseData<>(
-                true,
-                "Posts received",
-                searchService.searchPost(filter)),
-                HttpStatus.OK);
+    public ResponseEntity<List<PostDocument>> searchPosts(@RequestBody SearchFilter filter) throws IOException {
+        return new ResponseEntity<>(searchService.searchPost(filter), HttpStatus.OK);
     }
 }

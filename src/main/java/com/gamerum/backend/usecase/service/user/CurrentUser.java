@@ -2,7 +2,7 @@ package com.gamerum.backend.usecase.service.user;
 
 import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
-import com.gamerum.backend.usecase.exception.NotAllowedException;
+import com.gamerum.backend.usecase.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,17 +28,17 @@ public class CurrentUser {
     }
 
     public Long getUserId() {
-        if (TOKEN == null) throw new NotAllowedException();
+        if (TOKEN == null) throw new UnauthorizedException();
         return jwtUtil.getUserIdFromToken(TOKEN);
     }
 
-    public Long getProfileId(){
-        if (TOKEN == null) throw new NotAllowedException();
+    public Long getProfileId() {
+        if (TOKEN == null) throw new UnauthorizedException();
         return jwtUtil.getClaimFromToken(TOKEN, claims -> claims.get("profileId", Long.class));
     }
 
     public boolean hasRole(UserRole role) {
-        if (TOKEN == null) throw new NotAllowedException();
+        if (TOKEN == null) throw new UnauthorizedException();
         List<GrantedAuthority> authorities = jwtUtil.getGrantedAuthorities(TOKEN);
         return authorities.stream().anyMatch(a -> a.getAuthority().equals(role.toString()));
     }

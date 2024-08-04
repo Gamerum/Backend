@@ -7,8 +7,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import java.util.List;
-
 @Mapper(uses = CommentMapper.class, componentModel = "spring")
 public interface PostMapper {
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);

@@ -9,9 +9,9 @@ import com.gamerum.backend.external.persistence.relational.repository.CommentRep
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.PostRepository;
 import com.gamerum.backend.security.user.UserRole;
-import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
-import com.gamerum.backend.usecase.exception.NotParticipatedException;
+import com.gamerum.backend.usecase.exception.ParticipationException;
+import com.gamerum.backend.usecase.exception.UnauthorizedException;
 import com.gamerum.backend.usecase.service.community.post.CommentService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,11 +43,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment createComment(Long postId, CommentCreateDTO commentCreateDTO) {
         Post post = postRepository.findById(postId).
-                orElseThrow(() -> new NotFoundException("Post"));
+                orElseThrow(() -> new NotFoundException(Post.class));
 
         CommunityMember communityMember = communityMemberRepository.
                 findByProfileIdAndCommunityId(currentUser.getProfileId(), post.getCommunity().getId()).
-                orElseThrow(NotParticipatedException::new);
+                orElseThrow(() -> new ParticipationException(false));
 
         return commentRepository.save(Comment.builder()
                 .text(commentCreateDTO.getText())
@@ -64,10 +64,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment updateComment(CommentUpdateDTO commentUpdateDTO) {
         Comment comment = commentRepository.findById(commentUpdateDTO.getId()).
-                orElseThrow(() -> new NotFoundException("Comment"));
+                orElseThrow(() -> new NotFoundException(Comment.class));
 
         if (!comment.getProfile().getId().equals(currentUser.getProfileId()))
-            throw new NotAllowedException();
+            throw new UnauthorizedException();
 
         comment.setText(commentUpdateDTO.getText());
         return commentRepository.save(comment);
@@ -76,7 +76,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).
-                orElseThrow(() -> new NotFoundException("Comment"));
+                orElseThrow(() -> new NotFoundException(Comment.class));
 
         Long profileId = currentUser.getProfileId();
         boolean isAdmin = currentUser.hasRole(UserRole.ROLE_ADMIN);
@@ -86,9 +86,9 @@ public class CommentServiceImpl implements CommentService {
         if (!isAdmin && !isCommentWriter && !isPostWriter) {
             CommunityMember communityMember = communityMemberRepository.
                     findByProfileIdAndCommunityId(profileId, comment.getPost().getCommunity().getId()).
-                    orElseThrow(NotParticipatedException::new);
+                    orElseThrow(() -> new ParticipationException(false));
 
-            if (communityMember.getRole().equals(CommunityMember.Role.USER)) throw new NotAllowedException();
+            if (communityMember.getRole().equals(CommunityMember.Role.USER)) throw new UnauthorizedException();
         }
         commentRepository.delete(comment);
     }

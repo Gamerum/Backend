@@ -1,0 +1,12 @@
+package com.gamerum.backend.usecase.exception;
+
+public enum ErrorCode {
+    SOCKET_TIMEOUT_EXCEPTION,
+    UNKNOWN_HOST,
+    SSL_EXCEPTION,
+    IO_EXCEPTION,
+    NOT_FOUND_EXCEPTION,
+    EXCEPTION,
+    UNAUTHORIZED_EXCEPTION,
+    ALREADY_PARTICIPATED_EXCEPTION,
+}

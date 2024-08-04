@@ -4,8 +4,8 @@ import com.gamerum.backend.adaptor.dto.user.ChangeEmailDTO;
 import com.gamerum.backend.adaptor.dto.user.ChangePasswordDTO;
 import com.gamerum.backend.external.persistence.relational.entity.User;
 import com.gamerum.backend.external.persistence.relational.repository.UserRepository;
-import com.gamerum.backend.usecase.exception.NotAllowedException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
+import com.gamerum.backend.usecase.exception.UnauthorizedException;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import com.gamerum.backend.usecase.service.user.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,10 +27,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String changeEmail(ChangeEmailDTO changeEmailDTO, Long userId) {
-        if (!currentUser.getUserId().equals(userId)) throw new NotAllowedException();
+        if (!currentUser.getUserId().equals(userId)) throw new UnauthorizedException();
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User"));
+                .orElseThrow(() -> new NotFoundException(User.class));
 
         user.setEmail(changeEmailDTO.getNewEmail());
         return userRepository.save(user).getEmail();
@@ -38,10 +38,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(ChangePasswordDTO changePasswordDTO, Long userId) throws CredentialException {
-        if (!currentUser.getUserId().equals(userId)) throw new NotAllowedException();
+        if (!currentUser.getUserId().equals(userId)) throw new UnauthorizedException();
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User"));
+                .orElseThrow(() -> new NotFoundException(User.class));
 
         if (!passwordEncoder.matches(changePasswordDTO.getCurrentPassword(), user.getPassword()))
             throw new CredentialException();
