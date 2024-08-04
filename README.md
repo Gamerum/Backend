@@ -67,7 +67,11 @@ Gamerum is a Reddit-like application that lets people create communities specifi
         - [Get Popular Posts](#get-popular-posts)
         - [Get Community Popular Posts](#get-community-popular-posts)
         - [Get Popular Games](#get-popular-games)
-    
+    - [Search](#search)
+        - [Search Games](#search-games)
+        - [Search Communities](#search-communities)
+        - [Search Profiles](#search-profiles)
+        - [Search Posts](#search-posts)
 
 
 ## Error Handling
