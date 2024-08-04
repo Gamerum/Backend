@@ -25,7 +25,8 @@ public abstract class CommunityMapper {
     @Autowired
     private PopularService popularService;
 
-    @Mapping(source = "posts", target = "popularPosts")
+    @Mapping(source = "posts", target = "firstPagePopularPosts")
+    @Mapping(source = "members", target = "firstPageMembers")
     public abstract CommunityGetDTO communityToCommunityGetDTO(Community community) throws IOException;
 
     public abstract Community communityCreateDTOToCommunity(CommunityCreateDTO communityCreateDTO);
@@ -39,6 +40,6 @@ public abstract class CommunityMapper {
         communityGetDTO.setGame(game);
 
         List<PostDocument> popularPosts = popularService.getCommunityPopularPosts(community.getId().toString(), 0);
-        communityGetDTO.setPopularPosts(popularPosts);
+        communityGetDTO.setFirstPagePopularPosts(popularPosts);
     }
 }

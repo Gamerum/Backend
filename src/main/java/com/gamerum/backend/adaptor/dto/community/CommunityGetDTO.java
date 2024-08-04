@@ -18,7 +18,7 @@ public class CommunityGetDTO {
     @Setter
     private GameDocument game;
     private String tags;
-    private List<CommunityMemberGetDTO> members;
+    private List<CommunityMemberGetDTO> firstPageMembers;
     @Setter
-    private List<PostDocument> popularPosts;
+    private List<PostDocument> firstPagePopularPosts;
 }
