@@ -12,11 +12,12 @@ import com.gamerum.backend.external.persistence.relational.repository.ProfileRep
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.ParticipationException;
-import com.gamerum.backend.usecase.exception.UnauthorizedException;
+import com.gamerum.backend.usecase.exception.ForbiddenException;
 import com.gamerum.backend.usecase.service.chat.ChatService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,15 +55,15 @@ public class ChatServiceImpl implements ChatService {
         boolean isMemberOfTheChat = chatParticipantRepository
                 .existsByChatIdAndProfileId(chatId, currentUser.getProfileId());
 
-        if (!isAdmin && !isMemberOfTheChat) throw new UnauthorizedException();
+        if (!isAdmin && !isMemberOfTheChat) throw new ForbiddenException();
 
         Chat chat =  chatRepository.findById(chatId)
                 .orElseThrow(() -> new NotFoundException(Chat.class));
 
         List<ChatParticipant> participants = chatParticipantRepository
-                .findByChatId(chatId, PageRequest.of(0, initParticipantSize));
+                .findByChatId(chatId, Pageable.ofSize(initParticipantSize));
         List<Message> messages = messageRepository
-                .findByChatId(chatId, PageRequest.of(0, initMessagesSize));
+                .findByChatId(chatId, Pageable.ofSize(initMessagesSize));
 
         chat.setParticipants(participants);
         chat.setMessages(messages);
@@ -98,6 +99,7 @@ public class ChatServiceImpl implements ChatService {
                     .findAllById(participantProfileIds);
 
             List<ChatParticipant> chatParticipants = StreamSupport.stream(profiles.spliterator(), false)
+                    .filter(profile -> !profile.getId().equals(currentUser.getProfileId()))
                     .map(profile -> ChatParticipant.builder()
                             .profile(profile)
                             .chat(newChat)
@@ -117,7 +119,7 @@ public class ChatServiceImpl implements ChatService {
                     .findByChatIdAndProfileId(chatId, currentUser.getProfileId())
                     .orElseThrow(() -> new ParticipationException(false));
 
-            if (!deleter.isMod()) throw new UnauthorizedException();
+            if (!deleter.isMod()) throw new ForbiddenException();
         }
         chatRepository.deleteById(chatId);
     }

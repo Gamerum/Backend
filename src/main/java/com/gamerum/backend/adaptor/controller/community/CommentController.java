@@ -34,8 +34,8 @@ public class CommentController {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping
-    public ResponseEntity<CommentGetDTO> updateComment(@Validated @RequestBody CommentUpdateDTO commentUpdateDTO) {
-        return new ResponseEntity<>(CommentMapper.INSTANCE.commentToCommentGetDTO(commentService.updateComment(commentUpdateDTO)), HttpStatus.OK);
+    public ResponseEntity<CommentGetDTO> updateComment(@RequestParam Long commentId, @Validated @RequestBody CommentUpdateDTO commentUpdateDTO) {
+        return new ResponseEntity<>(CommentMapper.INSTANCE.commentToCommentGetDTO(commentService.updateComment(commentId, commentUpdateDTO)), HttpStatus.OK);
     }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})

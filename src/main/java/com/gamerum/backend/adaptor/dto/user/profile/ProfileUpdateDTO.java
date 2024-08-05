@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileUpdateDTO {
-    @NotNull(message = ErrorCode.NOT_NULL)
-    private Long id;
-
     @Size(min = 6, max = 30, message = ErrorCode.SIZE_EXCEPTION_6_30)
     private String nickname;
 }

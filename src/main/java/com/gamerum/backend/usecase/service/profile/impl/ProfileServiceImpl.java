@@ -13,7 +13,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.repository.Elastic
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.usecase.exception.NotFoundException;
-import com.gamerum.backend.usecase.exception.UnauthorizedException;
+import com.gamerum.backend.usecase.exception.ForbiddenException;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,12 +92,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile updateProfile(ProfileUpdateDTO profileUpdateDTO) {
-        Profile profile = profileRepository.findById(profileUpdateDTO.getId()).
+    public Profile updateProfile(Long profileId, ProfileUpdateDTO profileUpdateDTO) {
+        Profile profile = profileRepository.findById(profileId).
                 orElseThrow(() -> new NotFoundException(Profile.class));
 
         if (!currentUser.getProfileId().equals(profile.getId()))
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         profile.setNickname(profileUpdateDTO.getNickname());
         return profileRepository.save(profile);

@@ -40,7 +40,7 @@ public class SearchController {
         return new ResponseEntity<>(searchService.searchProfile(filter), HttpStatus.OK);
     }
 
-    @GetMapping("/posts")
+    @PostMapping("/posts")
     public ResponseEntity<List<PostDocument>> searchPosts(@RequestBody PostSearchFilter filter) throws IOException {
         return new ResponseEntity<>(searchService.searchPost(filter), HttpStatus.OK);
     }

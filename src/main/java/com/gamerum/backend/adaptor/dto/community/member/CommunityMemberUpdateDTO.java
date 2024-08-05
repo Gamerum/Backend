@@ -13,8 +13,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommunityMemberUpdateDTO {
-    @NotNull(message = ErrorCode.NOT_NULL)
-    private Long id;
-
     private CommunityMember.Role role;
 }

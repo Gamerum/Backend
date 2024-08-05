@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ProfileService {
     Profile getProfileById(Long profileId);
-    Profile updateProfile(ProfileUpdateDTO profileUpdateDTO);
+    Profile updateProfile(Long profileId, ProfileUpdateDTO profileUpdateDTO);
     List<CommunityDocument> getCommunities(Long profileId, int page) throws IOException;
     List<PostDocument> getPosts(Long profileId, int page) throws IOException;
 }

@@ -10,7 +10,7 @@ import com.gamerum.backend.external.persistence.relational.repository.ProfileRep
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.ParticipationException;
-import com.gamerum.backend.usecase.exception.UnauthorizedException;
+import com.gamerum.backend.usecase.exception.ForbiddenException;
 import com.gamerum.backend.usecase.service.chat.MessageService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,7 +72,7 @@ public class MessageServiceImpl implements MessageService {
                         .findByChatIdAndProfileId(chatId, deleterProfileId)
                         .orElseThrow(() -> new ParticipationException(false));
 
-                if (!deleter.isMod()) throw new UnauthorizedException();
+                if (!deleter.isMod()) throw new ForbiddenException();
             }
         }
         messageRepository.delete(message);
@@ -82,7 +82,7 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> getAllMessages(Long chatId, int page) {
         if (!currentUser.hasRole(UserRole.ROLE_ADMIN) &&
                 !chatParticipantRepository.existsByChatIdAndProfileId(chatId, currentUser.getProfileId()))
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         return messageRepository.findByChatId(chatId, PageRequest.of(page, messagePageSize));
     }
@@ -93,7 +93,7 @@ public class MessageServiceImpl implements MessageService {
                 .orElseThrow(() -> new NotFoundException(Message.class));
 
         if (!Objects.equals(message.getProfile().getId(), currentUser.getProfileId()))
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         message.setText(messageUpdateDTO.getText());
         return messageRepository.save(message);

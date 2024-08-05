@@ -58,9 +58,10 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                     auth
                             .requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/profiles/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/communities/**").permitAll()
                             .requestMatchers("/api/popular/**").permitAll()
-                            .requestMatchers("api/search/**").permitAll()
+                            .requestMatchers("/api/search/**").permitAll()
                             .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

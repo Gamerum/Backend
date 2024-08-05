@@ -10,7 +10,7 @@ import com.gamerum.backend.external.persistence.relational.repository.*;
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.ParticipationException;
-import com.gamerum.backend.usecase.exception.UnauthorizedException;
+import com.gamerum.backend.usecase.exception.ForbiddenException;
 import com.gamerum.backend.usecase.service.community.post.PostService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
@@ -81,7 +81,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new NotFoundException(Post.class));
 
         if (!post.getProfile().getId().equals(currentUser.getProfileId()))
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         post.setTitle(postUpdateDTO.getTitle());
         post.setTag(postUpdateDTO.getTag());
@@ -106,7 +106,7 @@ public class PostServiceImpl implements PostService {
                     .orElseThrow(() -> new NotFoundException(CommunityMember.class));
 
             if (deleter.getRole() == CommunityMember.Role.USER)
-                throw new UnauthorizedException();
+                throw new ForbiddenException();
         }
 
         cacheUtils.invalidateCacheListIfConditionMet(popularCacheName, popularPostCacheKey,
