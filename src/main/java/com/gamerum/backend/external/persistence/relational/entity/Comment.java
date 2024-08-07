@@ -1,5 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.CommentListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "Comments")
+@EntityListeners(CommentListener.class)
 public class Comment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

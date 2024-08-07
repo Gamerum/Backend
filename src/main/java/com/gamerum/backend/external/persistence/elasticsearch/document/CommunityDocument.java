@@ -6,14 +6,13 @@ import lombok.*;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 
-@EqualsAndHashCode(callSuper = true)
 @Document(indexName = "community")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JacksonStdImpl
-public class CommunityDocument extends DocumentBase {
+public class CommunityDocument implements DocumentBase {
     @Id
     private String id;
     private String title;

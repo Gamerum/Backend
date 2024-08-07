@@ -6,20 +6,18 @@ import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@EqualsAndHashCode(callSuper = true)
 @Document(indexName = "game")
 @Data
 @Builder
 @AllArgsConstructor
 @JacksonStdImpl
-public class GameDocument extends DocumentBase{
+public class GameDocument implements DocumentBase{
     @Id
     private String id;
     private String name;
