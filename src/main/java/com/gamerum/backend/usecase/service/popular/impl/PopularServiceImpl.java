@@ -45,6 +45,7 @@ public class PopularServiceImpl implements PopularService {
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index("community")
                 .sort(s -> s.field(f -> f.field("clickCount").order(SortOrder.Desc)))
+                .sort(s -> s.field(f -> f.field("memberCount").order(SortOrder.Desc)))
                 .size(communityTopPopularSize)
                 .build();
 

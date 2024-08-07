@@ -14,4 +14,5 @@ public interface CommunityService {
     Community updateCommunity(Long communityId, CommunityUpdateDTO communityUpdateDTO);
     void deleteCommunity(Long communityId);
     List<String> updateTagsToCommunity(Long communityId, CommunityUpdateTagsDTO communityUpdateTagsDTO);
+    void resetCommunitiesClickCount() throws IOException;
 }
