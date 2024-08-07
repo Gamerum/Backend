@@ -83,7 +83,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Transactional
     public Community createCommunity(CommunityCreateDTO communityCreateDTO) {
         Community community = communityMapper.communityCreateDTOToCommunity(communityCreateDTO);
-        community.setTags("Popular");
+        community.setTags("");
         community = communityRepository.save(community);
         saveCreator(community);
         return community;

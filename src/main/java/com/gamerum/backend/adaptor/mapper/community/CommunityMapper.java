@@ -44,7 +44,8 @@ public abstract class CommunityMapper {
         List<PostDocument> popularPosts = popularService.getCommunityPopularPosts(community.getId().toString(), 0);
         communityGetDTO.setFirstPagePopularPosts(popularPosts);
 
-        List<String> tags = Arrays.stream(community.getTags().split(",")).toList();
+        String tagString = community.getTags();
+        List<String> tags = tagString.isEmpty() ? null : Arrays.stream(tagString.split(",")).toList();
         communityGetDTO.setTags(tags);
     }
 }
