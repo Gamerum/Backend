@@ -100,6 +100,7 @@ public class PopularServiceImpl implements PopularService {
     public List<GameDocument> getPopularGames() throws IOException {
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index("game")
+                .sort(s -> s.field(f -> f.field("communityCount").order(SortOrder.Desc)))
                 .sort(s -> s.field(f -> f.field("popularity").order(SortOrder.Desc)))
                 .size(gamePopularSize)
                 .build();
