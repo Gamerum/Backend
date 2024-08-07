@@ -51,7 +51,7 @@ public class CommunityController {
     }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @PutMapping("/{communityId}/tags")
+    @PatchMapping("/{communityId}/tags")
     public ResponseEntity<List<String>> updateCommunityTags(@PathVariable Long communityId, @Validated @RequestBody CommunityUpdateTagsDTO communityUpdateTagsDTO) {
         return new ResponseEntity<>(communityService.updateTagsToCommunity(communityId, communityUpdateTagsDTO), HttpStatus.OK);
     }
