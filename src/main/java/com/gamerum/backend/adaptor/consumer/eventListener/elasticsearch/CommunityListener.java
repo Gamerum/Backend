@@ -9,6 +9,7 @@ import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import jakarta.persistence.PostUpdate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
@@ -22,8 +23,11 @@ public class CommunityListener {
     }
 
     @PostPersist
+    @Transactional
     public void handleAfterCreate(Community community) throws IOException {
         GameDocument game = elasticsearchRepository.getById("game", community.getGameId(), GameDocument.class);
+        game.setCommunityCount(game.getCommunityCount() + 1);
+
         elasticsearchRepository.save(CommunityDocument.builder()
                 .id(community.getId().toString())
                 .title(community.getTitle())
@@ -32,6 +36,8 @@ public class CommunityListener {
                 .clickCount(0L)
                 .memberCount(0L)
                 .build());
+
+        elasticsearchRepository.save(game);
     }
 
     @PostUpdate
@@ -46,8 +52,13 @@ public class CommunityListener {
     }
 
     @PostRemove
+    @Transactional
     public void handleAfterDelete(Community community) throws IOException {
+        GameDocument game = elasticsearchRepository.getById("game", community.getGameId(), GameDocument.class);
+        game.setCommunityCount(game.getCommunityCount() - 1);
+
         elasticsearchRepository.deleteById(community.getId().toString(), "community");
+        elasticsearchRepository.save(game);
     }
 
     @PostLoad
@@ -56,8 +67,6 @@ public class CommunityListener {
                 .getById("community", community.getId().toString(), CommunityDocument.class);
         communityDocument.setClickCount(communityDocument.getClickCount() + 1);
         elasticsearchRepository.save(communityDocument);
-
-
     }
 }
 

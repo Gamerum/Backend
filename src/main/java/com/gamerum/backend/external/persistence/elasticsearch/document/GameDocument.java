@@ -26,6 +26,7 @@ public class GameDocument extends DocumentBase{
     private List<String> alternativeNames;
     private List<Integer> genreIds;
     private Double popularity;
+    private Long communityCount;
 
     // Factory method for JSON deserialization
     @JsonCreator
@@ -48,7 +49,7 @@ public class GameDocument extends DocumentBase{
         if (totalRating != null && totalRatingCount != null)
             popularity = totalRating * totalRatingCount;
 
-        return new GameDocument(id, name, alternativeNames, genreIds, popularity);
+        return new GameDocument(id, name, alternativeNames, genreIds, popularity, 0L);
     }
 
     @Override
