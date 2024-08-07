@@ -29,7 +29,7 @@ public class CommunityTagServiceImpl implements CommunityTagService {
 
         List<String> currentTags = getCurrentTags(community);
         List<String> loweredTags = tags.stream().map(String::toLowerCase).toList();
-        currentTags.removeIf(tag -> !tag.equalsIgnoreCase("Popular") && loweredTags.contains(tag.toLowerCase()));
+        currentTags.removeIf(tag -> loweredTags.contains(tag.toLowerCase()));
 
         return String.join(",", currentTags);
     }

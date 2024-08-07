@@ -1,11 +1,14 @@
 package com.gamerum.backend.usecase.service.community.impl;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch.core.UpdateByQueryRequest;
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.CommunityUpdateTagsDTO;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
@@ -23,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -45,6 +49,7 @@ public class CommunityServiceImpl implements CommunityService {
     private final CurrentUser currentUser;
     private final CacheUtils cacheUtils;
     private final CommunityTagService communityTagService;
+    private final ElasticsearchRepository elasticsearchRepository;
 
     public CommunityServiceImpl(CommunityRepository communityRepository,
                                 CommunityMemberRepository communityMemberRepository,
@@ -52,7 +57,7 @@ public class CommunityServiceImpl implements CommunityService {
                                 CommunityMapper communityMapper,
                                 CurrentUser currentUser,
                                 CacheUtils cacheUtils,
-                                CommunityTagService communityTagService) {
+                                CommunityTagService communityTagService, ElasticsearchRepository elasticsearchRepository) {
         this.communityRepository = communityRepository;
         this.communityMemberRepository = communityMemberRepository;
         this.profileRepository = profileRepository;
@@ -60,6 +65,7 @@ public class CommunityServiceImpl implements CommunityService {
         this.currentUser = currentUser;
         this.cacheUtils = cacheUtils;
         this.communityTagService = communityTagService;
+        this.elasticsearchRepository = elasticsearchRepository;
     }
 
     @Override
@@ -77,7 +83,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Transactional
     public Community createCommunity(CommunityCreateDTO communityCreateDTO) {
         Community community = communityMapper.communityCreateDTOToCommunity(communityCreateDTO);
-        community.setTags("Popular");
+        community.setTags("");
         community = communityRepository.save(community);
         saveCreator(community);
         return community;
@@ -151,5 +157,15 @@ public class CommunityServiceImpl implements CommunityService {
         }
 
         return Arrays.stream(community.getTags().split(",")).toList();
+    }
+
+    public void resetCommunitiesClickCount() throws IOException {
+        UpdateByQueryRequest request = UpdateByQueryRequest.of(ubq -> ubq
+                .index("community")
+                .script(s -> s .inline(i -> i .source("ctx._source.clickCount = 0")))
+                .query(QueryBuilders.matchAll().build()._toQuery())
+        );
+
+        elasticsearchRepository.updateByRequest(request);
     }
 }

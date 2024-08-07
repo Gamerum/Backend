@@ -30,6 +30,7 @@ public class Community extends Auditable {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private String tags;
 
     @Column(nullable = false, updatable = false)

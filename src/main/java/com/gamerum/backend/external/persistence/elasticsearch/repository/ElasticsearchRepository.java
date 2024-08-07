@@ -1,22 +1,17 @@
 package com.gamerum.backend.external.persistence.elasticsearch.repository;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.Result;
-import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.indices.DeleteIndexRequest;
 import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentBase;
-import com.gamerum.backend.usecase.exception.GlobalExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.convert.Bucket;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,6 +64,11 @@ public class ElasticsearchRepository {
         return getResponse.source();
     }
 
+
+    public void updateByRequest(UpdateByQueryRequest request) throws IOException {
+        elasticsearchClient.updateByQuery(request);
+    }
+
     public <T extends DocumentBase> List<T> search(SearchRequest searchRequest, Class<T> documentClass) throws IOException {
         logger.info("Searched for " + documentClass.getSimpleName());
         SearchResponse<T> searchResponse = elasticsearchClient.search(searchRequest, documentClass);
@@ -93,4 +93,5 @@ public class ElasticsearchRepository {
         logger.warn("Deleting index {}", index);
         return elasticsearchClient.indices().delete(deleteIndexRequest);
     }
+
 }

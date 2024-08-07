@@ -1,10 +1,13 @@
 package com.gamerum.backend.usecase.service.community.post.impl;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch.core.UpdateByQueryRequest;
 import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostUpdateDTO;
 import com.gamerum.backend.adaptor.mapper.community.PostMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.*;
 import com.gamerum.backend.external.persistence.relational.repository.*;
 import com.gamerum.backend.security.user.UserRole;
@@ -17,11 +20,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 public class PostServiceImpl implements PostService {
+    private final ElasticsearchRepository elasticsearchRepository;
     @Value("${cache.config.data.popular.cache_name}")
     private String popularCacheName;
 
@@ -44,7 +49,7 @@ public class PostServiceImpl implements PostService {
                            ProfileRepository profileRepository,
                            CommunityMemberRepository communityMemberRepository,
                            CurrentUser currentUser, CommentRepository commentRepository,
-                           CacheUtils cacheUtils) {
+                           CacheUtils cacheUtils, ElasticsearchRepository elasticsearchRepository) {
         this.postRepository = postRepository;
         this.communityRepository = communityRepository;
         this.profileRepository = profileRepository;
@@ -52,6 +57,7 @@ public class PostServiceImpl implements PostService {
         this.currentUser = currentUser;
         this.commentRepository = commentRepository;
         this.cacheUtils = cacheUtils;
+        this.elasticsearchRepository = elasticsearchRepository;
     }
 
     @Override
@@ -123,5 +129,16 @@ public class PostServiceImpl implements PostService {
                 .findByPostIdOrderByCreatedDateAsc(postId, Pageable.ofSize(initCommentSize));
         post.setComments(comments);
         return post;
+    }
+
+    @Override
+    public void resetPostsClickCounts() throws IOException {
+        UpdateByQueryRequest request = UpdateByQueryRequest.of(ubq -> ubq
+                .index("post")
+                .script(s -> s .inline(i -> i .source("ctx._source.clickCount = 0")))
+                .query(QueryBuilders.matchAll().build()._toQuery())
+        );
+
+        elasticsearchRepository.updateByRequest(request);
     }
 }

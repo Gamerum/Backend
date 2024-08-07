@@ -27,16 +27,6 @@ public class RedisCacheConfig {
     private int popularCacheTtlMinutes;
 
     @Bean
-    public ObjectMapper customObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, false);
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
-        return objectMapper;
-    }
-
-    @Bean
     public RedisCacheConfiguration cacheConfiguration(ObjectMapper objectMapper) {
         return RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(entryTtlMinutes))
