@@ -12,6 +12,7 @@ import jakarta.persistence.PostUpdate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Component
 public class PostListener {
@@ -37,6 +38,7 @@ public class PostListener {
                 .community(community)
                 .profile(profile)
                 .clickCount(0L)
+                .likedByProfileIds(new ArrayList<>())
                 .createdDate(post.getCreatedDate())
                 .build());
     }
