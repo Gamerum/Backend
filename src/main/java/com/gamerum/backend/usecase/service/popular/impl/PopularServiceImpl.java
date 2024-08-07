@@ -58,8 +58,8 @@ public class PopularServiceImpl implements PopularService {
     public List<PostDocument> getPopularPosts(int page) throws IOException {
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index("post")
-                .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
                 .sort(s -> s.field(f -> f.field("clickCount").order(SortOrder.Desc)))
+                .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
                 .from(page * postPopularSize)
                 .size(postPopularSize)
                 .build();
@@ -84,8 +84,8 @@ public class PopularServiceImpl implements PopularService {
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index("post")
                 .query(q -> q.bool(boolQuery))
-                .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
                 .sort(s -> s.field(f -> f.field("clickCount").order(SortOrder.Desc)))
+                .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
                 .from(page * communityPostSize)
                 .size(communityPostSize)
                 .build();
