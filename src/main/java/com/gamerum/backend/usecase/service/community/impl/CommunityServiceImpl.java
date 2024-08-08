@@ -4,7 +4,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch.core.UpdateByQueryRequest;
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
-import com.gamerum.backend.adaptor.dto.community.post.CommunityUpdateTagsDTO;
+import com.gamerum.backend.adaptor.dto.community.CommunityUpdateTagsDTO;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
