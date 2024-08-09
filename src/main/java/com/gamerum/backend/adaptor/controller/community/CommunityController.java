@@ -3,7 +3,7 @@ package com.gamerum.backend.adaptor.controller.community;
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
-import com.gamerum.backend.adaptor.dto.community.post.CommunityUpdateTagsDTO;
+import com.gamerum.backend.adaptor.dto.community.CommunityUpdateTagsDTO;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.usecase.service.community.CommunityService;
 import org.springframework.http.HttpStatus;

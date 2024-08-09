@@ -10,68 +10,121 @@ Gamerum is a Reddit-like application that lets people create communities specifi
 
 - [Error Handling](#error-handling)
 - [API Endpoints](#api-endpoints)
-    - [Authentication](#authentication)
+    - **Authentication**
         - [Register](#register)
         - [Login](#login)
-    - [Chats](#chats)
+    - **Chats**
         - [Create Chat](#create-chat)
         - [Get Chat](#get-chat)
         - [Get Chats](#get-chats)
         - [Delete Chat](#delete-chat)
-    - [Chat Participants](#chat-participants)
+    - **Chat Participants**
         - [Add Chat Participant](#add-chat-participant)
         - [Get Chat Participants](#get-chat-participants)
         - [Update Chat Participant](#update-chat-participant)
         - [Delete Chat Participant](#delete-chat-participant)
-    - [Messages](#messages)
+    - **Messages**
         - [Add Message](#add-message)
         - [Get All Messages](#get-all-messages)
         - [Update Message](#update-message)
         - [Delete Message](#delete-message)
-    - [Communities](#communities)
+    - **Communities**
         - [Create Community](#create-community)
         - [Get Community](#get-community)
         - [Update Community](#update-community)
         - [Delete Community](#delete-community)
         - [Update Community Tags](#update-community-tags)
-    - [Community Members](#community-member)
+    - **Community Members**
         - [Add Community Member](#add-community-member)
         - [Get Community Member](#get-community-members)
         - [Update Community Member](#update-community-member)
         - [Delete Community Member](#delete-community-member)
-    - [Posts](#posts)
+    - **Posts**
         - [Create Post](#create-post)
         - [Get Post](#get-post)
         - [Update Post](#update-post)
         - [Delete Post](#delete-post)
-    - [Comments](#comments)
+    - **Comments**
         - [Add Comment](#add-comment)
         - [Get Comments](#get-comments)
         - [Update Comment](#update-comment)
         - [Delete Comment](#delete-comment)
-    - [Replies](#replies)
+    - **Replies**
         - [Add Reply](#add-reply)
         - [Get Replies](#get-replies)
         - [Update Reply](#update-reply)
         - [Delete Reply](#delete-reply)
-    - [Profiles](#profiles)
+    - **Profiles**
         - [Get Profile](#get-profile)
         - [Update Profile](#update-profile)
         - [Get Profile Communities](#get-profile-communities)
         - [Get Profile Posts](#get-profile-posts)
-    - [User](#user)
+    - **User**
         - [Change Email](#change-email)
         - [Change Password](#change-password)
-    - [Popular](#popular)
+    - **Popular**
         - [Get Popular Communities](#get-popular-communities)
         - [Get Popular Posts](#get-popular-posts)
         - [Get Community Popular Posts](#get-community-popular-posts)
         - [Get Popular Games](#get-popular-games)
-    - [Search](#search)
+    - **Search**
         - [Search Games](#search-games)
         - [Search Communities](#search-communities)
         - [Search Profiles](#search-profiles)
         - [Search Posts](#search-posts)
+    - **Like**
+        - [Like Post](#like-post)
+        - [Like Comment](#like-comment)
+        - [Like Reply](#like-reply)
+    - **Returned JSONs**
+        - **Authentication**
+            - [LoginRequestDTO](#LoginRequestDTO)
+            - [RegisterRequestDTO](#registerrequestdto)
+        - **Profile**
+            - [ProfileGetDTO](#profilegetdto)
+            - [ProfileUpdateDTO](#profileupdatedto)
+        - **Community**
+            - [CommunityCreateDTO](#communitycreatedto)
+            - [CommunityGetDTO](#communitygetdto)
+            - [CommunityUpdateDTO](#communityupdatedto)
+            - [CommunitySearchFilter](#communitysearchfilter)
+        - **Post**
+            - [PostCreateDTO](#postcreatedto)
+            - [PostGetDTO](#postgetdto)
+            - [PostUpdateDTO](#postupdatedto)
+            - [PostSearchFilter](#postsearchfilter)
+        - **Comment**
+            - [CommentCreateDTO](#commentcreatedto)
+            - [CommentGetDTO](#commentgetdto)
+            - [CommentUpdateDTO](#commentupdatedto)
+        - **Reply**
+            - [ReplyCreateDTO](#replycreatedto)
+            - [ReplyGetDTO](#replygetdto)
+            - [ReplyUpdateDTO](#replyupdatedto)
+        - **Chat**
+            - [ChatCreateDTO](#chatcreatedto)
+            - [ChatGetDTO](#chatgetdto)
+        - **Message**
+            - [MessageCreateDTO](#messagecreatedto)
+            - [MessageGetDTO](#messagegetdto)
+        - **Chat Participant**
+            - [ChatParticipantCreateDTO](#chatparticipantcreatedto)
+            - [ChatParticipantGetDTO](#chatparticipantgetdto)
+            - [ChatParticipantUpdateDTO](#chatparticipantupdatedto)
+        - **Community Member**
+            - [CommunityMemberCreateDTO](#communitymembercreatedto)
+            - [CommunityMemberGetDTO](#communitymembergetdto)
+            - [CommunityMemberUpdateDTO](#communitymemberupdatedto)
+        - **Search Filters**
+            - [SearchFilter](#searchfilter)
+            - [CommunitySearchFilter](#communitysearchfilter)
+            - [GameSearchFilter](#gamesearchfilter)
+            - [PostSearchFilter](#postsearchfilter)
+        - **Documents**
+            - [CommunityDocument](#communitydocument)
+            - [GameDocument](#gamedocument)
+            - [PostDocument](#postdocument)
+            - [ProfileDocument](#profiledocument)
 
 
 ## Error Handling
@@ -120,17 +173,9 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Description**: Register a new user.
 
-**Request Body**:
-```json
-{
-  "username": "string (6-30 characters)",
-  "nickname": "string (6-30 characters)",
-  "email": "string (valid email format)",
-  "password": "string (8-30 characters, alphanumeric and @$!%?&)"
-}
-```
+**Request Body**: [RegisterRequestDTO](#registerrequestdto)
 
-**Request Body**:
+**Response**:
 - `201 Created` if registration is successful.
 - `400 Bad Request` if validation fails with appropriate error codes.
 
@@ -142,22 +187,15 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Request Body**:
 
-```json
-{
-  "username": "string (6-30 characters)",
-  "password": "string (8-30 characters, alphanumeric and @$!%?&)"
-}
-```
+**Request Body**: [LoginRequestDTO](#loginrequestdto)
 
 **Response**:
 
-- `200 OK` with a JSON object containing the JWT token.
-```json
-{
-  "token_type": "Bearer",
-  "token": "string"
-}
-```
+- `200 OK` with a JSON object containing the JWT token:
+    - `token_type`: `Bearer`
+    - `token`: `string`
+
+
 - `400 Bad Request` if validation fails with appropriate error codes.
 - `401 Unauthorized` if authentication fails.
 
@@ -169,40 +207,13 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Description**: Create a new chat.
 
-**Request Body**:
-```json
-{
-  "participantProfileIds": [
-    "number"
-  ]
-}
-```
-**Notes**: The list of participantProfileIds should not include the ID of the chat creator.
+**Request Body**: [ChatCreateDTO](#chatcreatedto)
+
+**Notes**: The list of `participantProfileIds` should not include the ID of the chat creator.
 
 **Response**:
 
-- `201 Created` with a JSON object representing the created chat.
-```json
-{
-  "id": "number",
-  "firstPageParticipants": [
-    {
-      "id": "number",
-      "nickname": "string",
-      "isMod": "boolean"
-    }
-  ],
-  "firstPageMessages": [
-    {
-      "senderProfileId": "number",
-      "senderName": "string",
-      "text": "string",
-      "sendDate": "string (ISO 8601 format)",
-      "isSent": "boolean"
-    }
-  ]
-}
-```
+- `201 Created` with a JSON object representing the created chat: [ChatGetDTO](#chatgetdto)
 - `400 Bad Request` if the request body is invalid or contains errors.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `404 Not Found` if the requester has no profile.
@@ -218,30 +229,9 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Response**:
 
-- `200 OK` with a JSON object representing the chat.
-```json
-{
-  "id": "number",
-  "firstPageParticipants": [
-    {
-      "id": "number",
-      "nickname": "string",
-      "isMod": "boolean"
-    }
-  ],
-  "firstPageMessages": [
-    {
-      "senderProfileId": "number",
-      "senderName": "string",
-      "text": "string",
-      "sendDate": "string (ISO 8601 format)",
-      "isSent": "boolean"
-    }
-  ]
-}
-```
+- `200 OK` with a JSON object representing the chat: [ChatGetDTO](#chatgetdto)
 - `401 Unauthorized` if not logged in or could not send the JWT token.
-- `403 Forbidden` if not a participant of the chat
+- `403 Forbidden` if not a participant of the chat.
 - `404 Not Found` if the chat does not exist.
 
 ### Get Chats
@@ -256,30 +246,7 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Response**:
 
-- `200 OK` with a JSON array of chat objects.
-```json
-[
-  {
-    "id": "number",
-    "firstPageParticipants": [
-      {
-        "id": "number",
-        "nickname": "string",
-        "isMod": "boolean"
-      }
-    ],
-    "firstPageMessages": [
-      {
-        "senderProfileId": "number",
-        "senderName": "string",
-        "text": "string",
-        "sendDate": "string (ISO 8601 format)",
-        "isSent": "boolean"
-      }
-    ]
-  }
-]
-```
+- `200 OK` with a JSON array of chat objects: [[ChatGetDTO](#chatgetdto)]
 - `400 Bad Request` if query parameters are invalid.
 
 ### Delete Chat
@@ -308,22 +275,12 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `chatId` (path parameter): The ID of the chat to which the participant will be added.
 
-**Request Body**:
-```json
-{
-  "profileId": "number"
-}
-```
+**Request Body**: [ChatParticipantCreateDTO](#chatparticipantcreatedto)
 
 **Response**:
-- `201 Created` with a JSON object representing the added chat participant.
-```json
-{
-  "id": "number",
-  "nickname": "string",
-  "isMod": "boolean"
-}
-```
+- `201 Created` with a JSON object representing the added chat participant: [ChatParticipantGetDTO](#chatparticipantgetdto)
+
+
 - `400 Bad Request` if the request body is invalid or contains errors.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to add participants.
@@ -341,16 +298,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `page` (path parameter): he page number for pagination. Default is `0`.
 
 **Response**:
-- `201 Created` with a JSON array of chat participant objects.
-```json
-[
-  {
-    "id": "number",
-    "nickname": "string",
-    "isMod": "boolean"
-  }
-]
-```
+- `201 Created` with a JSON array of chat participant objects: [[ChatParticipantGetDTO](#chatparticipantgetdto)]
 - `404 Not Found`  if the chat does not exist.
 
 ### Update Chat Participant
@@ -362,23 +310,10 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `chatId` (path parameter): The ID of the chat containing the participant.
 
-**Request Body**:
-```json
-{
-  "id": "number",
-  "isMod": "boolean"
-}
-```
+**Request Body**: [ChatParticipantUpdateDTO](#chatparticipantupdatedto)
 
 **Response**:
-- `200 OK` with a JSON object representing the updated chat participant.
-```json
-{
-  "id": "number",
-  "nickname": "string",
-  "isMod": "boolean"
-}
-```
+- `200 OK` with a JSON object representing the updated chat participant: [ChatParticipantGetDTO](#chatparticipantgetdto)
 - `400 Bad Request` if the request body is invalid or contains errors.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the participant.
@@ -411,25 +346,10 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `chatId` (path parameter): The ID of the chat to which the message will be added.
 
-**Request Body**:
-```json
-{
-  "text": "string (1-255 characters)",
-  "isSent": "boolean"
-}
-```
+**Request Body**: [MessageCreateDTO](#messagecreatedto)
 
 **Response**:
-- `201 Created` with a JSON object representing the added message.
-```json
-{
-  "senderProfileId": "number",
-  "senderName": "string",
-  "text": "string",
-  "sendDate": "string (ISO 8601 format)",
-  "isSent": "boolean"
-}
-```
+- `201 Created` with a JSON object representing the added message: [MessageGetDTO](#messagegetdto)
 - `400 Bad Request` if the request body is invalid or contains errors.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to add messages.
@@ -446,18 +366,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `page` (path parameter):  The page number for pagination. Default is `0`.
 
 **Response**:
-- `200 OK` with a JSON array of message objects.
-```json
-[
-  {
-    "senderProfileId": "number",
-    "senderName": "string",
-    "text": "string",
-    "sendDate": "string (ISO 8601 format)",
-    "isSent": "boolean"
-  }
-]
-```
+- `200 OK` with a JSON array of message objects: [[MessageGetDTO](#messagegetdto)]
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to view the messages.
 - `404 Not Found` if the chat does not exist.
@@ -471,25 +380,10 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `chatId` (path parameter): The ID of the chat containing the message to update.
 
-**Request Body**:
-```json
-{
-  "id": "number",
-  "text": "string (1-255 characters)"
-}
-```
+**Request Body**: [MessageUpdateDTO](#messageupdatedto)
 
 **Response**:
-- `200 OK` with a JSON object representing the updated message.
-```json
-{
-  "senderProfileId": "number",
-  "senderName": "string",
-  "text": "string",
-  "sendDate": "string (ISO 8601 format)",
-  "isSent": "boolean"
-}
-```
+- `200 OK` with a JSON object representing the updated message: [MessageGetDTO](#messagegetdto)
 - `400 Bad Request` if the request body is invalid or contains errors.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the message.
@@ -519,40 +413,10 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Description**: Create a new community.
 
-**Request Body**:
-```json
-{
-  "title": "string (6-30 characters)",
-  "description": "string (1-255 characters)",
-  "gameId": "string"
-}
-```
+**Request Body**: [CommunityCreateDTO](#communitycreatedto)
 
 **Response**:
-- `201 Created` with a JSON object representing the created community.
-```json
-{
-  "id": "number",
-  "title": "string",
-  "description": "string",
-  "game": {
-    "id": "string",
-    "name": "string",
-    "alternativeNames": ["string"],
-    "genreIds": ["number"],
-    "popularity": "number"
-  },
-  "tags": ["string"],
-  "firstPageMembers": [
-    {
-      "id": "number",
-      "nickname": "string",
-      "role": "string"
-    }
-  ],
-  "firstPagePopularPosts": []
-}
-```
+- `201 Created` with a JSON object representing the created community: [CommunityGetDTO](#communitygetdto)
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to create a community.
@@ -567,47 +431,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `communityId` (path parameter): The ID of the community to retrieve.
 
 **Response**:
-- `200 OK` with a JSON object representing the community.
-```json
-{
-  "id": "number",
-  "title": "string",
-  "description": "string",
-  "game": {
-    "id": "string",
-    "name": "string",
-    "alternativeNames": ["string"],
-    "genreIds": ["number"],
-    "popularity": "number"
-  },
-  "tags": ["string"],
-  "firstPageMembers": [
-    {
-      "id": "number",
-      "nickname": "string",
-      "role": "string"
-    }
-  ],
-  "firstPagePopularPosts": [
-    {
-      "id": "string",
-      "title": "string",
-      "text": "string",
-      "tag": "string",
-      "clickCount": "number",
-      "profile": {
-        "id": "string",
-        "name": "string"
-      },
-      "community": {
-        "id": "string",
-        "title": "string"
-      },
-      "createdDate": "string (ISO 8601 format)"
-    }
-  ]
-}
-```
+- `200 OK` with a JSON object representing the community: [CommunityGetDTO](#communitygetdto)
 - `404 Not Found` if the community does not exist.
 
 ### Update Community
@@ -619,56 +443,10 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `communityId` (path parameter): The ID of the community to update.
 
-**Request Body**:
-```json
-{
-  "title": "string (6-30 characters)",
-  "description": "string (1-255 characters)"
-}
-```
+**Request Body**: [CommunityUpdateDTO](#communityupdatedto)
 
 **Response**:
-- `200 OK` with a JSON object representing the updated community.
-```json
-{
-  "id": "number",
-  "title": "string",
-  "description": "string",
-  "game": {
-    "id": "string",
-    "name": "string",
-    "alternativeNames": ["string"],
-    "genreIds": ["number"],
-    "popularity": "number"
-  },
-  "tags": ["string"],
-  "firstPageMembers": [
-    {
-      "id": "number",
-      "nickname": "string",
-      "role": "string"
-    }
-  ],
-  "firstPagePopularPosts": [
-    {
-      "id": "string",
-      "title": "string",
-      "text": "string",
-      "tag": "string",
-      "clickCount": "number",
-      "profile": {
-        "id": "string",
-        "name": "string"
-      },
-      "community": {
-        "id": "string",
-        "title": "string"
-      },
-      "createdDate": "string (ISO 8601 format)"
-    }
-  ]
-}
-```
+- `200 OK` with a JSON object representing the updated community: [CommunityGetDTO](#communitygetdto)
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the community.
@@ -691,23 +469,14 @@ When an error occurs, the client will receive a response containing the appropri
 
 ### Update Community Tags
 
-**Endpoint**: `PUT /api/communities/{communityId}/tags`
+**Endpoint**: `PATCH /api/communities/{communityId}/tags`
 
 **Description**: Update the tags associated with a community.
 
-**Request Body**:
-```json
-{
-  "tags": ["string"],
-  "remove": "boolean"
-}
-```
+**Request Body**: [CommunityUpdateTagsDTO](#communityupdatetagsdto)
 
 **Response**:
-- `200 OK` with a JSON array of updated tags.
-```json
-["string"]
-```
+- `200 OK` with a JSON array of updated tags: [`string`]
 - `400 Bad Reques` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the community does not exist.
@@ -724,22 +493,10 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `communityId` (path parameter): The ID of the community to add the member to.
 
-**Request Body**:
-```json
-{
-  "profileId": "number"
-}
-```
+**Request Body**: [CommunityMemberCreateDTO](#communitymembercreatedto)
 
 **Response**:
-- `201 Created` with a JSON object representing the created community member.
-```json
-{
-  "id": "number",
-  "nickname": "string",
-  "role": "string"
-}
-```
+- `201 Created` with a JSON object representing the created community member: [CommunityMemberGetDTO](#communitymembergetdto)
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to add a member to the community.
@@ -757,16 +514,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `page` (query parameter): The page number for pagination.
 
 **Response**:
-- `200 OK` with a JSON array of community member objects.
-```json
-[
-  {
-    "id": "number",
-    "nickname": "string",
-    "role": "string"
-  }
-]
-```
+- `200 OK` with a JSON array of community member objects: [[CommunityMemberGetDTO](#communitymembergetdto)]
 - `404 Not Found` if the community does not exist.
 
 ### Update Community Member
@@ -779,22 +527,10 @@ When an error occurs, the client will receive a response containing the appropri
 - `communityId` (path parameter): The ID of the community.
 - `profileId` (query parameter): The ID of the member's profile.
 
-**Request Body**:
-```json
-{
-  "role": "number"
-}
-```
+**Request Body**: [CommunityMemberUpdateDTO](#communitymemberupdatedto)
 
 **Response**:
-- `200 OK` with a JSON object representing the updated community member.
-```json
-{
-  "id": "number",
-  "nickname": "string",
-  "role": "string"
-}
-```
+- `200 OK` with a JSON object representing the updated community member: [CommunityMemberGetDTO](#communitymembergetdto)
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the member's role.
@@ -828,32 +564,10 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `communityId` (path parameter): The ID of the community where the post will be created.
 
-**Request Body**:
-```json
-{
-  "title": "string (6-30 characters)",
-  "tag": "string",
-  "text": "string (1-255 characters)"
-}
-```
+**Request Body**: [PostCreateDTO](#postcreatedto)
 
 **Response**:
-- `201 Created` with a JSON object representing the created post.
-```json
-{
-  "id": "number",
-  "title": "string",
-  "tag": "string",
-  "text": "string",
-  "writerId": "string",
-  "writerNickname": "string",
-  "createdDate": "string (ISO 8601 format)",
-  "lastModifiedDate": "string (ISO 8601 format)",
-  "communityId": "number",
-  "communityName": "string",
-  "firstPageComments": []
-}
-```
+- `201 Created` with a JSON object representing the created post: [PostGetDTO](#postgetdto)
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to create a post in the community.
@@ -869,31 +583,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `postId` (path parameter): The ID of the post to retrieve.
 
 **Response**:
-- `200 OK` with a JSON object representing the post.
-```json
-{
-  "id": "number",
-  "title": "string",
-  "tag": "string",
-  "text": "string",
-  "writerId": "string",
-  "writerNickname": "string",
-  "createdDate": "string (ISO 8601 format)",
-  "lastModifiedDate": "string (ISO 8601 format)",
-  "communityId": "number",
-  "communityName": "string",
-  "firstPageComments": [
-    {
-      "id": "number",
-      "text": "string",
-      "writerId": "number",
-      "writerNickname": "string",
-      "createdDate": "string (ISO 8601 format)",
-      "lastModifiedDate": "string (ISO 8601 format)"
-    }
-  ]
-}
-```
+- `200 OK` with a JSON object representing the post: [PostGetDTO](#postgetdto)
 - `404 Not Found`  if the post does not exist.
 
 ### Update Post
@@ -905,41 +595,10 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `postId` (query parameter): The ID of the post to be updated.
 
-**Request Body**:
-```json
-{
-  "title": "string (6-30 characters)",
-  "tag": "string",
-  "text": "string (1-255 characters)"
-}
-```
+**Request Body**: [PostUpdateDTO](#postupdatedto)
 
 **Response**:
-- `200 OK` with a JSON object representing the updated post.
-```json
-{
-  "id": "number",
-  "title": "string",
-  "tag": "string",
-  "text": "string",
-  "writerId": "string",
-  "writerNickname": "string",
-  "createdDate": "string (ISO 8601 format)",
-  "lastModifiedDate": "string (ISO 8601 format)",
-  "communityId": "number",
-  "communityName": "string",
-  "firstPageComments": [
-    {
-      "id": "number",
-      "text": "string",
-      "writerId": "number",
-      "writerNickname": "string",
-      "createdDate": "string (ISO 8601 format)",
-      "lastModifiedDate": "string (ISO 8601 format)"
-    }
-  ]
-}
-```
+- `200 OK` with a JSON object representing the updated post: [PostGetDTO](#postgetdto)
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the post.
@@ -971,25 +630,10 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `postId` (path parameter): The ID of the post to which the comment will be added.
 
-**Request Body**:
-```json
-{
-  "text": "string (1-255 characters)"
-}
-```
+**Request Body**: [CommentCreateDTO](#commentcreatedto)
 
 **Response**:
-- `201 Created` with a JSON object representing the created comment.
-```json
-{
-  "id": "number",
-  "text": "string",
-  "writerId": "number",
-  "writerNickname": "string",
-  "createdDate": "string (ISO 8601 format)",
-  "lastModifiedDate": "string (ISO 8601 format)"
-}
-```
+- `201 Created` with a JSON object representing the created comment: [CommentGetDTO](#commentgetdto)
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to comment.
@@ -1006,19 +650,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `page` (query parameter, optional): The page number for pagination. The default is `0`.
 
 **Response**:
-- `200 OK` with a JSON array of comments.
-```json
-[
-  {
-    "id": "number",
-    "text": "string",
-    "writerId": "number",
-    "writerNickname": "string",
-    "createdDate": "string (ISO 8601 format)",
-    "lastModifiedDate": "string (ISO 8601 format)"
-  }
-]
-```
+- `200 OK` with a JSON array of comments: [[CommentGetDTO](#commentgetdto)]
 - `404 Not Found` if the post does not exist.
 
 ### Update Comment
@@ -1030,24 +662,9 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `commentId` (query parameter): The ID of the comment to be updated.
 
-**Request Body**:
-```json
-{
-  "text": "string (1-255 characters)"
-}
-```
+**Request Body**: [CommentUpdateDTO](#commentupdatedto)
 **Response**:
-- `200 OK` with a JSON object representing the updated comment.
-```json
-{
-  "id": "number",
-  "text": "string",
-  "writerId": "number",
-  "writerNickname": "string",
-  "createdDate": "string (ISO 8601 format)",
-  "lastModifiedDate": "string (ISO 8601 format)"
-}
-```
+- `200 OK` with a JSON object representing the updated comment: [CommentGetDTO](#commentgetdto)
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the comment.
@@ -1079,26 +696,10 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `commentId` (path parameter): The ID of the comment to which the reply will be added.
 
-**Request Body**:
-```json
-{
-  "text": "string (1-255 characters)"
-}
-```
+**Request Body**: [ReplyCreateDTO](#replycreatedto)
 
 **Response**:
-- `201 Created` with a JSON object representing the created reply.
-```json
-{
-  "id": "number",
-  "text": "string",
-  "commentId": "number",
-  "writerId": "number",
-  "writerNickname": "string",
-  "createdDate": "string (ISO 8601 format)",
-  "lastModifiedDate": "string (ISO 8601 format)"
-}
-```
+- `201 Created` with a JSON object representing the created reply: [ReplyGetDTO](#replygetdto)
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to reply.
@@ -1115,20 +716,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `page` (query parameter, optional): The page number for pagination (default is 0).
 
 **Response**:
-- `200 OK` with a JSON array of replies.
-```json
-[
-  {
-    "id": "number",
-    "text": "string",
-    "commentId": "number",
-    "writerId": "number",
-    "writerNickname": "string",
-    "createdDate": "string (ISO 8601 format)",
-    "lastModifiedDate": "string (ISO 8601 format)"
-  }
-]
-```
+- `200 OK` with a JSON array of replies: [[ReplyGetDTO](#replygetdto)]
 - `404 Not Found` if the comment does not exist.
 
 ### Update Reply
@@ -1140,26 +728,10 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `replyId` (query parameter): The ID of the reply.
 
-**Request Body**:
-```json
-{
-  "text": "string (1-255 characters)"
-}
-```
+**Request Body**: [ReplyUpdateDTO](#replyupdatedto)
 
 **Response**:
-- `200 OK` with a JSON object representing the updated reply.
-```json
-{
-  "id": "number",
-  "text": "string",
-  "commentId": "number",
-  "writerId": "number",
-  "writerNickname": "string",
-  "createdDate": "string (ISO 8601 format)",
-  "lastModifiedDate": "string (ISO 8601 format)"
-}
-```
+- `200 OK` with a JSON object representing the updated reply: [ReplyGetDTO](#replygetdto)
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the reply.
@@ -1192,44 +764,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `profileId` (path parameter): The ID of the profile to be retrieved.
 
 **Response**:
-- `200 OK` with a JSON object representing the profile.
-```json
-{
-  "id": "number",
-  "nickname": "string",
-  "firstPageCommunities": [
-    {
-      "id": "string",
-      "title": "string",
-      "description": "string",
-      "memberCount": "number",
-      "clickCount": "number",
-      "game": {
-        "id": "string",
-        "name": "string"
-      }
-    }
-  ],
-  "firstPagePosts": [
-    {
-      "id": "string",
-      "title": "string",
-      "text": "string",
-      "tag": "string",
-      "clickCount": "number",
-      "profile": {
-        "id": "string",
-        "nickname": "string"
-      },
-      "community": {
-        "id": "string",
-        "title": "string"
-      },
-      "createdDate": "string (ISO 8601 format)"
-    }
-  ]
-}
-```
+- `200 OK` with a JSON object representing the profile: [ProfileGetDTO](#profilegetdto)
 - `404 Not Found` if the comment does not exist.
 
 ### Update Profile
@@ -1241,51 +776,9 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `profileId` (path parameter): The ID of the profile to be updated.
 
-**Request Body**:
-```json
-{
-  "nickname": "string (6-30 characters)"
-}
-```
+**Request Body**: [ProfileUpdateDTO](#profileupdatedto)
 **Response**:
-- `200 OK` with a JSON object representing the updated profile.
-```json
-{
-  "id": "number",
-  "nickname": "string",
-  "firstPageCommunities": [
-    {
-      "id": "string",
-      "title": "string",
-      "description": "string",
-      "memberCount": "number",
-      "clickCount": "number",
-      "game": {
-        "id": "string",
-        "name": "string"
-      }
-    }
-  ],
-  "firstPagePosts": [
-    {
-      "id": "string",
-      "title": "string",
-      "text": "string",
-      "tag": "string",
-      "clickCount": "number",
-      "profile": {
-        "id": "string",
-        "nickname": "string"
-      },
-      "community": {
-        "id": "string",
-        "title": "string"
-      },
-      "createdDate": "string (ISO 8601 format)"
-    }
-  ]
-}
-```
+- `200 OK` with a JSON object representing the updated profile: [ProfileGetDTO](#profilegetdto)
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to update the profile.
@@ -1302,22 +795,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `page` (query parameter, optional): The page number for pagination. The default is `0`.
 
 **Response**:
-- `200 OK` with a JSON array of community documents.
-```json
-[
-  {
-    "id": "string",
-    "title": "string",
-    "description": "string",
-    "memberCount": "number",
-    "clickCount": "number",
-    "game": {
-      "id": "string",
-      "name": "string"
-    }
-  }
-]
-```
+- `200 OK` with a JSON array of community documents: [[CommunityDocument](#communitydocument)]
 - `404 Not Found` if the profile does not exist.
 
 ### Get Profile Posts
@@ -1331,27 +809,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `page` (query parameter, optional): The page number for pagination. The default is `0`.
 
 **Response**:
-- `200 OK` with a JSON array of post documents.
-```json
-[
-  {
-    "id": "string",
-    "title": "string",
-    "text": "string",
-    "tag": "string",
-    "clickCount": "number",
-    "profile": {
-      "id": "string",
-      "nickname": "string"
-    },
-    "community": {
-      "id": "string",
-      "title": "string"
-    },
-    "createdDate": "string (ISO 8601 format)"
-  }
-]
-```
+- `200 OK` with a JSON array of post documents: [[PostDocument](#postdocument)]
 - `404 Not Found` if the profile does not exist.
 
 ## User
@@ -1365,18 +823,10 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `userId` (path parameter): The ID of the user whose email is to be changed.
 
-**Request Body**:
-```json
-{
-  "newEmail": "string (valid email address)"
-}
-```
+**Request Body**: [ChangeEmailDTO](#changeemaildto)
 
 **Response**:
-- `200 OK` with a JSON string representing the new email.
-```json
-  "newEmail@example.com"
-```
+- `200 OK` with a JSON string representing the new email: `email`
 - `400 Bad Request` if the request body is invalid.
 - `401 Unauthorized` if not logged in or could not send the JWT token.
 - `403 Forbidden` if the user does not have permission to change the email.
@@ -1391,13 +841,7 @@ When an error occurs, the client will receive a response containing the appropri
 **Request Parameters**:
 - `userId` (path parameter): The ID of the user whose password is to be changed.
 
-**Request Body**:
-```json
-{
-  "currentPassword": "string (8-30 characters, alphanumeric and @$!%?&)",
-  "newPassword": "string (8-30 characters, alphanumeric and @$!%?&)"
-}
-```
+**Request Body**: [ChangePasswordDTO](#changepassworddto)
 
 **Response**:
 - `200 OK` if the password is successfully changed.
@@ -1415,29 +859,7 @@ When an error occurs, the client will receive a response containing the appropri
 **Description**: Retrieve a list of the most popular communities based on click count.
 
 **Response**:
-- `200 OK` with a JSON array of popular communities.
-```json
-[
-  {
-    "id": "string",
-    "title": "string",
-    "description": "string",
-    "memberCount": "number",
-    "clickCount": "number",
-    "game": {
-      "id": "string",
-      "name": "string",
-      "alternativeNames": [
-        "string"
-      ],
-      "genreIds": [
-        "number"
-      ],
-      "popularity": "number"
-    }
-  }
-]
-```
+- `200 OK` with a JSON array of popular communities: [[CommunityDocument](#communitydocument)]
 
 ### Get Popular Posts
 
@@ -1449,41 +871,7 @@ When an error occurs, the client will receive a response containing the appropri
 - `page` (query parameter, optional): The page number for pagination. The default is `0`.
 
 **Response**:
-- `200 OK`  with a JSON array of popular posts.
-```json
-[
-  {
-    "id": "string",
-    "title": "string",
-    "text": "string",
-    "tag": "string",
-    "clickCount": "number",
-    "profile": {
-      "id": "string",
-      "nickname": "string"
-    },
-    "community": {
-      "id": "string",
-      "title": "string",
-      "description": "string",
-      "memberCount": "number",
-      "clickCount": "number",
-      "game": {
-        "id": "string",
-        "name": "string",
-        "alternativeNames": [
-          "string"
-        ],
-        "genreIds": [
-          "number"
-        ],
-        "popularity": "number"
-      }
-    },
-    "createdDate": "string (ISO 8601 format)"
-  }
-]
-```
+- `200 OK`  with a JSON array of popular posts: [[PostDocument](#postdocument)]
 
 ### Get Community Popular Posts
 
@@ -1496,41 +884,8 @@ When an error occurs, the client will receive a response containing the appropri
 - `page` (query parameter, optional): The page number for pagination. The default is `0`.
 
 **Response**:
-- `200 OK` with a JSON array of popular posts within the specified community.
-```json
-[
-  {
-    "id": "string",
-    "title": "string",
-    "text": "string",
-    "tag": "string",
-    "clickCount": "number",
-    "profile": {
-      "id": "string",
-      "nickname": "string"
-    },
-    "community": {
-      "id": "string",
-      "title": "string",
-      "description": "string",
-      "memberCount": "number",
-      "clickCount": "number",
-      "game": {
-        "id": "string",
-        "name": "string",
-        "alternativeNames": [
-          "string"
-        ],
-        "genreIds": [
-          "number"
-        ],
-        "popularity": "number"
-      }
-    },
-    "createdDate": "string (ISO 8601 format)"
-  }
-]
-```
+- `200 OK` with a JSON array of popular posts within the specified community: [[PostDocument](#postdocument)]
+
 ### Get Popular Games
 
 **Endpoint**: `GET /api/popular/games`
@@ -1538,22 +893,7 @@ When an error occurs, the client will receive a response containing the appropri
 **Description**: Retrieve a list of the most popular games based on popularity.
 
 **Response**:
-- `200 OK` with a JSON array of popular games.
-```json
-[
-  {
-    "id": "string",
-    "name": "string",
-    "alternativeNames": [
-      "string"
-    ],
-    "genreIds": [
-      "number"
-    ],
-    "popularity": "number"
-  }
-]
-```
+- `200 OK` with a JSON array of popular games: [[GameDocument](#gamedocument)]
 
 ## Search
 
@@ -1563,35 +903,10 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Description**: Search for games based on name, alternative names, and genre IDs.
 
-**Request Body**:
-```json
-{
-  "keyword": "string (search keyword for game names and alternative names)",
-  "page": "integer (page number for pagination)",
-  "size": "integer (number of results per page)",
-  "genreIds": [
-    "integer (list of genre IDs to filter games)"
-  ]
-}
-```
+**Request Body**: [GameSearchFilter](#gamesearchfilter)
 
 **Response**:
-- `200 OK` with a JSON array of game documents.
-```json
-[
-  {
-    "id": "string",
-    "name": "string",
-    "alternativeNames": [
-      "string"
-    ],
-    "genreIds": [
-      "integer"
-    ],
-    "popularity": "number"
-  }
-]
-```
+- `200 OK` with a JSON array of game documents: [[GameDocument](#gamedocument)]
 
 ### Search Communities
 
@@ -1599,40 +914,10 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Description**: Search for communities based on title and associated game ID.
 
-**Request Body**:
-```json
-{
-  "keyword": "string (search keyword for community titles)",
-  "page": "integer (page number for pagination)",
-  "size": "integer (number of results per page)",
-  "gameId": "string (optional game ID to filter communities)"
-}
-```
+**Request Body**: [CommunitySearchFilter](#communitysearchfilter)
 
 **Response**:
-- `200 OK` with a JSON array of community documents.
-```json
-[
-  {
-    "id": "string",
-    "title": "string",
-    "description": "string",
-    "memberCount": "number",
-    "clickCount": "number",
-    "game": {
-      "id": "string",
-      "name": "string",
-      "alternativeNames": [
-        "string"
-      ],
-      "genreIds": [
-        "integer"
-      ],
-      "popularity": "number"
-    }
-  }
-]
-```
+- `200 OK` with a JSON array of community documents: [[CommunityDocument](#communitydocument)]
 
 ### Search Profiles
 
@@ -1640,28 +925,10 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Description**: Search for user profiles based on nickname.
 
-**Request Body**:
-```json
-{
-  "keyword": "string (search keyword for profile nicknames)",
-  "page": "integer (page number for pagination)",
-  "size": "integer (number of results per page)"
-}
-```
+**Request Body**: [[SearchFilter](#searchfilter)]
 
 **Response**:
-- `200 OK` with a JSON array of profile documents.
-```json
-[
-  {
-    "id": "string",
-    "nickname": "string",
-    "communityIds": [
-      "string"
-    ]
-  }
-]
-```
+- `200 OK` with a JSON array of profile documents: [[ProfileDocument](#profiledocument)]
 
 ### Search Posts
 
@@ -1669,50 +936,273 @@ When an error occurs, the client will receive a response containing the appropri
 
 **Description**: Search for posts based on title, community ID, and tag.
 
-**Request Body**:
-```json
-{
-  "keyword": "string (search keyword for post titles)",
-  "page": "integer (page number for pagination)",
-  "size": "integer (number of results per page)",
-  "communityId": "string (optional community ID to filter posts)",
-  "tag": "string (optional tag to filter posts)"
-}
-```
+**Request Body**: [[PostSearchFilter](#postsearchfilter)]
 
 **Response**:
-- `200 OK` with a JSON array of post documents.
-```json
-[
-  {
-    "id": "string",
-    "title": "string",
-    "text": "string",
-    "tag": "string",
-    "clickCount": "number",
-    "profile": {
-      "id": "string",
-      "nickname": "string"
-    },
-    "community": {
-      "id": "string",
-      "title": "string",
-      "description": "string",
-      "memberCount": "number",
-      "clickCount": "number",
-      "game": {
-        "id": "string",
-        "name": "string",
-        "alternativeNames": [
-          "string"
-        ],
-        "genreIds": [
-          "integer"
-        ],
-        "popularity": "number"
-      }
-    },
-    "createdDate": "string (ISO 8601 format)"
-  }
-]
-```
+- `200 OK` with a JSON array of post documents: [[PostDocument](#postdocument)]
+
+## Like
+
+### Like Post
+
+**Endpoint**: `PATCH /api/like/post/{postId}`
+
+**Description**: This endpoint allows a user to like or unlike a post. If the user has already liked the post, calling this endpoint will unlike it, and vice versa.
+
+**Path Parameters**:
+- `postId` (string): The ID of the post to like or unlike.
+
+**Response**:
+- `200 OK`: Returns true if the post is liked, and false if it is unliked.
+
+### Like Comment
+
+**Endpoint**: `PATCH /api/like/comment/{commentId}`
+
+**Description**: This endpoint allows a user to like or unlike a comment. If the user has already liked the comment, calling this endpoint will unlike it, and vice versa.
+
+**Path Parameters**:
+- `commentId` (string): The ID of the comment to like or unlike.
+
+**Response**:
+- `200 OK`: Returns true if the comment is liked, and false if it is unliked.
+
+### Like Reply
+
+**Endpoint**: `PATCH /api/like/reply/{replyId}`
+
+**Description**: This endpoint allows a user to like or unlike a reply. If the user has already liked the reply, calling this endpoint will unlike it, and vice versa.
+
+**Path Parameters**:
+- `replyId` (string): The ID of the reply to like or unlike.
+
+**Response**:
+- `200 OK`: Returns true if the reply is liked, and false if it is unliked.
+
+## Returned JSONs
+
+### Authentication
+
+#### LoginRequestDTO
+- `username`: `String` (must be between 6 and 30 characters)
+- `password`: `String` (must be between 8 and 30 characters, allowed characters: a-z, A-Z, 0-9, @$!%?&)
+
+#### RegisterRequestDTO
+- `username`: `String` (must be between 6 and 30 characters)
+- `nickname`: `String` (must be between 6 and 30 characters)
+- `email`: `String` (must be a valid email address)
+- `password`: `String` (must be between 8 and 30 characters, allowed characters: a-z, A-Z, 0-9, @$!%?&)
+
+#### ChangeEmailDTO
+- `newEmail`: `String` (must be a valid email address)
+
+#### ChangePasswordDTO
+- `currentPassword`: `String` (must be between 8 and 30 characters, allowed characters: a-z, A-Z, 0-9, @$!%?&)
+- `newPassword`: `String` (must be between 8 and 30 characters, allowed characters: a-z, A-Z, 0-9, @$!%?&)
+
+### Profile
+
+#### ProfileGetDTO
+- `id`: `Long`
+- `nickname`: `String`
+- `firstPageCommunities`: `List<CommunityDocument>` ([CommunityDocument](#communitydocument))
+- `firstPagePosts`: `List<PostDocument>` ([PostDocument](#postdocument))
+
+#### ProfileUpdateDTO
+- `nickname`: `String` (must be between 6 and 30 characters)
+
+### Community
+
+#### CommunityCreateDTO
+- `title`: `String` (must be between 6 and 30 characters)
+- `description`: `String` (must be between 1 and 255 characters)
+- `gameId`: `String` (not blank)
+
+#### CommunityGetDTO
+- `id`: `Long`
+- `title`: `String`
+- `description`: `String`
+- `game`: `GameDocument` ([GameDocument](#gamedocument))
+- `tags`: `List<String>`
+- `firstPageMembers`: `List<CommunityMemberGetDTO>` ([CommunityMemberGetDTO](#communitymembergetdto))
+- `firstPagePopularPosts`: `List<PostDocument>` ([PostDocument](#postdocument))
+
+#### CommunityUpdateDTO
+- `title`: `String` (must be between 6 and 30 characters)
+- `description`: `String` (must be between 1 and 255 characters)
+
+#### CommunityUpdateTagsDTO
+- `tags`: `List<String>`
+- `remove`: `boolean`
+
+### Post
+
+#### PostCreateDTO
+- `title`: `String` (must be between 6 and 30 characters)
+- `tag`: `String` (not blank)
+- `text`: `String` (must be between 1 and 255 characters)
+
+#### PostGetDTO
+- `id`: `Long`
+- `title`: `String`
+- `tag`: `String`
+- `text`: `String`
+- `writerId`: `String`
+- `writerNickname`: `String`
+- `createdDate`: `Date`
+- `lastModifiedDate`: `Date`
+- `communityId`: `Long`
+- `communityName`: `String`
+- `firstPageComments`: `List<CommentGetDTO>` ([CommentGetDTO](#commentgetdto))
+
+#### PostUpdateDTO
+- `title`: `String` (must be between 6 and 30 characters)
+- `tag`: `String` (not blank)
+- `text`: `String` (must be between 1 and 255 characters)
+
+### Comment
+
+#### CommentCreateDTO
+- `text`: `String` (must be between 1 and 255 characters)
+
+#### CommentGetDTO
+- `id`: `Long`
+- `text`: `String`
+- `writerId`: `Long`
+- `writerNickname`: `String`
+- `createdDate`: `Date`
+- `lastModifiedDate`: `Date`
+
+#### CommentUpdateDTO
+- `text`: `String` (must be between 1 and 255 characters)
+
+### Reply
+
+#### ReplyCreateDTO
+- `text`: `String` (must be between 1 and 255 characters)
+
+#### ReplyGetDTO
+- `id`: `Long`
+- `text`: `String`
+- `commentId`: `Long`
+- `writerId`: `Long`
+- `writerNickname`: `String`
+- `createdDate`: `Date`
+- `lastModifiedDate`: `Date`
+
+#### ReplyUpdateDTO
+- `text`: `String` (must be between 1 and 255 characters)
+
+### Chat
+
+#### ChatCreateDTO
+- `participantProfileIds`: `List<Long>`
+
+#### ChatGetDTO
+- `id`: `Long`
+- `firstPageParticipants`: `List<ChatParticipantGetDTO>` ([ChatParticipantGetDTO](#chatparticipantgetdto))
+- `firstPageMessages`: `List<MessageGetDTO>` ([MessageGetDTO](#messagegetdto))
+
+### Message
+
+#### MessageCreateDTO
+- `text`: `String` (must be between 1 and 255 characters)
+- `isSent`: `boolean`
+
+#### MessageGetDTO
+- `senderProfileId`: `Long`
+- `senderName`: `String`
+- `text`: `String`
+- `sendDate`: `Date`
+- `isSent`: `boolean`
+
+#### MessageUpdateDTO
+- `id`: `Long`
+- `text`: `String` (must be between 1 and 255 characters)
+
+### Chat Participant
+
+#### ChatParticipantCreateDTO
+- `profileId`: `Long`
+
+#### ChatParticipantGetDTO
+- `id`: `Long`
+- `nickname`: `String`
+- `isMod`: `boolean`
+
+#### ChatParticipantUpdateDTO
+- `id`: `Long`
+- `isMod`: `boolean`
+
+### Community Member
+
+#### CommunityMemberCreateDTO
+- `profileId`: `Long`
+
+#### CommunityMemberGetDTO
+- `id`: `Long`
+- `nickname`: `String`
+- `role`: `CommunityMember.Role`
+
+#### CommunityMemberUpdateDTO
+- `role`: `CommunityMember.Role`
+
+### Search Filters
+
+#### SearchFilter
+- `keyword`: `String`
+- `page`: `Integer`
+- `size`: `Integer`
+
+#### CommunitySearchFilter
+- `keyword`: `String`
+- `page`: `Integer`
+- `size`: `Integer`
+- `gameId`: `String`
+
+#### GameSearchFilter
+- `keyword`: `String`
+- `page`: `Integer`
+- `size`: `Integer`
+- `genreIds`: `List<Integer>`
+
+#### PostSearchFilter
+- `keyword`: `String`
+- `page`: `Integer`
+- `size`: `Integer`
+- `communityId`: `String`
+- `tag`: `String`
+
+### Documents
+
+#### CommunityDocument
+- `id`: `String`
+- `title`: `String`
+- `description`: `String`
+- `memberCount`: `Long`
+- `clickCount`: `Long`
+- `game`: `GameDocument` ([GameDocument](#gamedocument))
+
+#### GameDocument
+- `id`: `String`
+- `name`: `String`
+- `alternativeNames`: `List<String>`
+- `genreIds`: `List<Integer>`
+- `popularity`: `Double`
+- `communityCount`: `Long`
+
+#### PostDocument
+- `id`: `String`
+- `title`: `String`
+- `text`: `String`
+- `tag`: `String`
+- `clickCount`: `Long`
+- `profile`: `ProfileDocument` ([ProfileDocument](#profiledocument))
+- `community`: `CommunityDocument` ([CommunityDocument](#communitydocument))
+- `createdDate`: `Date`
+- `likedByProfileIds`: `List<String>`
+
+#### ProfileDocument
+- `id`: `String`
+- `nickname`: `String`
+- `communityIds`: `List<String>`
