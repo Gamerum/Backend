@@ -2,6 +2,7 @@ package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommentDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
+import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Comment;
 import jakarta.persistence.PostPersist;
@@ -25,6 +26,11 @@ public class CommentListener {
                 .id(comment.getId().toString())
                 .likedByProfileIds(new ArrayList<>())
                 .build());
+
+        PostDocument postDocument = elasticsearchRepository
+                .getById(DocumentIndex.POST,comment.getPost().getId().toString(), PostDocument.class);
+        postDocument.setCommentCount(postDocument.getCommentCount() + 1);
+        elasticsearchRepository.save(postDocument);
     }
 
     @PostRemove

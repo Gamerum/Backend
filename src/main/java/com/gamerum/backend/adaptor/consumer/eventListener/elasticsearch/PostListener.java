@@ -6,6 +6,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocum
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
+import com.gamerum.backend.usecase.service.profile.ProfileService;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
@@ -18,9 +19,12 @@ import java.util.ArrayList;
 @Component
 public class PostListener {
     private final ElasticsearchRepository elasticsearchRepository;
+    private final ProfileService profileService;
 
-    public PostListener(ElasticsearchRepository elasticsearchRepository) {
+    public PostListener(ElasticsearchRepository elasticsearchRepository,
+                        ProfileService profileService) {
         this.elasticsearchRepository = elasticsearchRepository;
+        this.profileService = profileService;
     }
 
     @PostPersist
@@ -37,7 +41,7 @@ public class PostListener {
                 .title(post.getTitle())
                 .tag(post.getTag())
                 .community(community)
-                .profile(profile)
+                .writer(profile)
                 .clickCount(0L)
                 .likedByProfileIds(new ArrayList<>())
                 .createdDate(post.getCreatedDate())
@@ -65,5 +69,7 @@ public class PostListener {
                 .getById(DocumentIndex.POST, post.getId().toString(), PostDocument.class);
         postDocument.setClickCount(postDocument.getClickCount() + 1);
         elasticsearchRepository.save(postDocument);
+
+        profileService.saveLastViewedPost(postDocument);
     }
 }

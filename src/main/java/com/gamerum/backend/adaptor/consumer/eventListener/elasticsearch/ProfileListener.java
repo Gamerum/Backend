@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 @Component
 public class ProfileListener {
@@ -26,7 +27,8 @@ public class ProfileListener {
         elasticsearchRepository.save(ProfileDocument.builder()
                 .id(profile.getId().toString())
                 .nickname(profile.getNickname())
-                .communityIds(new ArrayList<>())
+                .joinedCommunityIds(new ArrayList<>())
+                .recentViewedCommunities(new LinkedList<>())
                 .build());
     }
 

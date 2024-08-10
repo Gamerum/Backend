@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +32,12 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Value("${page.profile.post_size}")
     private int postSize;
+
+    @Value("${panel.recent_viewed.community_size}")
+    private int recentViewedCommunitySize;
+
+    @Value("${panel.recent_viewed.post_size}")
+    private int recentViewedPostSize;
 
     private final ProfileRepository profileRepository;
     private final ElasticsearchRepository elasticsearchRepository;
@@ -51,7 +58,7 @@ public class ProfileServiceImpl implements ProfileService {
         ProfileDocument profileDocument = elasticsearchRepository.getById(
                 DocumentIndex.PROFILE, profileId.toString(), ProfileDocument.class);
 
-        List<FieldValue> fieldValues = profileDocument.getCommunityIds().stream()
+        List<FieldValue> fieldValues = profileDocument.getJoinedCommunityIds().stream()
                 .skip((long) page * communitySize)
                 .limit(communitySize)
                 .map(FieldValue::of)
@@ -91,6 +98,50 @@ public class ProfileServiceImpl implements ProfileService {
 
         return elasticsearchRepository.search(searchRequest, PostDocument.class);
     }
+
+    @Override
+    public void saveLastViewedCommunity(CommunityDocument communityDocument) throws IOException {
+        String currentProfileId = currentUser.getProfileId().toString();
+
+        ProfileDocument profileDocument = elasticsearchRepository
+                .getById(DocumentIndex.PROFILE, currentProfileId, ProfileDocument.class);
+
+        ProfileDocument.ViewedCommunity viewedCommunity = new ProfileDocument.ViewedCommunity(
+                communityDocument.getId(), communityDocument.getTitle(), communityDocument.getMemberCount());
+
+        Queue<ProfileDocument.ViewedCommunity> recentViewedCommunities = profileDocument.getRecentViewedCommunities();
+        recentViewedCommunities.removeIf(vc -> vc.id().equals(communityDocument.getId()));
+        recentViewedCommunities.add(viewedCommunity);
+        if (recentViewedCommunities.size() > recentViewedCommunitySize) recentViewedCommunities.poll();
+
+        elasticsearchRepository.save(profileDocument);
+    }
+
+    @Override
+    public void saveLastViewedPost(PostDocument postDocument) throws IOException {
+        String currentProfileId = currentUser.getProfileId().toString();
+
+        ProfileDocument profileDocument = elasticsearchRepository
+                .getById(DocumentIndex.PROFILE, currentProfileId, ProfileDocument.class);
+
+        ProfileDocument.ViewedPost viewedPost = new ProfileDocument.ViewedPost(
+                postDocument.getId(),
+                postDocument.getWriter().getNickname(),
+                postDocument.getCommunity().getId(),
+                postDocument.getCommunity().getTitle(),
+                postDocument.getTitle(),
+                postDocument.getCommentCount(),
+                postDocument.getLikedByProfileIds().stream().count()
+        );
+
+        Queue<ProfileDocument.ViewedPost> recentViewedPosts = profileDocument.getRecentViewedPosts();
+        recentViewedPosts.removeIf(vp -> vp.id().equals(postDocument.getId()));
+        recentViewedPosts.add(viewedPost);
+        if (recentViewedPosts.size() > recentViewedPostSize) recentViewedPosts.poll();
+
+        elasticsearchRepository.save(profileDocument);
+    }
+
 
     @Override
     public Profile updateProfile(Long profileId, ProfileUpdateDTO profileUpdateDTO) {

@@ -22,7 +22,8 @@ public class PostDocument extends LikeableDocument {
     private String text;
     private String tag;
     private Long clickCount;
-    private ProfileDocument profile;
+    private Long commentCount;
+    private ProfileDocument writer;
     private CommunityDocument community;
     private Date createdDate;
 
