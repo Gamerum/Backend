@@ -1,5 +1,6 @@
 package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
 
+import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ReplyDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Reply;
@@ -28,6 +29,6 @@ public class ReplyListener {
 
     @PostRemove
     public void handleAfterUpdate(Reply reply) throws IOException {
-        elasticsearchRepository.deleteById(reply.getId().toString(), "reply");
+        elasticsearchRepository.deleteById(reply.getId().toString(), DocumentIndex.REPLY);
     }
 }

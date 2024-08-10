@@ -8,7 +8,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import java.util.List;
 
 
-@Document(indexName = "profile")
+@Document(indexName = DocumentIndex.PROFILE)
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,6 +22,6 @@ public class ProfileDocument implements DocumentBase{
 
     @Override
     public String getIndex() {
-        return "profile";
+        return DocumentIndex.PROFILE;
     }
 }

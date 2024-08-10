@@ -12,7 +12,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Document(indexName = "game")
+@Document(indexName = DocumentIndex.GAME)
 @Data
 @Builder
 @AllArgsConstructor
@@ -52,7 +52,7 @@ public class GameDocument implements DocumentBase{
 
     @Override
     public String getIndex() {
-        return "game";
+        return DocumentIndex.GAME;
     }
 
     @Data

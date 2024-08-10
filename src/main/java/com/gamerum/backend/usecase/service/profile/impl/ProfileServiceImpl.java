@@ -7,6 +7,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import com.gamerum.backend.adaptor.dto.user.profile.ProfileUpdateDTO;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
@@ -48,7 +49,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     public List<CommunityDocument> getCommunities(Long profileId, int page) throws IOException {
         ProfileDocument profileDocument = elasticsearchRepository.getById(
-                "profile", profileId.toString(), ProfileDocument.class);
+                DocumentIndex.PROFILE, profileId.toString(), ProfileDocument.class);
 
         List<FieldValue> fieldValues = profileDocument.getCommunityIds().stream()
                 .skip((long) page * communitySize)
@@ -64,7 +65,7 @@ public class ProfileServiceImpl implements ProfileService {
                 .build();
 
         SearchRequest searchRequest = new SearchRequest.Builder()
-                .index("community")
+                .index(DocumentIndex.COMMUNITY)
                 .query(q -> q.bool(boolQuery))
                 .build();
 
@@ -81,7 +82,7 @@ public class ProfileServiceImpl implements ProfileService {
                 .build();
 
         SearchRequest searchRequest = new SearchRequest.Builder()
-                .index("post")
+                .index(DocumentIndex.POST)
                 .query(q -> q.bool(boolQuery))
                 .from(page * postSize)
                 .size(postSize)

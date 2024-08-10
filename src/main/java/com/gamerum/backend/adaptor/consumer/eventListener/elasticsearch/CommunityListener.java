@@ -1,6 +1,7 @@
 package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
@@ -25,7 +26,7 @@ public class CommunityListener {
     @PostPersist
     @Transactional
     public void handleAfterCreate(Community community) throws IOException {
-        GameDocument game = elasticsearchRepository.getById("game", community.getGameId(), GameDocument.class);
+        GameDocument game = elasticsearchRepository.getById(DocumentIndex.GAME, community.getGameId(), GameDocument.class);
         game.setCommunityCount(game.getCommunityCount() + 1);
 
         elasticsearchRepository.save(CommunityDocument.builder()
@@ -43,7 +44,7 @@ public class CommunityListener {
     @PostUpdate
     public void handleAfterUpdate(Community community) throws IOException {
         CommunityDocument communityDocument = elasticsearchRepository
-                .getById("community", community.getId().toString(), CommunityDocument.class);
+                .getById(DocumentIndex.COMMUNITY, community.getId().toString(), CommunityDocument.class);
 
         communityDocument.setTitle(community.getTitle());
         communityDocument.setDescription(community.getDescription());
@@ -54,17 +55,17 @@ public class CommunityListener {
     @PostRemove
     @Transactional
     public void handleAfterDelete(Community community) throws IOException {
-        GameDocument game = elasticsearchRepository.getById("game", community.getGameId(), GameDocument.class);
+        GameDocument game = elasticsearchRepository.getById(DocumentIndex.GAME, community.getGameId(), GameDocument.class);
         game.setCommunityCount(game.getCommunityCount() - 1);
 
-        elasticsearchRepository.deleteById(community.getId().toString(), "community");
+        elasticsearchRepository.deleteById(community.getId().toString(), DocumentIndex.COMMUNITY);
         elasticsearchRepository.save(game);
     }
 
     @PostLoad
     public void handleAfterLoad(Community community) throws IOException {
         CommunityDocument communityDocument = elasticsearchRepository
-                .getById("community", community.getId().toString(), CommunityDocument.class);
+                .getById(DocumentIndex.COMMUNITY, community.getId().toString(), CommunityDocument.class);
         communityDocument.setClickCount(communityDocument.getClickCount() + 1);
         elasticsearchRepository.save(communityDocument);
     }

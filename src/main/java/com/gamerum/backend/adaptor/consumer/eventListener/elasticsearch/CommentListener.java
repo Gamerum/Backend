@@ -1,6 +1,7 @@
 package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommentDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Comment;
 import jakarta.persistence.PostPersist;
@@ -28,6 +29,6 @@ public class CommentListener {
 
     @PostRemove
     public void handleAfterUpdate(Comment comment) throws IOException {
-        elasticsearchRepository.deleteById(comment.getId().toString(), "comment");
+        elasticsearchRepository.deleteById(comment.getId().toString(), DocumentIndex.COMMENT);
     }
 }

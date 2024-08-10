@@ -6,7 +6,7 @@ import lombok.*;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 
-@Document(indexName = "community")
+@Document(indexName = DocumentIndex.COMMUNITY)
 @Data
 @Builder
 @NoArgsConstructor
@@ -23,6 +23,6 @@ public class CommunityDocument implements DocumentBase {
 
     @Override
     public String getIndex() {
-        return "community";
+        return DocumentIndex.COMMUNITY;
     }
 }

@@ -5,6 +5,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
@@ -43,7 +44,7 @@ public class PopularServiceImpl implements PopularService {
             unless = "#result == null || #result.size() == 0")
     public List<CommunityDocument> getPopularCommunities() throws IOException {
         SearchRequest searchRequest = new SearchRequest.Builder()
-                .index("community")
+                .index(DocumentIndex.COMMUNITY)
                 .sort(s -> s.field(f -> f.field("clickCount").order(SortOrder.Desc)))
                 .sort(s -> s.field(f -> f.field("memberCount").order(SortOrder.Desc)))
                 .size(communityTopPopularSize)
@@ -57,7 +58,7 @@ public class PopularServiceImpl implements PopularService {
             unless = "#result == null || #result.size() == 0")
     public List<PostDocument> getPopularPosts(int page) throws IOException {
         SearchRequest searchRequest = new SearchRequest.Builder()
-                .index("post")
+                .index(DocumentIndex.POST)
                 .sort(s -> s.field(f -> f.field("clickCount").order(SortOrder.Desc)))
                 .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
                 .from(page * postPopularSize)
@@ -82,7 +83,7 @@ public class PopularServiceImpl implements PopularService {
                 .build();
 
         SearchRequest searchRequest = new SearchRequest.Builder()
-                .index("post")
+                .index(DocumentIndex.POST)
                 .query(q -> q.bool(boolQuery))
                 .sort(s -> s.field(f -> f.field("clickCount").order(SortOrder.Desc)))
                 .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
@@ -99,7 +100,7 @@ public class PopularServiceImpl implements PopularService {
             unless = "#result == null || #result.size() == 0")
     public List<GameDocument> getPopularGames() throws IOException {
         SearchRequest searchRequest = new SearchRequest.Builder()
-                .index("game")
+                .index(DocumentIndex.GAME)
                 .sort(s -> s.field(f -> f.field("communityCount").order(SortOrder.Desc)))
                 .sort(s -> s.field(f -> f.field("popularity").order(SortOrder.Desc)))
                 .size(gamePopularSize)

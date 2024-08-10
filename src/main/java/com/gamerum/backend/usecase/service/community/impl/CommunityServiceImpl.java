@@ -8,6 +8,7 @@ import com.gamerum.backend.adaptor.dto.community.CommunityUpdateTagsDTO;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
@@ -161,7 +162,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     public void resetCommunitiesClickCount() throws IOException {
         UpdateByQueryRequest request = UpdateByQueryRequest.of(ubq -> ubq
-                .index("community")
+                .index( DocumentIndex.COMMUNITY)
                 .script(s -> s .inline(i -> i .source("ctx._source.clickCount = 0")))
                 .query(QueryBuilders.matchAll().build()._toQuery())
         );

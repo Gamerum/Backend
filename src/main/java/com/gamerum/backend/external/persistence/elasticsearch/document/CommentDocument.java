@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 @EqualsAndHashCode(callSuper = true)
-@Document(indexName = "comment")
+@Document(indexName = DocumentIndex.COMMENT)
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -22,6 +22,6 @@ public class CommentDocument extends LikeableDocument {
 
     @Override
     public String getIndex() {
-        return "comment";
+        return DocumentIndex.COMMENT;
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
-@Document(indexName = "post")
+@Document(indexName = DocumentIndex.POST)
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -28,6 +28,6 @@ public class PostDocument extends LikeableDocument {
 
     @Override
     public String getIndex() {
-        return "post";
+        return DocumentIndex.POST;
     }
 }
