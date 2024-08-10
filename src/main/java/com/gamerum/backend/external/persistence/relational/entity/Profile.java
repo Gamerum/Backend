@@ -2,7 +2,6 @@ package com.gamerum.backend.external.persistence.relational.entity;
 
 import com.gamerum.backend.adaptor.consumer.elasticsearch.ProfileListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
-import com.gamerum.backend.external.persistence.relational.entity.notification.CommentReplyNotification;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -59,5 +58,5 @@ public class Profile extends Auditable {
 
     @Transient
     @OneToMany(mappedBy = "notifiedProfile", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<CommentReplyNotification> commentReplyNotifications;
+    private List<Notification> notifications;
 }
