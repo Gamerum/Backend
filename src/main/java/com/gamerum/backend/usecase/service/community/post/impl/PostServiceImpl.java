@@ -11,9 +11,12 @@ import com.gamerum.backend.external.persistence.elasticsearch.repository.Elastic
 import com.gamerum.backend.external.persistence.relational.entity.*;
 import com.gamerum.backend.external.persistence.relational.repository.*;
 import com.gamerum.backend.security.user.UserRole;
+import com.gamerum.backend.usecase.exception.NoEntryException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.ParticipationException;
 import com.gamerum.backend.usecase.exception.ForbiddenException;
+import com.gamerum.backend.usecase.service.community.CommunityTagService;
+import com.gamerum.backend.usecase.service.community.impl.CommunityTagServiceImpl;
 import com.gamerum.backend.usecase.service.community.post.PostService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +30,7 @@ import java.util.Objects;
 @Service
 public class PostServiceImpl implements PostService {
     private final ElasticsearchRepository elasticsearchRepository;
+    private final CommunityTagServiceImpl communityTagServiceImpl;
     @Value("${cache.config.data.popular.cache_name}")
     private String popularCacheName;
 
@@ -40,6 +44,7 @@ public class PostServiceImpl implements PostService {
     private final CommunityRepository communityRepository;
     private final ProfileRepository profileRepository;
     private final CommunityMemberRepository communityMemberRepository;
+    private final CommunityTagService communityTagService;
     private final CurrentUser currentUser;
     private final CommentRepository commentRepository;
     private final CacheUtils cacheUtils;
@@ -49,7 +54,7 @@ public class PostServiceImpl implements PostService {
                            ProfileRepository profileRepository,
                            CommunityMemberRepository communityMemberRepository,
                            CurrentUser currentUser, CommentRepository commentRepository,
-                           CacheUtils cacheUtils, ElasticsearchRepository elasticsearchRepository) {
+                           CacheUtils cacheUtils, ElasticsearchRepository elasticsearchRepository, CommunityTagServiceImpl communityTagServiceImpl, CommunityTagService communityTagService) {
         this.postRepository = postRepository;
         this.communityRepository = communityRepository;
         this.profileRepository = profileRepository;
@@ -58,6 +63,8 @@ public class PostServiceImpl implements PostService {
         this.commentRepository = commentRepository;
         this.cacheUtils = cacheUtils;
         this.elasticsearchRepository = elasticsearchRepository;
+        this.communityTagServiceImpl = communityTagServiceImpl;
+        this.communityTagService = communityTagService;
     }
 
     @Override
@@ -72,9 +79,9 @@ public class PostServiceImpl implements PostService {
 
         if (!communityMemberRepository.existsByProfileIdAndCommunityId(profile.getId(), communityId))
             throw new ParticipationException(false);
+        if (!communityTagService.hasTag(community, postCreateDTO.getTag())) throw new NoEntryException("Tag");
 
         Post newPost = PostMapper.INSTANCE.postCreateDTOToPost(postCreateDTO);
-
         newPost.setCommunity(community);
         newPost.setProfile(profile);
 
@@ -88,6 +95,9 @@ public class PostServiceImpl implements PostService {
 
         if (!post.getProfile().getId().equals(currentUser.getProfileId()))
             throw new ForbiddenException();
+
+        if (!communityTagService.hasTag(post.getCommunity().getId(), postUpdateDTO.getTag()))
+            throw new NoEntryException("Tag");
 
         post.setTitle(postUpdateDTO.getTitle());
         post.setTag(postUpdateDTO.getTag());
@@ -135,7 +145,7 @@ public class PostServiceImpl implements PostService {
     public void resetPostsClickCounts() throws IOException {
         UpdateByQueryRequest request = UpdateByQueryRequest.of(ubq -> ubq
                 .index("post")
-                .script(s -> s .inline(i -> i .source("ctx._source.clickCount = 0")))
+                .script(s -> s.inline(i -> i.source("ctx._source.clickCount = 0")))
                 .query(QueryBuilders.matchAll().build()._toQuery())
         );
 

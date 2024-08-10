@@ -1,6 +1,8 @@
 package com.gamerum.backend.usecase.service.community.impl;
 
 import com.gamerum.backend.external.persistence.relational.entity.Community;
+import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
+import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.service.community.CommunityTagService;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class CommunityTagServiceImpl implements CommunityTagService {
+    private final CommunityRepository communityRepository;
+
+    public CommunityTagServiceImpl(CommunityRepository communityRepository) {
+        this.communityRepository = communityRepository;
+    }
+
     @Override
     public String addTags(Community community, List<String> tags) {
         if (tags == null || tags.isEmpty()) return null;
@@ -32,6 +40,18 @@ public class CommunityTagServiceImpl implements CommunityTagService {
         currentTags.removeIf(tag -> loweredTags.contains(tag.toLowerCase()));
 
         return String.join(",", currentTags);
+    }
+
+    @Override
+    public Boolean hasTag(Community community, String tag) {
+        return community.getTags().toLowerCase().contains(tag.toLowerCase());
+    }
+
+    @Override
+    public Boolean hasTag(Long communityId, String tag) {
+        Community community = communityRepository.findById(communityId).
+                orElseThrow(() -> new NotFoundException(Community.class));
+        return hasTag(community, tag);
     }
 
     private List<String> filterAddableTags(List<String> currentTags, List<String> newTags) {
