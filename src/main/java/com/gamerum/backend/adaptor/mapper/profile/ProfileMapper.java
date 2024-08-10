@@ -6,23 +6,29 @@ import com.gamerum.backend.adaptor.mapper.community.PostMapper;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
+import com.gamerum.backend.usecase.service.notification.NotificationService;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.List;
 
 @Mapper(uses = {CommunityMapper.class, PostMapper.class}, componentModel = "spring")
 public abstract class ProfileMapper {
+    protected final ProfileService profileService;
+    protected final NotificationService notificationService;
 
-    @Autowired
-    protected ProfileService profileService;
+    protected ProfileMapper(ProfileService profileService, NotificationService notificationService) {
+        this.profileService = profileService;
+        this.notificationService = notificationService;
+    }
+
     @Mapping(source = "joinedCommunities", target = "firstPageCommunities")
     @Mapping(source = "posts", target = "firstPagePosts")
+    @Mapping(target = "notifications", ignore = true)
     public abstract ProfileGetDTO profileToProfileGetDTO(Profile profile) throws IOException;
 
     @AfterMapping
@@ -32,5 +38,7 @@ public abstract class ProfileMapper {
 
         profileGetDTO.setFirstPageCommunities(communities);
         profileGetDTO.setFirstPagePosts(posts);
+
+        profileGetDTO.setNotificationCount(notificationService.getNotificationCountOfProfile(profile.getId()));
     }
 }
