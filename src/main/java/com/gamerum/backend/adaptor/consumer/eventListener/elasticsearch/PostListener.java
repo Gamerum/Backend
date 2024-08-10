@@ -7,6 +7,8 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDo
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
+import com.gamerum.backend.usecase.service.recent.RecentService;
+import com.gamerum.backend.usecase.service.user.CurrentUser;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
@@ -15,16 +17,16 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Queue;
 
 @Component
 public class PostListener {
     private final ElasticsearchRepository elasticsearchRepository;
-    private final ProfileService profileService;
+    private final RecentService recentService;
 
-    public PostListener(ElasticsearchRepository elasticsearchRepository,
-                        ProfileService profileService) {
+    public PostListener(ElasticsearchRepository elasticsearchRepository, RecentService recentService) {
         this.elasticsearchRepository = elasticsearchRepository;
-        this.profileService = profileService;
+        this.recentService = recentService;
     }
 
     @PostPersist
@@ -70,6 +72,6 @@ public class PostListener {
         postDocument.setClickCount(postDocument.getClickCount() + 1);
         elasticsearchRepository.save(postDocument);
 
-        profileService.saveLastViewedPost(postDocument);
+        recentService.saveLastViewedPostToCurrentProfile(postDocument);
     }
 }

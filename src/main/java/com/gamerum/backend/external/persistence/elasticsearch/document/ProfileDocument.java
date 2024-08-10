@@ -28,12 +28,9 @@ public class ProfileDocument implements DocumentBase{
         return DocumentIndex.PROFILE;
     }
 
-
-    @Getter
     public record ViewedCommunity(String id, String title, Long memberCount) {
     }
 
-    @Getter
     public record ViewedPost(String id, String writerNickname, String communityId, String communityTitle,
                              String title, Long commentCount, Long likeCount) {
     }

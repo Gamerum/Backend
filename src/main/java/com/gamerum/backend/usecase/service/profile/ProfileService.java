@@ -15,6 +15,4 @@ public interface ProfileService {
     Profile updateProfile(Long profileId, ProfileUpdateDTO profileUpdateDTO);
     List<CommunityDocument> getCommunities(Long profileId, int page) throws IOException;
     List<PostDocument> getPosts(Long profileId, int page) throws IOException;
-    void saveLastViewedCommunity(CommunityDocument communityDocument) throws IOException;
-    void saveLastViewedPost(PostDocument postDocument) throws IOException;
 }

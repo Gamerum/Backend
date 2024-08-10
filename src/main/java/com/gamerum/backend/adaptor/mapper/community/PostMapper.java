@@ -14,7 +14,7 @@ public interface PostMapper {
     @Mapping(source = "profile.id", target = "writerId")
     @Mapping(source = "profile.nickname", target = "writerNickname")
     @Mapping(source = "community.id", target = "communityId")
-    @Mapping(source = "community.title", target = "communityTitle")
+    @Mapping(source = "community.title", target = "communityName")
     @Mapping(source = "comments", target = "firstPageComments")
     PostGetDTO postToPostGetDTO(Post post);
 

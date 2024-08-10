@@ -6,6 +6,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocum
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
+import com.gamerum.backend.usecase.service.recent.RecentService;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
@@ -19,11 +20,11 @@ import java.io.IOException;
 @Component
 public class CommunityListener {
     private final ElasticsearchRepository elasticsearchRepository;
-    private final ProfileService profileService;
+    private final RecentService recentService;
 
-    public CommunityListener(ElasticsearchRepository elasticsearchRepository, ProfileService profileService) {
+    public CommunityListener(ElasticsearchRepository elasticsearchRepository, RecentService recentService) {
         this.elasticsearchRepository = elasticsearchRepository;
-        this.profileService = profileService;
+        this.recentService = recentService;
     }
 
     @PostPersist
@@ -72,7 +73,7 @@ public class CommunityListener {
         communityDocument.setClickCount(communityDocument.getClickCount() + 1);
         elasticsearchRepository.save(communityDocument);
 
-        profileService.saveLastViewedCommunity(communityDocument);
+        recentService.saveLastViewedCommunityToCurrentProfile(communityDocument);
     }
 }
 
