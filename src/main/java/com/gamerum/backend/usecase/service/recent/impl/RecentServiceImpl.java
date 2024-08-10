@@ -8,10 +8,12 @@ import com.gamerum.backend.external.persistence.elasticsearch.repository.Elastic
 import com.gamerum.backend.usecase.service.recent.RecentService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Queue;
 
+@Service
 public class RecentServiceImpl implements RecentService {
     private final ElasticsearchRepository elasticsearchRepository;
     private final CurrentUser currentUser;

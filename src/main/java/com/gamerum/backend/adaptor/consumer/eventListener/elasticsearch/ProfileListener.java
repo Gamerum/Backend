@@ -29,6 +29,7 @@ public class ProfileListener {
                 .nickname(profile.getNickname())
                 .joinedCommunityIds(new ArrayList<>())
                 .recentViewedCommunities(new LinkedList<>())
+                .recentViewedPosts(new LinkedList<>())
                 .build());
     }
 
