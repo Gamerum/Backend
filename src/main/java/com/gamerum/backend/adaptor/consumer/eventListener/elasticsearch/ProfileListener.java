@@ -1,5 +1,6 @@
 package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
 
+import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
@@ -32,7 +33,7 @@ public class ProfileListener {
     @PostUpdate
     public void handleAfterUpdate(Profile profile) throws IOException {
         ProfileDocument profileDocument = elasticsearchRepository.getById(
-                "profile", profile.getId().toString(), ProfileDocument.class);
+                DocumentIndex.PROFILE, profile.getId().toString(), ProfileDocument.class);
 
         profileDocument.setNickname(profile.getNickname());
         elasticsearchRepository.save(profileDocument);

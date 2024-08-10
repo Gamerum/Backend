@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 @EqualsAndHashCode(callSuper = true)
-@Document(indexName = "reply")
+@Document(indexName = DocumentIndex.REPLY)
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -22,6 +22,6 @@ public class ReplyDocument extends LikeableDocument {
 
     @Override
     public String getIndex() {
-        return "reply";
+        return DocumentIndex.REPLY;
     }
 }

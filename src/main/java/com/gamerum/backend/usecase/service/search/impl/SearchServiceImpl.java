@@ -7,10 +7,7 @@ import com.gamerum.backend.adaptor.dto.search.CommunitySearchFilter;
 import com.gamerum.backend.adaptor.dto.search.GameSearchFilter;
 import com.gamerum.backend.adaptor.dto.search.PostSearchFilter;
 import com.gamerum.backend.adaptor.dto.search.SearchFilter;
-import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
-import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
-import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
-import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.*;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.usecase.service.search.SearchService;
 import org.springframework.stereotype.Service;
@@ -58,7 +55,7 @@ public class SearchServiceImpl implements SearchService {
         BoolQuery boolQuery = boolQueryBuilder.build();
 
         SearchRequest searchRequest = new SearchRequest.Builder()
-                .index("game")
+                .index(DocumentIndex.GAME)
                 .query(q -> q.bool(boolQuery))
                 .sort(s -> s.field(f -> f.field("_score").order(SortOrder.Desc)))
                 .from(filter.getPage() * filter.getSize())
@@ -82,17 +79,17 @@ public class SearchServiceImpl implements SearchService {
         }
 
         if (filter.getGameId() != null && !filter.getGameId().isEmpty()) {
-                Query termQuery = QueryBuilders.term()
-                        .field("gameId")
-                        .value(filter.getGameId())
-                        .build()._toQuery();
-                boolQueryBuilder.must(termQuery);
+            Query termQuery = QueryBuilders.term()
+                    .field("gameId")
+                    .value(filter.getGameId())
+                    .build()._toQuery();
+            boolQueryBuilder.must(termQuery);
         }
 
         BoolQuery boolQuery = boolQueryBuilder.build();
 
         SearchRequest searchRequest = new SearchRequest.Builder()
-                .index("community")
+                .index(DocumentIndex.COMMUNITY)
                 .query(q -> q.bool(boolQuery))
                 .sort(s -> s.field(f -> f.field("_score").order(SortOrder.Desc)))
                 .from(filter.getPage() * filter.getSize())
@@ -100,7 +97,7 @@ public class SearchServiceImpl implements SearchService {
                 .build();
 
         return repository.search(searchRequest, CommunityDocument.class);
-   }
+    }
 
     @Override
     public List<ProfileDocument> searchProfile(SearchFilter filter) throws IOException {
@@ -118,7 +115,7 @@ public class SearchServiceImpl implements SearchService {
         BoolQuery boolQuery = boolQueryBuilder.build();
 
         SearchRequest searchRequest = new SearchRequest.Builder()
-                .index("profile")
+                .index(DocumentIndex.PROFILE)
                 .query(q -> q.bool(boolQuery))
                 .sort(s -> s.field(f -> f.field("_score").order(SortOrder.Desc)))
                 .from(filter.getPage() * filter.getSize())
@@ -160,7 +157,7 @@ public class SearchServiceImpl implements SearchService {
         BoolQuery boolQuery = boolQueryBuilder.build();
 
         SearchRequest searchRequest = new SearchRequest.Builder()
-                .index("post")
+                .index(DocumentIndex.POST)
                 .query(q -> q.bool(boolQuery))
                 .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
                 .sort(s -> s.field(f -> f.field("clickCount").order(SortOrder.Desc)))

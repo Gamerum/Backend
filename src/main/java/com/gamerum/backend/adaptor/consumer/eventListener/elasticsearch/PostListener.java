@@ -1,6 +1,7 @@
 package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
+import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
@@ -25,10 +26,10 @@ public class PostListener {
     @PostPersist
     public void handleAfterCreate(Post post) throws IOException {
         CommunityDocument community = elasticsearchRepository.getById(
-                "community", post.getCommunity().getId().toString(), CommunityDocument.class);
+                DocumentIndex.COMMUNITY, post.getCommunity().getId().toString(), CommunityDocument.class);
 
         ProfileDocument profile = elasticsearchRepository.getById(
-                "profile", post.getProfile().getId().toString(), ProfileDocument.class);
+                DocumentIndex.PROFILE, post.getProfile().getId().toString(), ProfileDocument.class);
 
         elasticsearchRepository.save(PostDocument.builder()
                 .id(post.getId().toString())
@@ -46,7 +47,7 @@ public class PostListener {
     @PostUpdate
     public void handleAfterUpdate(Post post) throws IOException {
         PostDocument postDocument = elasticsearchRepository.getById(
-                "post", post.getId().toString(), PostDocument.class);
+                DocumentIndex.POST, post.getId().toString(), PostDocument.class);
 
         postDocument.setText(post.getText());
         postDocument.setTitle(post.getTitle());
@@ -55,13 +56,13 @@ public class PostListener {
 
     @PostRemove
     public void handleAfterDelete(Post post) throws IOException {
-        elasticsearchRepository.deleteById(post.getId().toString(), "post");
+        elasticsearchRepository.deleteById(post.getId().toString(), DocumentIndex.POST);
     }
 
     @PostLoad
     public void handleAfterLoad(Post post) throws IOException {
         PostDocument postDocument = elasticsearchRepository
-                .getById("post", post.getId().toString(), PostDocument.class);
+                .getById(DocumentIndex.POST, post.getId().toString(), PostDocument.class);
         postDocument.setClickCount(postDocument.getClickCount() + 1);
         elasticsearchRepository.save(postDocument);
     }

@@ -6,6 +6,7 @@ import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostUpdateDTO;
 import com.gamerum.backend.adaptor.mapper.community.PostMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
+import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.*;
@@ -144,7 +145,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void resetPostsClickCounts() throws IOException {
         UpdateByQueryRequest request = UpdateByQueryRequest.of(ubq -> ubq
-                .index("post")
+                .index( DocumentIndex.POST)
                 .script(s -> s.inline(i -> i.source("ctx._source.clickCount = 0")))
                 .query(QueryBuilders.matchAll().build()._toQuery())
         );
