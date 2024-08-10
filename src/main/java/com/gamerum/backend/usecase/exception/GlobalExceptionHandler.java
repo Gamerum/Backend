@@ -2,7 +2,7 @@ package com.gamerum.backend.usecase.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,9 +14,7 @@ import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -58,6 +56,12 @@ public class GlobalExceptionHandler {
                 .map(e -> ((FieldError) e).getField() + ":" + e.getDefaultMessage()).toList();
         logger.error("\n\nValidationException: {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new ErrorResponse(errorCode), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(Exception ex) {
+        logger.error("\n\nDataIntegrityViolationException: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(new ErrorResponse(ErrorCode.DATA_INTEGRITY_VIOLATION), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
