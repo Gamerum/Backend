@@ -6,6 +6,9 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocum
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
+import com.gamerum.backend.usecase.service.profile.ProfileService;
+import com.gamerum.backend.usecase.service.recent.RecentService;
+import com.gamerum.backend.usecase.service.user.CurrentUser;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
@@ -14,13 +17,16 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Queue;
 
 @Component
 public class PostListener {
     private final ElasticsearchRepository elasticsearchRepository;
+    private final RecentService recentService;
 
-    public PostListener(ElasticsearchRepository elasticsearchRepository) {
+    public PostListener(ElasticsearchRepository elasticsearchRepository, RecentService recentService) {
         this.elasticsearchRepository = elasticsearchRepository;
+        this.recentService = recentService;
     }
 
     @PostPersist
@@ -37,7 +43,7 @@ public class PostListener {
                 .title(post.getTitle())
                 .tag(post.getTag())
                 .community(community)
-                .profile(profile)
+                .writer(profile)
                 .clickCount(0L)
                 .likedByProfileIds(new ArrayList<>())
                 .createdDate(post.getCreatedDate())
@@ -65,5 +71,7 @@ public class PostListener {
                 .getById(DocumentIndex.POST, post.getId().toString(), PostDocument.class);
         postDocument.setClickCount(postDocument.getClickCount() + 1);
         elasticsearchRepository.save(postDocument);
+
+        recentService.saveLastViewedPostToCurrentProfile(postDocument);
     }
 }

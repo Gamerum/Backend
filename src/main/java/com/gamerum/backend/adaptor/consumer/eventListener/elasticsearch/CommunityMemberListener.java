@@ -28,7 +28,7 @@ public class CommunityMemberListener {
 
         ProfileDocument profileDocument = elasticsearchRepository.getById(
                 DocumentIndex.PROFILE, member.getProfile().getId().toString(), ProfileDocument.class);
-        profileDocument.getCommunityIds().add(member.getCommunity().getId().toString());
+        profileDocument.getJoinedCommunityIds().add(member.getCommunity().getId().toString());
         elasticsearchRepository.save(profileDocument);
     }
 
@@ -41,7 +41,7 @@ public class CommunityMemberListener {
 
         ProfileDocument profileDocument = elasticsearchRepository.getById(
                 DocumentIndex.PROFILE, member.getProfile().getId().toString(), ProfileDocument.class);
-        profileDocument.getCommunityIds().remove(member.getCommunity().getId().toString());
+        profileDocument.getJoinedCommunityIds().remove(member.getCommunity().getId().toString());
         elasticsearchRepository.save(profileDocument);
     }
 }

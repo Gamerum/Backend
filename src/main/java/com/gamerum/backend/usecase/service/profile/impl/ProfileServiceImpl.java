@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +52,7 @@ public class ProfileServiceImpl implements ProfileService {
         ProfileDocument profileDocument = elasticsearchRepository.getById(
                 DocumentIndex.PROFILE, profileId.toString(), ProfileDocument.class);
 
-        List<FieldValue> fieldValues = profileDocument.getCommunityIds().stream()
+        List<FieldValue> fieldValues = profileDocument.getJoinedCommunityIds().stream()
                 .skip((long) page * communitySize)
                 .limit(communitySize)
                 .map(FieldValue::of)
