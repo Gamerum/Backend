@@ -9,4 +9,5 @@ public interface CommunityTagService {
     String removeTags(Community community, List<String> tags);
     Boolean hasTag(Community community, String tag);
     Boolean hasTag(Long communityId, String tag);
+    List<String> getTags(Community community);
 }
