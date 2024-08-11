@@ -13,7 +13,7 @@ public class NotificationConsumer {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @KafkaListener(topics = "${spring.kafka.topic.comment-reply-notification}",
+    @KafkaListener(topics = "${spring.kafka.topic.notification}",
             groupId = "${spring.kafka.group.notification}")
     public void listenCommentReplyNotificationEvent(Notification notification) {
         String destination = "/topic/notifications/" + notification.getNotifiedProfile().getId();

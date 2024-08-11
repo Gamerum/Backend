@@ -15,7 +15,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final KafkaTemplate<String, Notification> kafkaTemplate;
 
-    @Value("${spring.kafka.topics.notification}")
+    @Value("${spring.kafka.topic.notification}")
     private String topic;
 
     @Value("${profile.notification.size}")
@@ -31,7 +31,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendProfileNotifications(int page) {
         notificationRepository
-                .findByNotifiedProfileIdSortByCreatedDateDesc(currentUser.getProfileId(),
+                .findByNotifiedProfileIdOrderByCreatedDateDesc(currentUser.getProfileId(),
                         PageRequest.of(page, notificationPageSize))
                 .forEach(n -> kafkaTemplate.send(topic, n));
     }
@@ -49,11 +49,11 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void deleteNotificationOfCurrentUser(Long notificationId) {
-        notificationRepository.deleteByIdAndProfileId(notificationId, currentUser.getProfileId());
+        notificationRepository.deleteByIdAndNotifiedProfileId(notificationId, currentUser.getProfileId());
     }
 
     @Override
     public void deleteAllNotificationsOfCurrentUser() {
-        notificationRepository.deleteAllByProfileId(currentUser.getProfileId());
+        notificationRepository.deleteAllByNotifiedProfileId(currentUser.getProfileId());
     }
 }

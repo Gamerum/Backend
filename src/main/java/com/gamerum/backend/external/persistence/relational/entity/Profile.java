@@ -1,5 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.gamerum.backend.adaptor.consumer.elasticsearch.ProfileListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
@@ -28,9 +29,8 @@ public class Profile extends Auditable {
     private String nickname;
     private boolean isActive;
 
-    @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @Column(nullable = false)
+    private Long userId;
 
     @Transient
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)

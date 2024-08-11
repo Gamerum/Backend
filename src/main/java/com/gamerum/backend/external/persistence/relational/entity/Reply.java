@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @Entity
-@Table(name = "CommentResponses")
+@Table(name = "Replies")
 @EntityListeners(ReplyListener.class)
 public class Reply extends Auditable {
     @Id

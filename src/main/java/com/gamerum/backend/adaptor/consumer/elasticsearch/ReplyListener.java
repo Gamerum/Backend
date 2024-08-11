@@ -9,6 +9,7 @@ import com.gamerum.backend.external.persistence.relational.entity.Reply;
 import com.gamerum.backend.usecase.service.notification.NotificationService;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
+import org.springframework.context.annotation.Lazy;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class ReplyListener {
     private final ElasticsearchRepository elasticsearchRepository;
     private final NotificationService notificationService;
 
-    public ReplyListener(ElasticsearchRepository elasticsearchRepository, NotificationService notificationService) {
+    public ReplyListener(ElasticsearchRepository elasticsearchRepository, @Lazy NotificationService notificationService) {
         this.elasticsearchRepository = elasticsearchRepository;
         this.notificationService = notificationService;
     }

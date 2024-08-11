@@ -45,6 +45,7 @@ public class PostListener {
                 .community(community)
                 .writer(profile)
                 .clickCount(0L)
+                .commentCount(0L)
                 .likedByProfileIds(new ArrayList<>())
                 .createdDate(post.getCreatedDate())
                 .build());
