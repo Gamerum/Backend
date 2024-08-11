@@ -13,24 +13,21 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.List;
 
 @Mapper(uses = {CommunityMemberMapper.class, PostMapper.class}, componentModel = "spring")
 public abstract class CommunityMapper {
+    @Autowired
+    private ElasticsearchRepository elasticsearchRepository;
 
-    private final ElasticsearchRepository elasticsearchRepository;
-    private final PopularService popularService;
-    private final CommunityTagService communityTagService;
+    @Autowired
+    private PopularService popularService;
 
-    protected CommunityMapper(ElasticsearchRepository elasticsearchRepository,
-                              PopularService popularService,
-                              CommunityTagService communityTagService) {
-        this.elasticsearchRepository = elasticsearchRepository;
-        this.popularService = popularService;
-        this.communityTagService = communityTagService;
-    }
+    @Autowired
+    private CommunityTagService communityTagService;
 
     @Mapping(source = "posts", target = "firstPagePopularPosts")
     @Mapping(source = "members", target = "firstPageMembers")
