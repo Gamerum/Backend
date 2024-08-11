@@ -1,5 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gamerum.backend.adaptor.consumer.NotificationListener;
 import com.gamerum.backend.adaptor.content.notification.NotificationContent;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
@@ -39,5 +40,6 @@ public class Notification extends Auditable implements Serializable {
     private String content;
 
     @Transient
+    @JsonIgnore
     private NotificationContent notificationContent;
 }

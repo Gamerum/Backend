@@ -5,7 +5,9 @@ import com.gamerum.backend.external.persistence.relational.entity.Notification;
 import com.gamerum.backend.usecase.websocket.WebsocketService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Service;
 
+@Service
 public class KafkaNotificationConsumer implements KafkaConsumer<Notification> {
     private final WebsocketService websocketService;
 
