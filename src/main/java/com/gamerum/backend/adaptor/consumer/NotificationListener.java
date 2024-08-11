@@ -6,9 +6,7 @@ import com.gamerum.backend.adaptor.content.notification.CommentReplyNotification
 import com.gamerum.backend.external.persistence.relational.entity.Notification;
 import jakarta.persistence.PostUpdate;
 import jakarta.persistence.PrePersist;
-import org.springframework.stereotype.Component;
 
-@Component
 public class NotificationListener {
     private final ObjectMapper objectMapper;
 

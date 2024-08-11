@@ -11,12 +11,10 @@ import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import jakarta.persistence.PostUpdate;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-@Component
 public class PostListener {
     private final ElasticsearchRepository elasticsearchRepository;
     private final RecentService recentService;
