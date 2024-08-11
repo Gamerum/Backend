@@ -6,6 +6,8 @@ import com.gamerum.backend.external.persistence.relational.audit.entity.Auditabl
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
@@ -14,10 +16,12 @@ import lombok.*;
 @Entity
 @Table(name = "Notifications")
 @EntityListeners(NotificationListener.class)
-public class Notification extends Auditable {
+public class Notification extends Auditable implements Serializable {
     public enum Type {
         COMMENT_READ
     }
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

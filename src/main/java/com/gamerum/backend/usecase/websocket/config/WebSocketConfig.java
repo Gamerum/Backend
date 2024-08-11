@@ -1,4 +1,4 @@
-package com.gamerum.backend.config;
+package com.gamerum.backend.usecase.websocket.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
