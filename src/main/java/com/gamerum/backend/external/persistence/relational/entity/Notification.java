@@ -1,6 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
-import com.gamerum.backend.adaptor.consumer.relational.NotificationListener;
+import com.gamerum.backend.adaptor.consumer.NotificationListener;
 import com.gamerum.backend.adaptor.content.notification.NotificationContent;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;

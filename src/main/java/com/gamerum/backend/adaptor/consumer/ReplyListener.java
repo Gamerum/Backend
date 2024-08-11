@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.consumer.elasticsearch;
+package com.gamerum.backend.adaptor.consumer;
 
 import com.gamerum.backend.adaptor.content.notification.CommentReplyNotificationContent;
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;

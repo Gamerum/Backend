@@ -1,11 +1,10 @@
-package com.gamerum.backend.adaptor.consumer.elasticsearch;
+package com.gamerum.backend.adaptor.consumer;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Community;
-import com.gamerum.backend.usecase.service.profile.ProfileService;
 import com.gamerum.backend.usecase.service.recent.RecentService;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;

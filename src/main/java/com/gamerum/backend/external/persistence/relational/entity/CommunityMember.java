@@ -1,6 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
-import com.gamerum.backend.adaptor.consumer.elasticsearch.CommunityMemberListener;
+import com.gamerum.backend.adaptor.consumer.CommunityMemberListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;

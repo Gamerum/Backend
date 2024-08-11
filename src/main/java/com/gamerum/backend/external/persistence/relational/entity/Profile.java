@@ -1,7 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.gamerum.backend.adaptor.consumer.elasticsearch.ProfileListener;
+import com.gamerum.backend.adaptor.consumer.ProfileListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
