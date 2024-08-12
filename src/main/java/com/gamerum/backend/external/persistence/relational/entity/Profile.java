@@ -2,6 +2,7 @@ package com.gamerum.backend.external.persistence.relational.entity;
 
 import com.gamerum.backend.adaptor.consumer.ProfileListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
+import com.gamerum.backend.external.persistence.relational.entity.notification.Notification;
 import jakarta.persistence.*;
 import lombok.*;
 

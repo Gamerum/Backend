@@ -1,9 +1,10 @@
-package com.gamerum.backend.external.persistence.relational.entity;
+package com.gamerum.backend.external.persistence.relational.entity.notification;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gamerum.backend.adaptor.consumer.NotificationListener;
-import com.gamerum.backend.adaptor.content.notification.NotificationContent;
+import com.gamerum.backend.external.persistence.relational.entity.notification.content.NotificationContent;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
+import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
