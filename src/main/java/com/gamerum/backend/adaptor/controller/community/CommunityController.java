@@ -1,9 +1,6 @@
 package com.gamerum.backend.adaptor.controller.community;
 
-import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
-import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
-import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
-import com.gamerum.backend.adaptor.dto.community.CommunityUpdateTagsDTO;
+import com.gamerum.backend.adaptor.dto.community.*;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.usecase.service.community.CommunityService;
 import org.springframework.http.HttpStatus;
@@ -54,5 +51,11 @@ public class CommunityController {
     @PatchMapping("/{communityId}/tags")
     public ResponseEntity<List<String>> updateCommunityTags(@PathVariable Long communityId, @Validated @RequestBody CommunityUpdateTagsDTO communityUpdateTagsDTO) {
         return new ResponseEntity<>(communityService.updateTagsToCommunity(communityId, communityUpdateTagsDTO), HttpStatus.OK);
+    }
+
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @PatchMapping("/{communityId}/rules")
+    public ResponseEntity<List<String>> updateCommunityRules(@PathVariable Long communityId, @Validated @RequestBody CommunityUpdateRulesDTO communityUpdateRulesDTO) {
+        return new ResponseEntity<>(communityService.updateRulesToCommunity(communityId, communityUpdateRulesDTO), HttpStatus.OK);
     }
 }

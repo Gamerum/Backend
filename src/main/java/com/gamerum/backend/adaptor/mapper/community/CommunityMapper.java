@@ -7,6 +7,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocum
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.community.Community;
+import com.gamerum.backend.usecase.service.community.CommunityRuleService;
 import com.gamerum.backend.usecase.service.community.CommunityTagService;
 import com.gamerum.backend.usecase.service.popular.PopularService;
 import org.mapstruct.AfterMapping;
@@ -29,9 +30,13 @@ public abstract class CommunityMapper {
     @Autowired
     private CommunityTagService communityTagService;
 
+    @Autowired
+    private CommunityRuleService communityRuleService;
+
     @Mapping(source = "posts", target = "firstPagePopularPosts")
     @Mapping(source = "members", target = "firstPageMembers")
     @Mapping(source = "tags", target = "tags", ignore = true)
+    @Mapping(source = "rules", target = "rules", ignore = true)
     public abstract CommunityGetDTO communityToCommunityGetDTO(Community community) throws IOException;
 
     public abstract Community communityCreateDTOToCommunity(CommunityCreateDTO communityCreateDTO);
@@ -48,5 +53,6 @@ public abstract class CommunityMapper {
         communityGetDTO.setFirstPagePopularPosts(popularPosts);
 
         communityGetDTO.setTags(communityTagService.getTags(community));
+        communityGetDTO.setRules(communityRuleService.getRules(community));
     }
 }

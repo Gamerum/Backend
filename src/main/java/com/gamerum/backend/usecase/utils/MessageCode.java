@@ -17,6 +17,7 @@ public class MessageCode {
     public static final String INCORRECT_EMAIL_PATTERN = "ERR-13";
     public static final String HAS_NO_ENTRY = "ERR-14";
     public static final String DATA_INTEGRITY_VIOLATION = "ERR-15";
+    public static final String BAD_REQUEST = "ERR-16";
     public static final String SIZE_EXCEPTION_6_30 = "ERR-6-30";
     public static final String SIZE_EXCEPTION_1_255 = "ERR-1-255";
     public static final String CHAT_PARTICIPANT_ADDED = "CP-ADDED";
