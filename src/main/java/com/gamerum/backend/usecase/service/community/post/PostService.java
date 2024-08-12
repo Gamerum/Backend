@@ -2,7 +2,7 @@ package com.gamerum.backend.usecase.service.community.post;
 
 import com.gamerum.backend.adaptor.dto.community.post.PostCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.PostUpdateDTO;
-import com.gamerum.backend.external.persistence.relational.entity.Post;
+import com.gamerum.backend.external.persistence.relational.entity.community.Post;
 
 import java.io.IOException;
 

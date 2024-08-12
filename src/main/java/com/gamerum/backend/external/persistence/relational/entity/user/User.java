@@ -1,6 +1,5 @@
-package com.gamerum.backend.external.persistence.relational.entity;
+package com.gamerum.backend.external.persistence.relational.entity.user;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import com.gamerum.backend.security.user.UserRole;
 import jakarta.persistence.*;

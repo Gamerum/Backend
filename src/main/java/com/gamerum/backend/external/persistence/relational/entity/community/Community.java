@@ -1,4 +1,4 @@
-package com.gamerum.backend.external.persistence.relational.entity;
+package com.gamerum.backend.external.persistence.relational.entity.community;
 
 import com.gamerum.backend.adaptor.consumer.CommunityListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;

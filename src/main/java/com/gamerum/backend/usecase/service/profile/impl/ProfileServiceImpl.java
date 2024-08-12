@@ -11,7 +11,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentI
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
-import com.gamerum.backend.external.persistence.relational.entity.Profile;
+import com.gamerum.backend.external.persistence.relational.entity.user.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.ForbiddenException;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Service

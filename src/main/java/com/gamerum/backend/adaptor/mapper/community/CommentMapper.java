@@ -1,7 +1,7 @@
 package com.gamerum.backend.adaptor.mapper.community;
 
 import com.gamerum.backend.adaptor.dto.community.post.comment.CommentGetDTO;
-import com.gamerum.backend.external.persistence.relational.entity.Comment;
+import com.gamerum.backend.external.persistence.relational.entity.community.Comment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

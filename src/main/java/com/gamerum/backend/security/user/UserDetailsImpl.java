@@ -1,10 +1,9 @@
 package com.gamerum.backend.security.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gamerum.backend.external.persistence.relational.entity.User;
+import com.gamerum.backend.external.persistence.relational.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

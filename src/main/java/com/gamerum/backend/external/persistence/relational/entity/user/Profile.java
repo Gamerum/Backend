@@ -1,7 +1,13 @@
-package com.gamerum.backend.external.persistence.relational.entity;
+package com.gamerum.backend.external.persistence.relational.entity.user;
 
 import com.gamerum.backend.adaptor.consumer.ProfileListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
+import com.gamerum.backend.external.persistence.relational.entity.chat.ChatParticipant;
+import com.gamerum.backend.external.persistence.relational.entity.chat.Message;
+import com.gamerum.backend.external.persistence.relational.entity.community.Comment;
+import com.gamerum.backend.external.persistence.relational.entity.community.CommunityMember;
+import com.gamerum.backend.external.persistence.relational.entity.community.Post;
+import com.gamerum.backend.external.persistence.relational.entity.community.Reply;
 import com.gamerum.backend.external.persistence.relational.entity.notification.Notification;
 import jakarta.persistence.*;
 import lombok.*;

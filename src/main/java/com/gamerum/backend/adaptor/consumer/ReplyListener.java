@@ -5,7 +5,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentI
 import com.gamerum.backend.external.persistence.elasticsearch.document.ReplyDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.notification.Notification;
-import com.gamerum.backend.external.persistence.relational.entity.Reply;
+import com.gamerum.backend.external.persistence.relational.entity.community.Reply;
 import com.gamerum.backend.usecase.service.notification.NotificationService;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;

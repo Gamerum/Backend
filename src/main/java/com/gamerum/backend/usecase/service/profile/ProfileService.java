@@ -3,9 +3,7 @@ package com.gamerum.backend.usecase.service.profile;
 import com.gamerum.backend.adaptor.dto.user.profile.ProfileUpdateDTO;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
-import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
-import com.gamerum.backend.external.persistence.relational.entity.Community;
-import com.gamerum.backend.external.persistence.relational.entity.Profile;
+import com.gamerum.backend.external.persistence.relational.entity.user.Profile;
 
 import java.io.IOException;
 import java.util.List;

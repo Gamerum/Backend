@@ -1,7 +1,7 @@
 package com.gamerum.backend.adaptor.mapper.chat;
 
 import com.gamerum.backend.adaptor.dto.chat.message.MessageGetDTO;
-import com.gamerum.backend.external.persistence.relational.entity.Message;
+import com.gamerum.backend.external.persistence.relational.entity.chat.Message;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

@@ -2,7 +2,7 @@ package com.gamerum.backend.usecase.service.chat;
 
 import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.participant.ChatParticipantUpdateDTO;
-import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
+import com.gamerum.backend.external.persistence.relational.entity.chat.ChatParticipant;
 
 import java.util.List;
 

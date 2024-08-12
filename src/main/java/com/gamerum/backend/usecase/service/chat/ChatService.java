@@ -1,7 +1,7 @@
 package com.gamerum.backend.usecase.service.chat;
 
 import com.gamerum.backend.adaptor.dto.chat.ChatCreateDTO;
-import com.gamerum.backend.external.persistence.relational.entity.Chat;
+import com.gamerum.backend.external.persistence.relational.entity.chat.Chat;
 
 import java.util.List;
 

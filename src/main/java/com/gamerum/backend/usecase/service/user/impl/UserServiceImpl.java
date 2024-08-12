@@ -2,7 +2,7 @@ package com.gamerum.backend.usecase.service.user.impl;
 
 import com.gamerum.backend.adaptor.dto.user.ChangeEmailDTO;
 import com.gamerum.backend.adaptor.dto.user.ChangePasswordDTO;
-import com.gamerum.backend.external.persistence.relational.entity.User;
+import com.gamerum.backend.external.persistence.relational.entity.user.User;
 import com.gamerum.backend.external.persistence.relational.repository.UserRepository;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.ForbiddenException;

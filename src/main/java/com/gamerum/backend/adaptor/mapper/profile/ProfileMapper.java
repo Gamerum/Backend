@@ -5,7 +5,7 @@ import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.adaptor.mapper.community.PostMapper;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
-import com.gamerum.backend.external.persistence.relational.entity.Profile;
+import com.gamerum.backend.external.persistence.relational.entity.user.Profile;
 import com.gamerum.backend.usecase.service.notification.NotificationService;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
 import org.mapstruct.AfterMapping;

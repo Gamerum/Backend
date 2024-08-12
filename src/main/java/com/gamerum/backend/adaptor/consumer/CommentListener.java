@@ -4,10 +4,9 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.CommentDo
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
-import com.gamerum.backend.external.persistence.relational.entity.Comment;
+import com.gamerum.backend.external.persistence.relational.entity.community.Comment;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;

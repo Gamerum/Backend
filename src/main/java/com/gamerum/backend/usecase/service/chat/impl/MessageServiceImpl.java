@@ -2,7 +2,10 @@ package com.gamerum.backend.usecase.service.chat.impl;
 
 import com.gamerum.backend.adaptor.dto.chat.message.MessageCreateDTO;
 import com.gamerum.backend.adaptor.dto.chat.message.MessageUpdateDTO;
-import com.gamerum.backend.external.persistence.relational.entity.*;
+import com.gamerum.backend.external.persistence.relational.entity.chat.Chat;
+import com.gamerum.backend.external.persistence.relational.entity.chat.ChatParticipant;
+import com.gamerum.backend.external.persistence.relational.entity.chat.Message;
+import com.gamerum.backend.external.persistence.relational.entity.user.Profile;
 import com.gamerum.backend.external.persistence.relational.repository.ChatParticipantRepository;
 import com.gamerum.backend.external.persistence.relational.repository.ChatRepository;
 import com.gamerum.backend.external.persistence.relational.repository.MessageRepository;

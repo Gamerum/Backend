@@ -6,7 +6,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentI
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
-import com.gamerum.backend.external.persistence.relational.entity.Community;
+import com.gamerum.backend.external.persistence.relational.entity.community.Community;
 import com.gamerum.backend.usecase.service.community.CommunityTagService;
 import com.gamerum.backend.usecase.service.popular.PopularService;
 import org.mapstruct.AfterMapping;

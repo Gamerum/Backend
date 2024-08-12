@@ -1,7 +1,7 @@
 package com.gamerum.backend.external.persistence.relational.repository;
 
-import com.gamerum.backend.external.persistence.relational.entity.Chat;
-import com.gamerum.backend.external.persistence.relational.entity.ChatParticipant;
+import com.gamerum.backend.external.persistence.relational.entity.chat.Chat;
+import com.gamerum.backend.external.persistence.relational.entity.chat.ChatParticipant;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

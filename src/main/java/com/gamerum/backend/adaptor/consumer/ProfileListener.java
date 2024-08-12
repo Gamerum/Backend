@@ -3,7 +3,7 @@ package com.gamerum.backend.adaptor.consumer;
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
-import com.gamerum.backend.external.persistence.relational.entity.Profile;
+import com.gamerum.backend.external.persistence.relational.entity.user.Profile;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostUpdate;
 

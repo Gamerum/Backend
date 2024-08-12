@@ -1,6 +1,6 @@
 package com.gamerum.backend.usecase.service.community.impl;
 
-import com.gamerum.backend.external.persistence.relational.entity.Community;
+import com.gamerum.backend.external.persistence.relational.entity.community.Community;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.service.community.CommunityTagService;

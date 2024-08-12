@@ -1,6 +1,7 @@
-package com.gamerum.backend.external.persistence.relational.entity;
+package com.gamerum.backend.external.persistence.relational.entity.chat;
 
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
+import com.gamerum.backend.external.persistence.relational.entity.user.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 

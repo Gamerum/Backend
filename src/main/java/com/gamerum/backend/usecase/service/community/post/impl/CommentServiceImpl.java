@@ -2,9 +2,9 @@ package com.gamerum.backend.usecase.service.community.post.impl;
 
 import com.gamerum.backend.adaptor.dto.community.post.comment.CommentCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.comment.CommentUpdateDTO;
-import com.gamerum.backend.external.persistence.relational.entity.Comment;
-import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
-import com.gamerum.backend.external.persistence.relational.entity.Post;
+import com.gamerum.backend.external.persistence.relational.entity.community.Comment;
+import com.gamerum.backend.external.persistence.relational.entity.community.CommunityMember;
+import com.gamerum.backend.external.persistence.relational.entity.community.Post;
 import com.gamerum.backend.external.persistence.relational.repository.CommentRepository;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityMemberRepository;
 import com.gamerum.backend.external.persistence.relational.repository.PostRepository;

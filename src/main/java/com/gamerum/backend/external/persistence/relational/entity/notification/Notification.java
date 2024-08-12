@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gamerum.backend.adaptor.consumer.NotificationListener;
 import com.gamerum.backend.external.persistence.relational.entity.notification.content.NotificationContent;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
-import com.gamerum.backend.external.persistence.relational.entity.Profile;
+import com.gamerum.backend.external.persistence.relational.entity.user.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 

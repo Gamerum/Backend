@@ -2,7 +2,7 @@ package com.gamerum.backend.usecase.service.community.post;
 
 import com.gamerum.backend.adaptor.dto.community.post.comment.CommentCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.post.comment.CommentUpdateDTO;
-import com.gamerum.backend.external.persistence.relational.entity.Comment;
+import com.gamerum.backend.external.persistence.relational.entity.community.Comment;
 
 import java.util.List;
 

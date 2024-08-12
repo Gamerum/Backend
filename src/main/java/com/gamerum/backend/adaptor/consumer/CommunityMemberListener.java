@@ -4,7 +4,7 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.Community
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
-import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
+import com.gamerum.backend.external.persistence.relational.entity.community.CommunityMember;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 
