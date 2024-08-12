@@ -13,6 +13,11 @@ import lombok.*;
 @Entity
 @Table(name = "Messages")
 public class Message extends Auditable {
+    public enum Type {
+        USER,
+        SYSTEM
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +25,10 @@ public class Message extends Auditable {
     private String text;
 
     private boolean isSent;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private Type type;
 
     @ManyToOne
     @JoinColumn(name = "chat_id", nullable = false, updatable = false)

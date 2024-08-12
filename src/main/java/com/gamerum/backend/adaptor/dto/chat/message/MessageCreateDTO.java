@@ -14,6 +14,4 @@ import lombok.NoArgsConstructor;
 public class MessageCreateDTO {
     @Size(min = 1, max = 255, message = ErrorCode.SIZE_EXCEPTION_1_255)
     private String text;
-
-    private boolean isSent;
 }
