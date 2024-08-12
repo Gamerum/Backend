@@ -1,5 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity.chat;
 
+import com.gamerum.backend.adaptor.consumer.MessageListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import com.gamerum.backend.external.persistence.relational.entity.user.Profile;
 import jakarta.persistence.*;
@@ -12,6 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "Messages")
+@EntityListeners(MessageListener.class)
 public class Message extends Auditable {
     public enum Type {
         USER,

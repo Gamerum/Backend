@@ -1,10 +1,7 @@
 package com.gamerum.backend.adaptor.dto.user;
 
-import com.gamerum.backend.usecase.exception.ErrorCode;
+import com.gamerum.backend.usecase.utils.MessageCode;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +16,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChangeEmailDTO {
-    @Email(message = ErrorCode.INCORRECT_EMAIL_PATTERN)
+    @Email(message = MessageCode.INCORRECT_EMAIL_PATTERN)
     private String newEmail;
 }

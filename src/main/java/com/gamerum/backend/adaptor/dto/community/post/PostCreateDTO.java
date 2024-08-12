@@ -1,6 +1,6 @@
 package com.gamerum.backend.adaptor.dto.community.post;
 
-import com.gamerum.backend.usecase.exception.ErrorCode;
+import com.gamerum.backend.usecase.utils.MessageCode;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostCreateDTO {
-    @Size(min = 6, max = 30, message = ErrorCode.SIZE_EXCEPTION_6_30)
+    @Size(min = 6, max = 30, message = MessageCode.SIZE_EXCEPTION_6_30)
     private String title;
 
-    @NotNull(message = ErrorCode.NOT_NULL)
-    @NotBlank(message = ErrorCode.NOT_BLANK)
+    @NotNull(message = MessageCode.NOT_NULL)
+    @NotBlank(message = MessageCode.NOT_BLANK)
     private String tag;
 
-    @Size(min = 1, max = 255, message = ErrorCode.SIZE_EXCEPTION_1_255)
+    @Size(min = 1, max = 255, message = MessageCode.SIZE_EXCEPTION_1_255)
     private String text;
 }
