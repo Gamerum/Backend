@@ -1,6 +1,6 @@
-package com.gamerum.backend.usecase.exception;
+package com.gamerum.backend.usecase.utils;
 
-public class ErrorCode {
+public class MessageCode {
     public static final String SOCKET_TIMEOUT_EXCEPTION = "ERR-0";
     public static final String UNKNOWN_HOST = "ERR-1";
     public static final String SSL_EXCEPTION = "ERR-2";
@@ -19,4 +19,6 @@ public class ErrorCode {
     public static final String DATA_INTEGRITY_VIOLATION = "ERR-15";
     public static final String SIZE_EXCEPTION_6_30 = "ERR-6-30";
     public static final String SIZE_EXCEPTION_1_255 = "ERR-1-255";
+    public static final String CHAT_PARTICIPANT_ADDED = "CP-ADDED";
+    public static final String CHAT_PARTICIPANT_REMOVED = "CP-REMOVED";
 }

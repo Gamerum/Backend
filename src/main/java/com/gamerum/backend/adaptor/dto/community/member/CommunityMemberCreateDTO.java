@@ -1,9 +1,7 @@
 package com.gamerum.backend.adaptor.dto.community.member;
 
-import com.gamerum.backend.usecase.exception.ErrorCode;
-import jakarta.validation.constraints.NotBlank;
+import com.gamerum.backend.usecase.utils.MessageCode;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommunityMemberCreateDTO {
-    @NotNull(message = ErrorCode.NOT_NULL)
+    @NotNull(message = MessageCode.NOT_NULL)
     private Long profileId;
 }

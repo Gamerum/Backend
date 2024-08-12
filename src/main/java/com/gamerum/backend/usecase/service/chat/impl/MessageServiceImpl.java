@@ -58,7 +58,7 @@ public class MessageServiceImpl implements MessageService {
                         .chat(chat)
                         .profile(profile)
                         .text(messageCreateDTO.getText())
-                        .isSent(messageCreateDTO.isSent())
+                        .type(Message.Type.USER)
                         .build());
     }
 

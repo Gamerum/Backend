@@ -1,5 +1,6 @@
 package com.gamerum.backend.usecase.exception;
 
+import com.gamerum.backend.usecase.utils.MessageCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,25 +24,25 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SocketTimeoutException.class)
     public ResponseEntity<ErrorResponse> handleSocketTimeoutException(Exception ex) {
         logger.error("\n\nSocketTimeoutException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new ErrorResponse(ErrorCode.SOCKET_TIMEOUT_EXCEPTION), HttpStatus.GATEWAY_TIMEOUT);
+        return new ResponseEntity<>(new ErrorResponse(MessageCode.SOCKET_TIMEOUT_EXCEPTION), HttpStatus.GATEWAY_TIMEOUT);
     }
 
     @ExceptionHandler(UnknownHostException.class)
     public ResponseEntity<ErrorResponse> handleUnknownHostException(Exception ex) {
         logger.error("\n\nUnknownHostException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new ErrorResponse(ErrorCode.UNKNOWN_HOST), HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(new ErrorResponse(MessageCode.UNKNOWN_HOST), HttpStatus.BAD_GATEWAY);
     }
 
     @ExceptionHandler(SSLException.class)
     public ResponseEntity<ErrorResponse> handleSSLException(Exception ex) {
         logger.error("\n\nSSLException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new ErrorResponse(ErrorCode.SSL_EXCEPTION), HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(new ErrorResponse(MessageCode.SSL_EXCEPTION), HttpStatus.BAD_GATEWAY);
     }
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<ErrorResponse> handleIOException(Exception ex) {
         logger.error("\n\nIOException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new ErrorResponse(ErrorCode.IO_EXCEPTION), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ErrorResponse(MessageCode.IO_EXCEPTION), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ErrorException.class)
@@ -61,12 +62,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(Exception ex) {
         logger.error("\n\nDataIntegrityViolationException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new ErrorResponse(ErrorCode.DATA_INTEGRITY_VIOLATION), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorResponse(MessageCode.DATA_INTEGRITY_VIOLATION), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         logger.error("\n\nException: {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new ErrorResponse(ErrorCode.EXCEPTION), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ErrorResponse(MessageCode.EXCEPTION), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

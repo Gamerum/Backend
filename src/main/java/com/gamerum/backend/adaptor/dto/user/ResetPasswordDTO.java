@@ -1,6 +1,6 @@
 package com.gamerum.backend.adaptor.dto.user;
 
-import com.gamerum.backend.usecase.exception.ErrorCode;
+import com.gamerum.backend.usecase.utils.MessageCode;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -15,13 +15,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ResetPasswordDTO {
-    @NotNull(message = ErrorCode.NOT_NULL)
-    @NotBlank(message = ErrorCode.NOT_BLANK)
+    @NotNull(message = MessageCode.NOT_NULL)
+    @NotBlank(message = MessageCode.NOT_BLANK)
     private String token;
 
     @Pattern(
             regexp = "^[a-zA-Z0-9@$!%?&]{8,30}$",
-            message = ErrorCode.INCORRECT_PASSWORD_PATTERN
+            message = MessageCode.INCORRECT_PASSWORD_PATTERN
     )
     private String newPassword;
 }
