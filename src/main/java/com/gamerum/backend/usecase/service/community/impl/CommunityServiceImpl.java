@@ -4,6 +4,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch.core.UpdateByQueryRequest;
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateDTO;
+import com.gamerum.backend.adaptor.dto.community.CommunityUpdateRulesDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityUpdateTagsDTO;
 import com.gamerum.backend.adaptor.mapper.community.CommunityMapper;
 import com.gamerum.backend.external.cache.utils.CacheUtils;
@@ -19,6 +20,7 @@ import com.gamerum.backend.external.persistence.relational.repository.ProfileRep
 import com.gamerum.backend.security.user.UserRole;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.exception.ForbiddenException;
+import com.gamerum.backend.usecase.service.community.CommunityRuleService;
 import com.gamerum.backend.usecase.service.community.CommunityService;
 import com.gamerum.backend.usecase.service.community.CommunityTagService;
 import com.gamerum.backend.usecase.service.user.CurrentUser;
@@ -50,6 +52,7 @@ public class CommunityServiceImpl implements CommunityService {
     private final CurrentUser currentUser;
     private final CacheUtils cacheUtils;
     private final CommunityTagService communityTagService;
+    private final CommunityRuleService communityRuleService;
     private final ElasticsearchRepository elasticsearchRepository;
 
     public CommunityServiceImpl(CommunityRepository communityRepository,
@@ -58,7 +61,7 @@ public class CommunityServiceImpl implements CommunityService {
                                 CommunityMapper communityMapper,
                                 CurrentUser currentUser,
                                 CacheUtils cacheUtils,
-                                CommunityTagService communityTagService, ElasticsearchRepository elasticsearchRepository) {
+                                CommunityTagService communityTagService, CommunityRuleService communityRuleService, ElasticsearchRepository elasticsearchRepository) {
         this.communityRepository = communityRepository;
         this.communityMemberRepository = communityMemberRepository;
         this.profileRepository = profileRepository;
@@ -66,6 +69,7 @@ public class CommunityServiceImpl implements CommunityService {
         this.currentUser = currentUser;
         this.cacheUtils = cacheUtils;
         this.communityTagService = communityTagService;
+        this.communityRuleService = communityRuleService;
         this.elasticsearchRepository = elasticsearchRepository;
     }
 
@@ -85,6 +89,7 @@ public class CommunityServiceImpl implements CommunityService {
     public Community createCommunity(CommunityCreateDTO communityCreateDTO) {
         Community community = communityMapper.communityCreateDTOToCommunity(communityCreateDTO);
         community.setTags("");
+        community.setRules("");
         community = communityRepository.save(community);
         saveCreator(community);
         return community;
@@ -160,10 +165,33 @@ public class CommunityServiceImpl implements CommunityService {
         return Arrays.stream(community.getTags().split(",")).toList();
     }
 
+    @Override
+    public List<String> updateRulesToCommunity(Long communityId, CommunityUpdateRulesDTO communityUpdateRulesDTO) {
+        Community community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException(Community.class));
+
+        CommunityMember adder = communityMemberRepository
+                .findByProfileIdAndCommunityId(currentUser.getProfileId(), communityId)
+                .orElseThrow(() -> new NotFoundException(CommunityMember.class));
+
+        if (adder.getRole() == CommunityMember.Role.USER) throw new ForbiddenException();
+
+        String newRulesString = communityUpdateRulesDTO.isRemove() ?
+                communityRuleService.removeRules(community, communityUpdateRulesDTO.getRules()) :
+                communityRuleService.addRules(community, communityUpdateRulesDTO.getRules());
+
+        if (newRulesString != null) {
+            community.setRules(newRulesString);
+            community = communityRepository.save(community);
+        }
+
+        return Arrays.stream(community.getRules().split(",")).toList();
+    }
+
     public void resetCommunitiesClickCount() throws IOException {
         UpdateByQueryRequest request = UpdateByQueryRequest.of(ubq -> ubq
-                .index( DocumentIndex.COMMUNITY)
-                .script(s -> s .inline(i -> i .source("ctx._source.clickCount = 0")))
+                .index(DocumentIndex.COMMUNITY)
+                .script(s -> s.inline(i -> i.source("ctx._source.clickCount = 0")))
                 .query(QueryBuilders.matchAll().build()._toQuery())
         );
 

@@ -2,6 +2,7 @@ package com.gamerum.backend.usecase.service.community.impl;
 
 import com.gamerum.backend.external.persistence.relational.entity.community.Community;
 import com.gamerum.backend.external.persistence.relational.repository.CommunityRepository;
+import com.gamerum.backend.usecase.exception.BadRequestException;
 import com.gamerum.backend.usecase.exception.NotFoundException;
 import com.gamerum.backend.usecase.service.community.CommunityTagService;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +17,10 @@ import java.util.stream.Collectors;
 public class CommunityTagServiceImpl implements CommunityTagService {
     private final CommunityRepository communityRepository;
 
-    @Value("${community.tag.separator}")
-    private String tagSeparator;
+    @Value("${community.separator}")
+    private String separator;
+    @Value("${community.tag.size}")
+    private int maxTagSize;
 
     public CommunityTagServiceImpl(CommunityRepository communityRepository) {
         this.communityRepository = communityRepository;
@@ -32,9 +35,12 @@ public class CommunityTagServiceImpl implements CommunityTagService {
         List<String> addableTags = filterAddableTags(loweredCurrentTags, tags);
 
         if (addableTags.isEmpty()) return null;
+        if (currentTags.size() + addableTags.size() > maxTagSize)
+            throw new BadRequestException("community-tag-size", "Exceeds community tag size");
+
         return community.getTags().isBlank() ?
-                String.join(tagSeparator, addableTags) :
-                community.getTags() + tagSeparator + String.join(tagSeparator, addableTags);
+                String.join(separator, addableTags) :
+                community.getTags() + separator + String.join(separator, addableTags);
     }
 
     @Override
@@ -45,7 +51,7 @@ public class CommunityTagServiceImpl implements CommunityTagService {
         List<String> loweredTags = tags.stream().map(String::toLowerCase).toList();
         currentTags.removeIf(tag -> loweredTags.contains(tag.toLowerCase()));
 
-        return String.join(tagSeparator, currentTags);
+        return String.join(separator, currentTags);
     }
 
     @Override
@@ -61,7 +67,7 @@ public class CommunityTagServiceImpl implements CommunityTagService {
     }
 
     public List<String> getTags(Community community) {
-        return new ArrayList<>(Arrays.stream(community.getTags().split(tagSeparator)).toList());
+        return new ArrayList<>(Arrays.stream(community.getTags().split(separator)).toList());
     }
 
     private List<String> filterAddableTags(List<String> currentTags, List<String> newTags) {

@@ -33,6 +33,9 @@ public class Community extends Auditable {
     @Column(nullable = false)
     private String tags;
 
+    @Column(nullable = false)
+    private String rules;
+
     @Column(nullable = false, updatable = false)
     private String gameId;
 
