@@ -31,7 +31,7 @@ import java.util.Objects;
 @Service
 public class PostServiceImpl implements PostService {
     private final ElasticsearchRepository elasticsearchRepository;
-    private final CommunityTagServiceImpl communityTagServiceImpl;
+
     @Value("${cache.config.data.popular.cache_name}")
     private String popularCacheName;
 
@@ -64,7 +64,6 @@ public class PostServiceImpl implements PostService {
         this.commentRepository = commentRepository;
         this.cacheUtils = cacheUtils;
         this.elasticsearchRepository = elasticsearchRepository;
-        this.communityTagServiceImpl = communityTagServiceImpl;
         this.communityTagService = communityTagService;
     }
 

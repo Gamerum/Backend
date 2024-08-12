@@ -1,6 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
-import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.ReplyListener;
+import com.gamerum.backend.adaptor.consumer.ReplyListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @Entity
-@Table(name = "CommentResponses")
+@Table(name = "Replies")
 @EntityListeners(ReplyListener.class)
 public class Reply extends Auditable {
     @Id

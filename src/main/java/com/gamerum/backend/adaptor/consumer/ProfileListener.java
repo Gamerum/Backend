@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
+package com.gamerum.backend.adaptor.consumer;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
@@ -6,13 +6,11 @@ import com.gamerum.backend.external.persistence.elasticsearch.repository.Elastic
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostUpdate;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-@Component
 public class ProfileListener {
 
     private final ElasticsearchRepository elasticsearchRepository;

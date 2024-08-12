@@ -4,6 +4,7 @@ import com.gamerum.backend.adaptor.dto.auth.LoginRequestDTO;
 import com.gamerum.backend.adaptor.dto.auth.RegisterRequestDTO;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
 import com.gamerum.backend.external.persistence.relational.entity.User;
+import com.gamerum.backend.external.persistence.relational.repository.ProfileRepository;
 import com.gamerum.backend.external.persistence.relational.repository.UserRepository;
 import com.gamerum.backend.security.jwt.JwtUtil;
 import com.gamerum.backend.security.user.UserRole;
@@ -22,15 +23,17 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private final ProfileRepository profileRepository;
 
     public AuthServiceImpl(UserRepository userRepository,
                            AuthenticationManager authenticationManager,
                            JwtUtil jwtUtil,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder, ProfileRepository profileRepository) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
+        this.profileRepository = profileRepository;
     }
 
     @Override
@@ -40,14 +43,19 @@ public class AuthServiceImpl implements AuthService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(UserRole.ROLE_USER)
+                .profileId(0L)
                 .build();
+
+        user = userRepository.save(user);
 
         Profile profile = Profile.builder()
                 .nickname(request.getNickname())
-                .user(user)
+                .userId(user.getId())
                 .build();
 
-        user.setProfile(profile);
+        profile = profileRepository.save(profile);
+        user.setProfileId(profile.getId());
+
         userRepository.save(user);
     }
 

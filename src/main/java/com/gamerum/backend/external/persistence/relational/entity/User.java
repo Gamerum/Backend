@@ -1,5 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import com.gamerum.backend.security.user.UserRole;
 import jakarta.persistence.*;
@@ -30,12 +31,11 @@ public class User extends Auditable {
 
     @Column(nullable = false)
     private String password;
-
     private boolean isActive;
 
     @Column(nullable = false)
     private UserRole role;
 
-    @OneToOne(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Profile profile;
+    @Column(nullable = false)
+    private Long profileId;
 }

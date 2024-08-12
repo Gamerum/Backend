@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
+package com.gamerum.backend.adaptor.consumer;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommentDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
@@ -7,18 +7,17 @@ import com.gamerum.backend.external.persistence.elasticsearch.repository.Elastic
 import com.gamerum.backend.external.persistence.relational.entity.Comment;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class CommentListener {
-
     private final ElasticsearchRepository elasticsearchRepository;
 
     public CommentListener(ElasticsearchRepository elasticsearchRepository) {
         this.elasticsearchRepository = elasticsearchRepository;
     }
-
 
     @PostPersist
     public void handleAfterSave(Comment comment) throws IOException {

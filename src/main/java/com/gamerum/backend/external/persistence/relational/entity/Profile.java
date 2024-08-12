@@ -1,6 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
-import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.ProfileListener;
+import com.gamerum.backend.adaptor.consumer.ProfileListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,9 +28,8 @@ public class Profile extends Auditable {
     private String nickname;
     private boolean isActive;
 
-    @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @Column(nullable = false)
+    private Long userId;
 
     @Transient
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
@@ -54,5 +53,9 @@ public class Profile extends Auditable {
 
     @Transient
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Reply> commentRespons;
+    private List<Reply> commentResponse;
+
+    @Transient
+    @OneToMany(mappedBy = "notifiedProfile", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Notification> notifications;
 }

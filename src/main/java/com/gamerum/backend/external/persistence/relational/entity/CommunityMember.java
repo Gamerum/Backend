@@ -1,6 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.entity;
 
-import com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch.CommunityMemberListener;
+import com.gamerum.backend.adaptor.consumer.CommunityMemberListener;
 import com.gamerum.backend.external.persistence.relational.audit.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,7 +25,7 @@ public class CommunityMember extends Auditable{
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(name = "role")
     private Role role;
 
     @ManyToOne

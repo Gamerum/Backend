@@ -6,6 +6,7 @@ import com.gamerum.backend.adaptor.mapper.community.PostMapper;
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import com.gamerum.backend.external.persistence.relational.entity.Profile;
+import com.gamerum.backend.usecase.service.notification.NotificationService;
 import com.gamerum.backend.usecase.service.profile.ProfileService;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -18,11 +19,15 @@ import java.util.List;
 
 @Mapper(uses = {CommunityMapper.class, PostMapper.class}, componentModel = "spring")
 public abstract class ProfileMapper {
-
     @Autowired
     protected ProfileService profileService;
+
+    @Autowired
+    protected NotificationService notificationService;
+
     @Mapping(source = "joinedCommunities", target = "firstPageCommunities")
     @Mapping(source = "posts", target = "firstPagePosts")
+    @Mapping(target = "notificationCount", ignore = true)
     public abstract ProfileGetDTO profileToProfileGetDTO(Profile profile) throws IOException;
 
     @AfterMapping
@@ -32,5 +37,7 @@ public abstract class ProfileMapper {
 
         profileGetDTO.setFirstPageCommunities(communities);
         profileGetDTO.setFirstPagePosts(posts);
+
+        profileGetDTO.setNotificationCount(notificationService.getNotificationCountOfProfile(profile.getId()));
     }
 }

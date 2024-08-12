@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
+package com.gamerum.backend.adaptor.consumer;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
@@ -6,20 +6,15 @@ import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocum
 import com.gamerum.backend.external.persistence.elasticsearch.document.ProfileDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.repository.ElasticsearchRepository;
 import com.gamerum.backend.external.persistence.relational.entity.Post;
-import com.gamerum.backend.usecase.service.profile.ProfileService;
 import com.gamerum.backend.usecase.service.recent.RecentService;
-import com.gamerum.backend.usecase.service.user.CurrentUser;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import jakarta.persistence.PostUpdate;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Queue;
 
-@Component
 public class PostListener {
     private final ElasticsearchRepository elasticsearchRepository;
     private final RecentService recentService;
@@ -45,6 +40,7 @@ public class PostListener {
                 .community(community)
                 .writer(profile)
                 .clickCount(0L)
+                .commentCount(0L)
                 .likedByProfileIds(new ArrayList<>())
                 .createdDate(post.getCreatedDate())
                 .build());

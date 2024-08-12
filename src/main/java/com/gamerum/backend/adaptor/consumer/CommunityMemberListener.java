@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.consumer.eventListener.elasticsearch;
+package com.gamerum.backend.adaptor.consumer;
 
 import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
@@ -7,11 +7,9 @@ import com.gamerum.backend.external.persistence.elasticsearch.repository.Elastic
 import com.gamerum.backend.external.persistence.relational.entity.CommunityMember;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
 public class CommunityMemberListener {
     private final ElasticsearchRepository elasticsearchRepository;
 
