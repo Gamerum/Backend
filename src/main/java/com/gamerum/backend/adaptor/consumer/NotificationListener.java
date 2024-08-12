@@ -2,8 +2,8 @@ package com.gamerum.backend.adaptor.consumer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gamerum.backend.adaptor.content.notification.CommentReplyNotificationContent;
-import com.gamerum.backend.external.persistence.relational.entity.Notification;
+import com.gamerum.backend.external.persistence.relational.entity.notification.content.CommentReplyNotificationContent;
+import com.gamerum.backend.external.persistence.relational.entity.notification.Notification;
 import jakarta.persistence.PostUpdate;
 import jakarta.persistence.PrePersist;
 

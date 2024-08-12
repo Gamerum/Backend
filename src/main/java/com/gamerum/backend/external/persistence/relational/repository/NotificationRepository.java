@@ -1,6 +1,6 @@
 package com.gamerum.backend.external.persistence.relational.repository;
 
-import com.gamerum.backend.external.persistence.relational.entity.Notification;
+import com.gamerum.backend.external.persistence.relational.entity.notification.Notification;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,4 +1,4 @@
-package com.gamerum.backend.adaptor.content.notification;
+package com.gamerum.backend.external.persistence.relational.entity.notification.content;
 
 import lombok.Builder;
 import lombok.Data;

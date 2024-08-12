@@ -1,8 +1,7 @@
 package com.gamerum.backend.usecase.kafka.consumer.config;
 
-import com.gamerum.backend.external.persistence.relational.entity.Notification;
+import com.gamerum.backend.external.persistence.relational.entity.notification.Notification;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.BytesDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

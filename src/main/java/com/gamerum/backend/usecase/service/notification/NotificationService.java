@@ -1,6 +1,6 @@
 package com.gamerum.backend.usecase.service.notification;
 
-import com.gamerum.backend.external.persistence.relational.entity.Notification;
+import com.gamerum.backend.external.persistence.relational.entity.notification.Notification;
 
 public interface NotificationService {
     void sendProfileNotifications(int page);

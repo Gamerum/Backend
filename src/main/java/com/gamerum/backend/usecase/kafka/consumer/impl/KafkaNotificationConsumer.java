@@ -1,7 +1,7 @@
 package com.gamerum.backend.usecase.kafka.consumer.impl;
 
 import com.gamerum.backend.usecase.kafka.consumer.KafkaConsumer;
-import com.gamerum.backend.external.persistence.relational.entity.Notification;
+import com.gamerum.backend.external.persistence.relational.entity.notification.Notification;
 import com.gamerum.backend.usecase.websocket.WebsocketService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;

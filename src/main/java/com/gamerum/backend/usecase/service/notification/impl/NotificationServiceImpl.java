@@ -1,6 +1,6 @@
 package com.gamerum.backend.usecase.service.notification.impl;
 
-import com.gamerum.backend.external.persistence.relational.entity.Notification;
+import com.gamerum.backend.external.persistence.relational.entity.notification.Notification;
 import com.gamerum.backend.external.persistence.relational.repository.NotificationRepository;
 import com.gamerum.backend.usecase.kafka.producer.impl.KafkaNotificationProducer;
 import com.gamerum.backend.usecase.service.notification.NotificationService;
