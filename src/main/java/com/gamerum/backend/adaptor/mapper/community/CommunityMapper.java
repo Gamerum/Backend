@@ -2,6 +2,7 @@ package com.gamerum.backend.adaptor.mapper.community;
 
 import com.gamerum.backend.adaptor.dto.community.CommunityCreateDTO;
 import com.gamerum.backend.adaptor.dto.community.CommunityGetDTO;
+import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.DocumentIndex;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
@@ -43,11 +44,9 @@ public abstract class CommunityMapper {
 
     @AfterMapping
     protected void setNestedParameters(@MappingTarget CommunityGetDTO communityGetDTO, Community community) throws IOException {
-        GameDocument game = elasticsearchRepository.getById(
-                DocumentIndex.GAME,
-                community.getGameId(),
-                GameDocument.class);
-        communityGetDTO.setGame(game);
+        CommunityDocument communityDocument = elasticsearchRepository
+                .getById(DocumentIndex.COMMUNITY, community.getId().toString(), CommunityDocument.class);
+        communityGetDTO.setGame(communityDocument.getGame());
 
         List<PostDocument> popularPosts = popularService.getCommunityPopularPosts(community.getId().toString(), 0);
         communityGetDTO.setFirstPagePopularPosts(popularPosts);

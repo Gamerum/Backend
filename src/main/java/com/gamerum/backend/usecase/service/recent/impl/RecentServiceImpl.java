@@ -38,9 +38,9 @@ public class RecentServiceImpl implements RecentService {
 
         ProfileDocument.ViewedPost viewedPost = new ProfileDocument.ViewedPost(
                 postDocument.getId(),
-                postDocument.getWriter().getNickname(),
-                postDocument.getCommunity().getId(),
-                postDocument.getCommunity().getTitle(),
+                postDocument.getWriter().nickname(),
+                postDocument.getCommunity().id(),
+                postDocument.getCommunity().title(),
                 postDocument.getTitle(),
                 postDocument.getCommentCount(),
                 postDocument.getLikedByProfileIds().stream().count()

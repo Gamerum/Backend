@@ -67,6 +67,7 @@ public class ProfileServiceImpl implements ProfileService {
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index(DocumentIndex.COMMUNITY)
                 .query(q -> q.bool(boolQuery))
+                .source(source -> source.filter(f -> f.excludes("memberCount", "clickCount", "game")))
                 .build();
 
         return elasticsearchRepository.search(searchRequest, CommunityDocument.class);
@@ -76,7 +77,7 @@ public class ProfileServiceImpl implements ProfileService {
     public List<PostDocument> getPosts(Long profileId, int page) throws IOException {
         BoolQuery boolQuery = QueryBuilders.bool()
                 .must(QueryBuilders.term()
-                        .field("profile.id")
+                        .field("writer.id")
                         .value(profileId.toString())
                         .build()._toQuery())
                 .build();
@@ -84,6 +85,15 @@ public class ProfileServiceImpl implements ProfileService {
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index(DocumentIndex.POST)
                 .query(q -> q.bool(boolQuery))
+                .source(source -> source.filter(f ->
+                        f.includes(
+                                "id",
+                                "title",
+                                "text",
+                                "community.id",
+                                "community.title",
+                                "createdDate")
+                ))
                 .from(page * postSize)
                 .size(postSize)
                 .sort(s -> s.field(f -> f.field("createdDate").order(SortOrder.Desc)))
