@@ -1,6 +1,7 @@
 package com.gamerum.backend.adaptor.dto.community.post;
 
 import com.gamerum.backend.adaptor.dto.community.post.comment.CommentGetDTO;
+import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,11 +15,9 @@ public class PostGetDTO {
     private String title;
     private String tag;
     private String text;
-    private String writerId;
-    private String writerNickname;
+    private PostDocument.Profile writer;
+    private PostDocument.Community community;
     private Date createdDate;
     private Date lastModifiedDate;
-    private Long communityId;
-    private String communityName;
     private List<CommentGetDTO> firstPageComments;
 }

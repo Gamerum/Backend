@@ -1,6 +1,7 @@
 package com.gamerum.backend.adaptor.dto.community;
 
 import com.gamerum.backend.adaptor.dto.community.member.CommunityMemberGetDTO;
+import com.gamerum.backend.external.persistence.elasticsearch.document.CommunityDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.GameDocument;
 import com.gamerum.backend.external.persistence.elasticsearch.document.PostDocument;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ public class CommunityGetDTO {
     private String title;
     private String description;
     @Setter
-    private GameDocument game;
+    private CommunityDocument.Game game;
     @Setter
     private List<String> tags;
     @Setter

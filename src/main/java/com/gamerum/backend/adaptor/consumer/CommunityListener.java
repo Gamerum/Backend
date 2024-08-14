@@ -34,7 +34,7 @@ public class CommunityListener {
                 .id(community.getId().toString())
                 .title(community.getTitle())
                 .description(community.getDescription())
-                .game(game)
+                .game(new CommunityDocument.Game(game.getId(), game.getName()))
                 .clickCount(0L)
                 .memberCount(0L)
                 .build());
