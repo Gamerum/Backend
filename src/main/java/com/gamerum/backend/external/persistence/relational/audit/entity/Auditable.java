@@ -18,7 +18,7 @@ import java.util.Date;
 public class Auditable {
 
     @CreatedBy
-    @Column(name = "creator_profile_id", updatable = false)
+    @Column(updatable = false)
     private Long createdBy;
 
     @CreatedDate
@@ -27,7 +27,6 @@ public class Auditable {
     private Date createdDate;
 
     @LastModifiedBy
-    @Column(name = "modifier_profile_id")
     private Long lastModifiedBy;
 
     @LastModifiedDate
