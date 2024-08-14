@@ -35,7 +35,7 @@ public class Post extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false, updatable = false)
-    private Profile profile;
+    private Profile writer;
 
     @Transient
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)

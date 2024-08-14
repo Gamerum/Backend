@@ -29,7 +29,7 @@ public class ChatParticipantListener {
                 .type(Message.Type.SYSTEM)
                 .text(CHAT_PARTICIPANT_ADDED + ":" + chatParticipant.getProfile().getNickname())
                 .chat(chatParticipant.getChat())
-                .profile(chatParticipant.getProfile())
+                .sender(chatParticipant.getProfile())
                 .build();
 
         websocketService.sendNotification(destination, MessageMapper.INSTANCE.messageToMessageGetDTO(message));
@@ -45,7 +45,7 @@ public class ChatParticipantListener {
                 .type(Message.Type.SYSTEM)
                 .text(CHAT_PARTICIPANT_REMOVED + ":" + chatParticipant.getProfile().getNickname())
                 .chat(chatParticipant.getChat())
-                .profile(chatParticipant.getProfile())
+                .sender(chatParticipant.getProfile())
                 .build();
 
         websocketService.sendNotification(destination, MessageMapper.INSTANCE.messageToMessageGetDTO(message));

@@ -12,8 +12,8 @@ import java.util.List;
 public interface CommentMapper {
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
-    @Mapping(source = "profile.id", target = "writerId")
-    @Mapping(source = "profile.nickname", target = "writerNickname")
+    @Mapping(source = "writer.id", target = "writerId")
+    @Mapping(source = "writer.nickname", target = "writerNickname")
     CommentGetDTO commentToCommentGetDTO(Comment comment);
 
     List<CommentGetDTO> commentsToCommentGetDTOs(List<Comment> comments);

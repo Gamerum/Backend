@@ -87,7 +87,7 @@ public class PostServiceImpl implements PostService {
 
         Post newPost = PostMapper.INSTANCE.postCreateDTOToPost(postCreateDTO);
         newPost.setCommunity(community);
-        newPost.setProfile(profile);
+        newPost.setWriter(profile);
 
         return postRepository.save(newPost);
     }
@@ -97,7 +97,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(Post.class));
 
-        if (!post.getProfile().getId().equals(currentUser.getProfileId()))
+        if (!post.getWriter().getId().equals(currentUser.getProfileId()))
             throw new ForbiddenException();
 
         if (!communityTagService.hasTag(post.getCommunity().getId(), postUpdateDTO.getTag()))
@@ -118,7 +118,7 @@ public class PostServiceImpl implements PostService {
         Long profileId = currentUser.getProfileId();
 
         boolean isAdmin = currentUser.hasRole(UserRole.ROLE_ADMIN);
-        boolean isDeleteOwnedPost = post.getProfile().getId().equals(profileId);
+        boolean isDeleteOwnedPost = post.getWriter().getId().equals(profileId);
 
         if (!isAdmin && !isDeleteOwnedPost) {
             CommunityMember deleter = communityMemberRepository

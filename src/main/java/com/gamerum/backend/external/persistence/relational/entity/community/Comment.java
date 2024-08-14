@@ -33,5 +33,5 @@ public class Comment extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
+    private Profile writer;
 }

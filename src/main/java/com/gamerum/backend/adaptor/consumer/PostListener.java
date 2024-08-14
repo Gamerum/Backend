@@ -30,7 +30,7 @@ public class PostListener {
                 DocumentIndex.COMMUNITY, post.getCommunity().getId().toString(), CommunityDocument.class);
 
         ProfileDocument profile = elasticsearchRepository.getById(
-                DocumentIndex.PROFILE, post.getProfile().getId().toString(), ProfileDocument.class);
+                DocumentIndex.PROFILE, post.getWriter().getId().toString(), ProfileDocument.class);
 
         elasticsearchRepository.save(PostDocument.builder()
                 .id(post.getId().toString())

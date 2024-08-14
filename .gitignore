@@ -6,7 +6,8 @@ build/
 !**/src/test/**/build/
 
 # Resources
-src/main/resources
+src/main/resources/application.yml
+src/main/resources/keystore.p12
 
 ### STS ###
 .apt_generated
