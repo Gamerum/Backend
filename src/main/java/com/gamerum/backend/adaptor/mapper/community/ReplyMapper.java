@@ -13,8 +13,8 @@ public interface ReplyMapper {
     ReplyMapper INSTANCE = Mappers.getMapper(ReplyMapper.class);
 
     @Mapping(source = "comment.id", target = "commentId")
-    @Mapping(source = "profile.id", target = "writerId")
-    @Mapping(source = "profile.nickname", target = "writerNickname")
+    @Mapping(source = "writer.id", target = "writerId")
+    @Mapping(source = "writer.nickname", target = "writerNickname")
     ReplyGetDTO replyToReplyGetDTO(Reply reply);
 
     List<ReplyGetDTO> repliesToReplyGetDTOs(List<Reply> replies);

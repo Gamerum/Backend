@@ -22,7 +22,7 @@ import java.util.List;
 @Entity
 @Table(name = "Profiles",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "displayName"),
+                @UniqueConstraint(columnNames = "nickname"),
                 @UniqueConstraint(columnNames = "user_id")
         }
 )
@@ -43,24 +43,24 @@ public class Profile extends Auditable {
     private List<CommunityMember> joinedCommunities;
 
     @Transient
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Post> posts;
 
     @Transient
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Comment> comments;
+
+    @Transient
+    @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Reply> commentResponse;
 
     @Transient
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ChatParticipant> participatedChats;
 
     @Transient
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Message> messages;
-
-    @Transient
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Reply> commentResponse;
 
     @Transient
     @OneToMany(mappedBy = "notifiedProfile", fetch = FetchType.LAZY, orphanRemoval = true)

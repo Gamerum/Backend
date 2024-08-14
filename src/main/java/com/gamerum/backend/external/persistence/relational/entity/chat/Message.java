@@ -38,5 +38,5 @@ public class Message extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false, updatable = false)
-    private Profile profile;
+    private Profile sender;
 }

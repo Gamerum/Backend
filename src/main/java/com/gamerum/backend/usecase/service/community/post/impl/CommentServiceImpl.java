@@ -51,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
 
         return commentRepository.save(Comment.builder()
                 .text(commentCreateDTO.getText())
-                .profile(communityMember.getProfile())
+                .writer(communityMember.getProfile())
                 .post(post)
                 .build());
     }
@@ -66,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(commentId).
                 orElseThrow(() -> new NotFoundException(Comment.class));
 
-        if (!comment.getProfile().getId().equals(currentUser.getProfileId()))
+        if (!comment.getWriter().getId().equals(currentUser.getProfileId()))
             throw new ForbiddenException();
 
         comment.setText(commentUpdateDTO.getText());
@@ -80,8 +80,8 @@ public class CommentServiceImpl implements CommentService {
 
         Long profileId = currentUser.getProfileId();
         boolean isAdmin = currentUser.hasRole(UserRole.ROLE_ADMIN);
-        boolean isCommentWriter = comment.getProfile().getId().equals(profileId);
-        boolean isPostWriter = comment.getPost().getProfile().getId().equals(profileId);
+        boolean isCommentWriter = comment.getWriter().getId().equals(profileId);
+        boolean isPostWriter = comment.getPost().getWriter().getId().equals(profileId);
 
         if (!isAdmin && !isCommentWriter && !isPostWriter) {
             CommunityMember communityMember = communityMemberRepository.

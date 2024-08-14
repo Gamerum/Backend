@@ -12,8 +12,8 @@ import java.util.List;
 public interface MessageMapper {
     MessageMapper INSTANCE = Mappers.getMapper(MessageMapper.class);
 
-    @Mapping(source = "profile.id", target = "senderProfileId")
-    @Mapping(source = "profile.nickname", target = "senderName")
+    @Mapping(source = "sender.id", target = "senderProfileId")
+    @Mapping(source = "sender.nickname", target = "senderName")
     @Mapping(source = "createdDate", target = "sendDate")
     @Mapping(source = "sent", target = "isSent")
     MessageGetDTO messageToMessageGetDTO(Message message);

@@ -52,7 +52,7 @@ public class ReplyServiceImpl implements ReplyService {
         return replyRepository.save(Reply.builder()
                 .text(replyCreateDTO.getText())
                 .comment(comment)
-                .profile(writer.getProfile())
+                .writer(writer.getProfile())
                 .build());
     }
 
@@ -67,7 +67,7 @@ public class ReplyServiceImpl implements ReplyService {
                 .findById(replyId)
                 .orElseThrow(() -> new NotFoundException(Reply.class));
 
-        if (!reply.getProfile().getId().equals(currentUser.getProfileId()))
+        if (!reply.getWriter().getId().equals(currentUser.getProfileId()))
             throw new ForbiddenException();
 
         reply.setText(replyUpdateDTO.getText());
@@ -81,9 +81,9 @@ public class ReplyServiceImpl implements ReplyService {
 
         Long profileId = currentUser.getProfileId();
         boolean isAdmin = currentUser.hasRole(UserRole.ROLE_ADMIN);
-        boolean isPostWriter = reply.getComment().getPost().getProfile().getId().equals(profileId);
-        boolean isCommentWriter = reply.getComment().getProfile().getId().equals(profileId);
-        boolean isReplyWriter = reply.getProfile().getId().equals(profileId);
+        boolean isPostWriter = reply.getComment().getPost().getWriter().getId().equals(profileId);
+        boolean isCommentWriter = reply.getComment().getWriter().getId().equals(profileId);
+        boolean isReplyWriter = reply.getWriter().getId().equals(profileId);
 
         if (!isAdmin && !isPostWriter && !isCommentWriter && !isReplyWriter) {
             CommunityMember communityMember = communityMemberRepository.

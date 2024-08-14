@@ -56,7 +56,7 @@ public class MessageServiceImpl implements MessageService {
         return messageRepository.save(
                 Message.builder()
                         .chat(chat)
-                        .profile(profile)
+                        .sender(profile)
                         .text(messageCreateDTO.getText())
                         .type(Message.Type.USER)
                         .build());
@@ -70,7 +70,7 @@ public class MessageServiceImpl implements MessageService {
         if (!currentUser.hasRole(UserRole.ROLE_ADMIN)) {
             Long deleterProfileId = currentUser.getProfileId();
 
-            if (!message.getProfile().getId().equals(deleterProfileId)) {
+            if (!message.getSender().getId().equals(deleterProfileId)) {
                 ChatParticipant deleter = chatParticipantRepository
                         .findByChatIdAndProfileId(chatId, deleterProfileId)
                         .orElseThrow(() -> new ParticipationException(false));
@@ -95,7 +95,7 @@ public class MessageServiceImpl implements MessageService {
         Message message = messageRepository.findByIdAndChatId(messageUpdateDTO.getId(), chatId)
                 .orElseThrow(() -> new NotFoundException(Message.class));
 
-        if (!Objects.equals(message.getProfile().getId(), currentUser.getProfileId()))
+        if (!Objects.equals(message.getSender().getId(), currentUser.getProfileId()))
             throw new ForbiddenException();
 
         message.setText(messageUpdateDTO.getText());

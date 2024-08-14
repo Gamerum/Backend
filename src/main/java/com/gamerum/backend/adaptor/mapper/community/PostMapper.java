@@ -11,8 +11,8 @@ import org.mapstruct.factory.Mappers;
 public interface PostMapper {
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 
-    @Mapping(source = "profile.id", target = "writer.id")
-    @Mapping(source = "profile.nickname", target = "writer.nickname")
+    @Mapping(source = "writer.id", target = "writer.id")
+    @Mapping(source = "writer.nickname", target = "writer.nickname")
     @Mapping(source = "comments", target = "firstPageComments")
     PostGetDTO postToPostGetDTO(Post post);
 

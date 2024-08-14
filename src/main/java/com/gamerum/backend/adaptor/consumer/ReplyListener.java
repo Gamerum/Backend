@@ -35,13 +35,13 @@ public class ReplyListener {
                 .replyId(reply.getId())
                 .commentId(reply.getComment().getId())
                 .postId(reply.getComment().getPost().getId())
-                .replierId(reply.getProfile().getId())
-                .replierNickname(reply.getProfile().getNickname())
+                .replierId(reply.getWriter().getId())
+                .replierNickname(reply.getWriter().getNickname())
                 .build();
 
         Notification notification = Notification.builder()
                 .type(Notification.Type.COMMENT_READ)
-                .notifiedProfile(reply.getComment().getProfile())
+                .notifiedProfile(reply.getComment().getWriter())
                 .notificationContent(content)
                 .build();
 
