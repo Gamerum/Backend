@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Posts")
+@Table(name = "posts")
 @EntityListeners(PostListener.class)
 public class Post extends Auditable {
     @Id

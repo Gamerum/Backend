@@ -12,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CommunityMembers")
+@Table(name = "community_members")
 @EntityListeners(CommunityMemberListener.class)
 public class CommunityMember extends Auditable{
     public enum Role {

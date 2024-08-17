@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Chats")
+@Table(name = "chat")
 public class Chat extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Messages")
+@Table(name = "messages")
 @EntityListeners(MessageListener.class)
 public class Message extends Auditable {
     public enum Type {

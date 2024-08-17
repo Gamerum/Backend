@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @Entity
-@Table(name = "Replies")
+@Table(name = "replies")
 @EntityListeners(ReplyListener.class)
 public class Reply extends Auditable {
     @Id

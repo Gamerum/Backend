@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Profiles",
+@Table(name = "profiles",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "nickname"),
                 @UniqueConstraint(columnNames = "user_id")

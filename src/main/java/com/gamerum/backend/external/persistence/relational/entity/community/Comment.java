@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Entity
-@Table(name = "Comments")
+@Table(name = "comments")
 @EntityListeners(CommentListener.class)
 public class Comment extends Auditable {
     @Id

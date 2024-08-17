@@ -16,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Notifications")
+@Table(name = "notifications")
 @EntityListeners(NotificationListener.class)
 public class Notification extends Auditable implements Serializable {
     public enum Type {

@@ -1,4 +1,4 @@
-CREATE TABLE Users (
+CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -13,7 +13,7 @@ CREATE TABLE Users (
     last_modified_date TIMESTAMP
 );
 
-CREATE TABLE Profiles (
+CREATE TABLE profiles (
     id BIGSERIAL PRIMARY KEY,
     nickname VARCHAR(255),
     is_active BOOLEAN NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE Profiles (
     FOREIGN KEY (user_id) REFERENCES Users(id)
 );
 
-CREATE TABLE Communities (
+CREATE TABLE communities (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL UNIQUE,
     description TEXT NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE Communities (
     last_modified_date TIMESTAMP
 );
 
-CREATE TABLE CommunityMembers (
+CREATE TABLE community_members (
     id BIGSERIAL PRIMARY KEY,
     role VARCHAR(255) NOT NULL,
     profile_id BIGINT NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE CommunityMembers (
     FOREIGN KEY (community_id) REFERENCES Communities(id)
 );
 
-CREATE TABLE Posts (
+CREATE TABLE posts (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     tag VARCHAR(255) NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE Posts (
     FOREIGN KEY (profile_id) REFERENCES Profiles(id)
 );
 
-CREATE TABLE Comments (
+CREATE TABLE comments (
     id BIGSERIAL PRIMARY KEY,
     text TEXT NOT NULL,
     post_id BIGINT NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE Comments (
     FOREIGN KEY (profile_id) REFERENCES Profiles(id)
 );
 
-CREATE TABLE Replies (
+CREATE TABLE replies (
     id BIGSERIAL PRIMARY KEY,
     text TEXT NOT NULL,
     respond_comment_id BIGINT NOT NULL,
@@ -99,7 +99,7 @@ CREATE TABLE Replies (
     FOREIGN KEY (profile_id) REFERENCES Profiles(id)
 );
 
-CREATE TABLE Notifications (
+CREATE TABLE notifications (
     id BIGSERIAL PRIMARY KEY,
     notified_profile_id BIGINT NOT NULL,
     type VARCHAR(255) NOT NULL,
@@ -112,7 +112,7 @@ CREATE TABLE Notifications (
     FOREIGN KEY (notified_profile_id) REFERENCES Profiles(id)
 );
 
-CREATE TABLE Chats (
+CREATE TABLE chats (
     id BIGSERIAL PRIMARY KEY,
     version BIGINT,
     created_by BIGINT,
@@ -121,7 +121,7 @@ CREATE TABLE Chats (
     last_modified_date TIMESTAMP
 );
 
-CREATE TABLE ChatParticipants (
+CREATE TABLE chat_participants (
     id BIGSERIAL PRIMARY KEY,
     profile_id BIGINT NOT NULL,
     chat_id BIGINT NOT NULL,
@@ -135,7 +135,7 @@ CREATE TABLE ChatParticipants (
     FOREIGN KEY (chat_id) REFERENCES Chats(id)
 );
 
-CREATE TABLE Messages (
+CREATE TABLE messages (
     id BIGSERIAL PRIMARY KEY,
     text TEXT NOT NULL,
     is_sent BOOLEAN NOT NULL,

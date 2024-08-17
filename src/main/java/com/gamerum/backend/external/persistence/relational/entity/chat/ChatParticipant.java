@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ChatParticipants")
+@Table(name = "chat_participants")
 @EntityListeners(ChatParticipantListener.class)
 public class ChatParticipant extends Auditable {
     @Id
